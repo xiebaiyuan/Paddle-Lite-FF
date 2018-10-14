@@ -51,7 +51,10 @@ class Attribute {
         break;
       }
       case PADDLE_MOBILE__FRAMEWORK__PROTO__ATTR_TYPE__STRING: {
-        attr.Set<std::string>(std::string(attr_desc->s));
+//        attr.Set<std::string>(std::string(attr_desc->s));
+
+        const std::basic_string<char, std::char_traits<char>, std::allocator<char>> &basic_string = std::string(attr_desc->s);
+        attr.SetString(const_cast<string &>(basic_string));
         break;
       }
       case PADDLE_MOBILE__FRAMEWORK__PROTO__ATTR_TYPE__BOOLEANS: {
@@ -108,6 +111,15 @@ class Attribute {
     return variant_.Get<T>();
   }
 
+  Attribute &SetString(std::string &string) {
+    variant_.SetString(string);
+    return *this;
+  }
+
+  std::string GetString() const {
+    return variant_.GetString();
+  }
+
   template <typename Vistor>
   static typename Vistor::type_t ApplyVistor(Vistor vistor, Attribute attr) {
     if (attr.variant_.TypeId() == typeid(int).hash_code()) {
@@ -115,7 +127,7 @@ class Attribute {
     } else if (attr.variant_.TypeId() == typeid(float).hash_code()) {
       return vistor(attr.variant_.Get<float>());
     } else if (attr.variant_.TypeId() == typeid(string).hash_code()) {
-      return vistor(attr.variant_.Get<string>());
+      return vistor(attr.variant_.GetString());
     } else if (attr.variant_.TypeId() == typeid(vector<int>).hash_code()) {
       return vistor(attr.variant_.Get<vector<int>>());
     } else if (attr.variant_.TypeId() == typeid(vector<float>).hash_code()) {

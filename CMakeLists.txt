@@ -6,10 +6,10 @@ option(CPU "armv7 with neon support" ON)
 option(MALI_GPU "mali gpu support" OFF)
 option(FPGA "fpga support" OFF)
 
-option(USE_OPENMP "openmp support" OFF)
+option(USE_OPENMP "openmp support" ON)
 option(DEBUGING "enable debug mode" ON)
-option(USE_EXCEPTION "use std exception" OFF)
-option(LOG_PROFILE "log profile" OFF)
+option(USE_EXCEPTION "use std exception" ON)
+option(LOG_PROFILE "log profile" ON)
 
 file(GLOB_RECURSE PADDLE_MOBILE_CC src/*.cc src/*.cpp src/*.c src/*.mm)
 file(GLOB_RECURSE PADDLE_MOBILE_H src/*.h)
