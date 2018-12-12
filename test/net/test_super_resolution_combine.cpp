@@ -15,8 +15,21 @@ limitations under the License. */
 #include <iostream>
 #include "../test_helper.h"
 #include "../test_include.h"
+#include "../../io/decrypter.h"
+
 
 int main() {
+    // decryptcodes
+   /* std::string model = std::string(g_super_resolucion_combine_encrypted) + "/model.mlm";
+    std::string params = std::string(g_super_resolucion_combine_encrypted) + "/params.mlm";
+    uint8_t *buf = nullptr;
+
+    paddle_mobile::decrypter des;
+    std::string key = "....";
+    des.ReadBufferCrypt(model.c_str(), &buf, key.c_str());
+    des.ReadBufferCrypt(params.c_str(), &buf, key.c_str());*/
+
+
   paddle_mobile::PaddleMobile<paddle_mobile::CPU> paddle_mobile;
   paddle_mobile.SetThreadNum(4);
   auto time1 = time();
