@@ -1078,6 +1078,15 @@ class SigmoidParam : public OpParam {
  private:
   RType *input_x_;
   RType *out_;
+#ifdef PADDLE_MOBILE_FPGA
+
+ private:
+  fpga::BypassArgs fpga_bypass_args;
+
+ public:
+  const fpga::BypassArgs &FpgaArgs() const { return fpga_bypass_args; }
+  void SetFpgaArgs(const fpga::BypassArgs &args) { fpga_bypass_args = args; }
+#endif
 };
 #endif
 
@@ -1163,6 +1172,12 @@ class FeedParam : public OpParam {
  public:
   FeedParam(const VariableNameMap &inputs, const VariableNameMap &outputs,
             const AttributeMap &attrs, const Scope &scope) {
+#ifdef PADDLE_MOBILE_FPGA
+    static int feed_num = 0;
+    auto new_name = std::string("feed") + std::to_string(feed_num++);
+    const_cast<VariableNameMap &>(inputs).at("X") = {string(new_name)};
+#endif
+
     input_x_ = InputXFrom<LoDTensor>(inputs, scope);
     out_ = OutFrom<GType>(outputs, scope);
     auto var = scope.FindVar("batch_size");
@@ -1186,6 +1201,11 @@ class FetchParam : public OpParam {
  public:
   FetchParam(const VariableNameMap &inputs, const VariableNameMap &outputs,
              const AttributeMap &attrs, const Scope &scope) {
+#ifdef PADDLE_MOBILE_FPGA
+    static int fetch_num = 0;
+    auto new_name = std::string("fetch") + std::to_string(fetch_num++);
+    const_cast<VariableNameMap &>(outputs).at("Out") = {string(new_name)};
+#endif
     input_x_ = InputXFrom<GType>(inputs, scope);
     out_ = OutFrom(outputs, scope);
   }
@@ -1200,6 +1220,11 @@ class FetchParam : public OpParam {
  private:
   RType *input_x_;
   Tensor *out_;
+#ifdef PADDLE_MOBILE_FPGA
+ public:
+  fpga::BypassArgs fpga_bypass_args;
+
+#endif
 };
 
 #ifdef FILL_CONSTANT_OP
@@ -1498,33 +1523,20 @@ class SliceParam : public OpParam {
  public:
   SliceParam(const VariableNameMap &inputs, const VariableNameMap &outputs,
              const AttributeMap &attrs, const Scope &scope) {
-    input_x_ = InputXFrom<GType>(inputs, scope);
-    input_shape_ = InputShapeFrom<GType>(inputs, scope);
-    out_ = OutFrom<GType>(outputs, scope);
-    axis_ = GetAttr<int>("axis", attrs);
-    slice_points_ = GetAttr<vector<int>>("slice_points", attrs);
-    inplace_ = GetAttr<bool>("inplace", attrs);
+    input_ = InputFrom<GType>(inputs, scope);
+    output_ = OutFrom<GType>(outputs, scope);
+
+    axes_ = GetAttr<std::vector<int>>("axes", attrs);
+    starts_ = GetAttr<std::vector<int>>("starts", attrs);
+    ends_ = GetAttr<std::vector<int>>("ends", attrs);
   }
 
-  const RType *InputX() const { return input_x_; }
-
-  const RType *InputShape() const { return input_shape_; }
-
-  RType *Out() const { return out_; }
-
-  const int &Axis() const { return axis_; }
-
-  const vector<int> &SlicePoints() const { return slice_points_; }
-
-  const bool &Inplace() const { return inplace_; }
-
- private:
-  RType *input_x_;
-  RType *input_shape_;
-  RType *out_;
-  int axis_;
-  vector<int> slice_points_;
-  bool inplace_;
+ public:
+  GType *input_;
+  GType *output_;
+  std::vector<int> axes_;
+  std::vector<int> starts_;
+  std::vector<int> ends_;
 };
 #endif
 
@@ -2357,10 +2369,17 @@ class ConvTransposeParam : public OpParam {
 
  private:
   fpga::DeconvArgs fpga_conv_args;
+  fpga::DWDeconvArgs fpga_DWDeconv_args;
 
  public:
   const fpga::DeconvArgs &FpgaArgs() const { return fpga_conv_args; }
+  const fpga::DWDeconvArgs &FpgaDWDconvArgs() const {
+    return fpga_DWDeconv_args;
+  }
   void SetFpgaArgs(const fpga::DeconvArgs &args) { fpga_conv_args = args; }
+  void SetFpgaArgs(const fpga::DWDeconvArgs &args) {
+    fpga_DWDeconv_args = args;
+  }
 #endif
 };
 
@@ -2941,6 +2960,160 @@ class CompareParam : public OpParam {
   int axis_;
 };
 #endif  // LESS_THAN_OP
+
+#if defined(LOGICAL_AND_OP) || defined(LOGICAL_OR_OP) || defined(LOGICAL_XOR_OP)
+template <typename Dtype>
+class LogicalBinaryParam : public OpParam {
+  typedef typename DtypeTensorTrait<Dtype>::gtype GType;
+  typedef typename DtypeTensorTrait<Dtype>::rtype RType;
+
+ public:
+  LogicalBinaryParam(const VariableNameMap &inputs,
+                     const VariableNameMap &outputs, const AttributeMap &attrs,
+                     const Scope &scope) {
+    input_x_ = InputXFrom<GType>(inputs, scope);
+    input_y_ = InputYFrom<GType>(inputs, scope);
+    output_ = OutFrom<GType>(outputs, scope);
+  }
+
+  const GType *InputX() const { return input_x_; }
+  const GType *InputY() const { return input_y_; }
+  GType *Out() const { return output_; }
+
+ public:
+  GType *input_x_;
+  GType *input_y_;
+  GType *output_;
+};
+#endif  // LOGICAL_AND_OP LOGICAL_OR_OP LOGICAL_XOR_OP
+
+#ifdef LOGICAL_NOT_OP
+template <typename Dtype>
+class LogicalUnaryParam : public OpParam {
+  typedef typename DtypeTensorTrait<Dtype>::gtype GType;
+  typedef typename DtypeTensorTrait<Dtype>::rtype RType;
+
+ public:
+  LogicalUnaryParam(const VariableNameMap &inputs,
+                    const VariableNameMap &outputs, const AttributeMap &attrs,
+                    const Scope &scope) {
+    input_x_ = InputXFrom<GType>(inputs, scope);
+    output_ = OutFrom<GType>(outputs, scope);
+  }
+
+  const GType *InputX() const { return input_x_; }
+  GType *Out() const { return output_; }
+
+ public:
+  GType *input_x_;
+  GType *output_;
+};
+#endif  // LOGICAL_NOT_OP
+
+// #ifdef WHILE_OP
+// template <typename Dtype>
+// class WhileParam : public OpParam {
+//  public:
+//   WhileParam(const VariableNameMap &inputs,
+//              const VariableNameMap &outputs, const AttributeMap &attrs,
+//              const Scope &scope) {
+//     cond_ = OpParam::GetVarValue<framework::LoDTensor>("Condition", inputs,
+//     scope); block_desc_ = OpParam::GetAttr<framework::BlockDesc
+//     *>("sub_block", attrs);
+//   }
+//
+//  public:
+//   framework::LoDTensor *cond_;
+//   const framework::BlockDesc *block_desc_;
+// };
+// #endif  // WHILE_OP
+
+#ifdef WRITE_TO_ARRAY_OP
+template <typename Dtype>
+class WriteToArrayParam : public OpParam {
+ public:
+  WriteToArrayParam(const VariableNameMap &inputs,
+                    const VariableNameMap &outputs, const AttributeMap &attrs,
+                    const Scope &scope) {
+    input_ = OpParam::GetVarValue<framework::LoDTensor>("X", inputs, scope);
+    index_ = OpParam::GetVarValue<framework::LoDTensor>("I", inputs, scope);
+    output_ =
+        OpParam::GetVarValue<framework::LoDTensorArray>("Out", outputs, scope);
+  }
+
+ public:
+  framework::LoDTensor *input_;
+  framework::LoDTensor *index_;
+  framework::LoDTensorArray *output_;
+};
+#endif
+
+#ifdef READ_FROM_ARRAY_OP
+template <typename Dtype>
+class ReadFromArrayParam : public OpParam {
+ public:
+  ReadFromArrayParam(const VariableNameMap &inputs,
+                     const VariableNameMap &outputs, const AttributeMap &attrs,
+                     const Scope &scope) {
+    input_ =
+        OpParam::GetVarValue<framework::LoDTensorArray>("X", inputs, scope);
+    index_ = OpParam::GetVarValue<framework::LoDTensor>("I", inputs, scope);
+    output_ = OpParam::GetVarValue<framework::LoDTensor>("Out", outputs, scope);
+  }
+
+ public:
+  framework::LoDTensorArray *input_;
+  framework::LoDTensor *index_;
+  framework::LoDTensor *output_;
+};
+#endif
+
+#ifdef IS_EMPTY_OP
+template <typename Dtype>
+class IsEmptyParam : public OpParam {
+  typedef typename DtypeTensorTrait<Dtype>::gtype GType;
+  typedef typename DtypeTensorTrait<Dtype>::rtype RType;
+
+ public:
+  IsEmptyParam(const VariableNameMap &inputs, const VariableNameMap &outputs,
+               const AttributeMap &attrs, const Scope &scope) {
+    input_x_ = InputXFrom<GType>(inputs, scope);
+    output_ = OutFrom<GType>(outputs, scope);
+  }
+
+  const GType *InputX() const { return input_x_; }
+  GType *Out() const { return output_; }
+
+ public:
+  GType *input_x_;
+  GType *output_;
+};
+#endif  // IS_EMPTY_OP
+
+#ifdef INCREMENT_OP
+template <typename Dtype>
+class IncrementParam : public OpParam {
+  typedef typename DtypeTensorTrait<Dtype>::gtype GType;
+  typedef typename DtypeTensorTrait<Dtype>::rtype RType;
+
+ public:
+  IncrementParam(const VariableNameMap &inputs, const VariableNameMap &outputs,
+                 const AttributeMap &attrs, const Scope &scope) {
+    input_x_ = InputXFrom<GType>(inputs, scope);
+    output_ = OutFrom<GType>(outputs, scope);
+    step_ = OpParam::GetAttr<int>("step", attrs);
+  }
+
+  const GType *InputX() const { return input_x_; }
+  GType *Out() const { return output_; }
+  int Step() const { return step_; }
+
+ public:
+  GType *input_x_;
+  GType *output_;
+  int step_;
+};
+#endif  // INCREMENT_OP
 
 }  // namespace operators
 }  // namespace paddle_mobile

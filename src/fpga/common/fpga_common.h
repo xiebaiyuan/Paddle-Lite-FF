@@ -19,17 +19,16 @@ limitations under the License. */
 #include <memory>
 #include <vector>
 
-namespace paddle_mobile {
-namespace fpga {
-
 #ifdef PADDLE_MOBILE_FPGA_V1
-#define IMAGE_ALIGNMENT 16           // Aligned to 16
-#define FILTER_NUM_ALIGNMENT 32      // Filter number aligned to 32
-#define FILTER_ELEMENT_ALIGNMENT 16  // Filter element number aligned to 16
-#define BS_NUM_ALIGNMENT 8
-#define BIAS_NUM_ALIGNMENT 16
+#define IMAGE_ALIGNMENT (16)           // Aligned to 16
+#define FILTER_NUM_ALIGNMENT (32)      // Filter number aligned to 32
+#define FILTER_ELEMENT_ALIGNMENT (16)  // Filter element number aligned to 16
+#define BS_NUM_ALIGNMENT (8)
+#define BIAS_NUM_ALIGNMENT (16)
 #endif
 
+namespace paddle_mobile {
+namespace fpga {
 enum DataType {
   DATA_TYPE_FP32 = 1,
   DATA_TYPE_FP16 = 0,
@@ -45,10 +44,11 @@ enum ActivationType {
   LEAKYRELU = 1,
   SIGMOID = 2,
   TANH = 3,
+  SOFTMAX = 4,
 };
 
 struct ActivationArgs {
-  enum ActivationType activation_type;
+  enum ActivationType activation_type = NONE;
   int16_t leaky_relu_negative_slope;
 };
 
@@ -132,7 +132,7 @@ struct DeconvTxParm {
 #endif
 
 struct ConvArgs {
-  bool relu_enabled;
+  // bool relu_enabled;
   void* sb_address;  // scale and bias
   void* filter_address;
   float* filter_scale_address;
@@ -187,6 +187,7 @@ struct SplitArgs {
   uint32_t* out_channel_nums;
   uint32_t height;
   uint32_t width;
+  std::vector<std::shared_ptr<char>> vector_split_space;
 };
 
 struct PoolingArgs {
@@ -198,7 +199,7 @@ struct PoolingArgs {
 };
 
 struct EWAddArgs {
-  bool relu_enabled;
+  // bool relu_enabled;
   uint32_t const0;  // output0 = const0 x input0 + const1 x input1;
   uint32_t const1;
   struct ImageInputArgs image0;
@@ -229,13 +230,28 @@ struct DeconvArgs {
   std::vector<std::shared_ptr<SplitConvArgs>> split_conv_args;
 };
 struct DWconvArgs {
-  bool relu_enabled;
+  uint32_t sub_conv_num;
+  // bool relu_enabled;
   void* bias_address;
   void* filter_address;
   struct KernelArgs kernel;
   struct ImageInputArgs image;
   struct ImageOutputArgs output;
+  std::vector<std::shared_ptr<char>> vector_dwconv_space;
 };
+
+struct DWDeconvArgs {
+  uint32_t sub_conv_num;
+  uint32_t group_num;
+  uint32_t filter_num;
+  uint32_t omit_size;
+  uint32_t sub_output_width;
+  uint32_t sub_output_height;
+  struct ImageOutputArgs output;
+  std::vector<std::shared_ptr<DWconvArgs>> dw_conv_args;
+  std::vector<std::shared_ptr<char>> vector_dw_conv_space;
+};
+
 // static inline int align_to_x(int num, int x) { return (num + x - 1) / x * x;
 // }
 static inline uint32_t align_to_x(int64_t num, int64_t x) {

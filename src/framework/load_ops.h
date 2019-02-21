@@ -168,6 +168,9 @@ LOAD_FUSION_MATCHER(fusion_conv_bn_relu);
 #ifdef GRU_OP
 LOAD_OP1(gru, CPU);
 #endif
+#ifdef GRU_UNIT_OP
+LOAD_OP1(gru_unit, CPU);
+#endif
 #ifdef FUSION_CONVADDBN_OP
 LOAD_OP2(fusion_conv_add_bn, CPU, FPGA);
 LOAD_FUSION_MATCHER(fusion_conv_add_bn);
@@ -188,6 +191,9 @@ LOAD_OP1(crf_decoding, CPU);
 #endif
 #ifdef MUL_OP
 LOAD_OP2(mul, CPU, MALI_GPU);
+#endif
+#ifdef NORM_OP
+LOAD_OP1(norm, CPU);
 #endif
 #ifdef RELU_OP
 LOAD_OP2(relu, CPU, MALI_GPU);
@@ -278,4 +284,43 @@ LOAD_OP1(lod_reset, CPU);
 #endif
 #ifdef LESS_THAN_OP
 LOAD_OP1(less_than, CPU);
+#endif
+#ifdef LOGICAL_AND_OP
+LOAD_OP1(logical_and, CPU);
+#endif
+#ifdef LOGICAL_OR_OP
+LOAD_OP1(logical_or, CPU);
+#endif
+#ifdef LOGICAL_NOT_OP
+LOAD_OP1(logical_not, CPU);
+#endif
+#ifdef LOGICAL_XOR_OP
+LOAD_OP1(logical_xor, CPU);
+#endif
+#ifdef WHILE_OP
+LOAD_OP1(while, CPU);
+#endif
+#ifdef WRITE_TO_ARRAY_OP
+LOAD_OP1(write_to_array, CPU);
+#endif
+#ifdef READ_FROM_ARRAY_OP
+LOAD_OP1(read_from_array, CPU);
+#endif
+#ifdef IS_EMPTY_OP
+LOAD_OP1(is_empty, CPU);
+#endif
+#ifdef INCREMENT_OP
+LOAD_OP1(increment, CPU);
+#endif
+#ifdef ANCHOR_GENERATOR_OP
+LOAD_OP1(anchor_generator, CPU);
+#endif
+#ifdef PROPOSAL_OP
+LOAD_OP1(generate_proposals, CPU);
+#endif
+#ifdef PSROI_POOL_OP
+LOAD_OP1(psroi_pool, CPU);
+#endif
+#ifdef ROI_PERSPECTIVE_OP
+LOAD_OP1(roi_perspective_transform, CPU);
 #endif

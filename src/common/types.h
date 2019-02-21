@@ -131,9 +131,12 @@ extern const char *G_OP_TYPE_FUSION_CONV_BN_ADD_RELU;
 extern const char *G_OP_TYPE_FUSION_DWCONV_BN_RELU;
 extern const char *G_OP_TYPE_FUSION_CONV_BN_RELU;
 
+extern const char *G_OP_TYPE_GRU;
+extern const char *G_OP_TYPE_GRU_UNIT;
 extern const char *G_OP_TYPE_LRN;
 extern const char *G_OP_TYPE_MUL;
 extern const char *G_OP_TYPE_MULTICLASS_NMS;
+extern const char *G_OP_TYPE_NORM;
 extern const char *G_OP_TYPE_POOL2D;
 extern const char *G_OP_TYPE_PRIOR_BOX;
 extern const char *G_OP_TYPE_RELU;
@@ -163,6 +166,14 @@ extern const char *G_OP_TYPE_CAST;
 extern const char *G_OP_TYPE_LOG;
 extern const char *G_OP_TYPE_LOD_RESET;
 extern const char *G_OP_TYPE_LESS_THAN;
+extern const char *G_OP_TYPE_LOGICAL_AND;
+extern const char *G_OP_TYPE_LOGICAL_OR;
+extern const char *G_OP_TYPE_LOGICAL_NOT;
+extern const char *G_OP_TYPE_LOGICAL_XOR;
+extern const char *G_OP_TYPE_WRITE_TO_ARRAY;
+extern const char *G_OP_TYPE_READ_FROM_ARRAY;
+extern const char *G_OP_TYPE_IS_EMPTY;
+extern const char *G_OP_TYPE_INCREMENT;
 
 extern const char *G_OP_TYPE_QUANTIZE;
 extern const char *G_OP_TYPE_DEQUANTIZE;
@@ -182,6 +193,12 @@ extern const char *G_OP_TYPE_FUSION_DECONV_ADD_RELU;
 extern const char *G_OP_TYPE_SEQUENCE_EXPAND;
 extern const char *G_OP_TYPE_SEQUENCE_POOL;
 extern const char *G_OP_TYPE_SEQUENCE_SOFTMAX;
+
+extern const char *G_OP_TYPE_SLICE;
+extern const char *G_OP_TYPE_ANCHOR_GENERATOR;
+extern const char *G_OP_TYPE_GENERATE_PROPOSALS;
+extern const char *G_OP_TYPE_PSROI_POOL;
+extern const char *G_OP_TYPE_ROI_PERSPECTIVE;
 
 extern std::unordered_map<
     std::string, std::pair<std::vector<std::string>, std::vector<std::string>>>
