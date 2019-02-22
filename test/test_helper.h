@@ -36,6 +36,7 @@ static const char *g_squeezenet = "../models/squeezenet";
 static const char *g_googlenet = "../models/googlenet";
 static const char *g_googlenet_quali = "../models/googlenet_combine_quali";
 static const char *g_mobilenet = "../models/mobilenet";
+static const char *g_mobilenet_classfication = "../models/mobilenet_classfication_combined";
 static const char *g_mobilenet_mul = "../models/r";
 static const char *g_alexnet = "../models/alexnet";
 static const char *g_inceptionv4 = "../models/inceptionv4";
@@ -46,9 +47,9 @@ static const char *g_super = "../models/superresoltion";
 static const char *g_resnet_50 = "../models/resnet_50";
 static const char *g_resnet = "../models/resnet";
 static const char *g_googlenet_combine = "../models/googlenet_combine";
-static const char *g_yolo = "../models/yolo";
+static const char *g_yolo = "../models/yolo_multarget";
 static const char *g_yolo_combined = "../models/yolo_combined";
-static const char *g_yolo_mul = "../models/d";
+static const char *g_yolo_mul = "../models/yolo_multarget";
 static const char *g_fluid_fssd_new = "../models/fluid_fssd_new";
 static const char *g_vgg16_ssd_combined = "../models/vgg16_ssd_combined";
 static const char *g_test_image_1x3x224x224 =
@@ -65,7 +66,6 @@ static const char *g_img = "../images/img.bin";
 static const char *g_yolo_img = "../images/in_put_1_3_416_416_2";
 static const char *g_super_img = "../images/mingren_input_data";
 static const char *g_mobilenet_img = "../images/image";
-static const char *g_sigmoid = "../models/sigmoid";
 
 using paddle_mobile::framework::DDim;
 using paddle_mobile::framework::Tensor;

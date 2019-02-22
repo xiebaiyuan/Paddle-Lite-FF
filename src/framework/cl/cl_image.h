@@ -69,6 +69,13 @@ class CLImage {
     InitCLImage(context, command_queue, folder_converter);
   }
 
+  void InitReadOnlyCLImage(cl_context context, cl_command_queue command_queue) {
+    PADDLE_MOBILE_ENFORCE(tensor_data_ != nullptr,
+                          " need call SetTensorData first");
+    CLImageConverterFolder *folder_converter = new CLImageConverterFolder();
+    InitReadOnlyCLImage(context, command_queue, folder_converter);
+  }
+
   void InitNormalCLImage(cl_context context, cl_command_queue command_queue) {
     PADDLE_MOBILE_ENFORCE(tensor_data_ != nullptr,
                           " need call SetTensorData first");
@@ -95,6 +102,35 @@ class CLImage {
     DLOG << " end convert to image";
 
     InitCLImage(context, image_dims_[0], image_dims_[1], image_data);
+
+    delete[](image_data);
+    delete[](tensor_data_);
+
+    command_queue_ = command_queue;
+    tensor_data_ = nullptr;
+    image_converter_ = converter;
+    initialized_ = true;
+    DLOG << " end init cl image";
+  }
+  void InitReadOnlyCLImage(cl_context context, cl_command_queue command_queue,
+                   CLImageConverterBase *converter) {
+    if (image_converter_ != nullptr) {
+      delete (image_converter_);
+    }
+
+    PADDLE_MOBILE_ENFORCE(tensor_data_ != nullptr,
+                          " need call SetTensorData first");
+
+    DLOG << " begin init cl image ";
+    image_dims_ = converter->InitImageDimInfoWith(tensor_dims_);
+
+    half_t *image_data = new half_t[product(image_dims_) * 4];
+
+    DLOG << " convert to image";
+    converter->NCHWToImage(tensor_data_, image_data, tensor_dims_);
+    DLOG << " end convert to image";
+
+    InitReadOnlyCLImage(context, image_dims_[0], image_dims_[1], image_data);
 
     delete[](image_data);
     delete[](tensor_data_);
@@ -192,6 +228,36 @@ class CLImage {
   void InitCLImage(cl_context context, int width, int height, void *data) {
     cl_image_format cf = {.image_channel_order = CL_RGBA,
                           .image_channel_data_type = CL_HALF_FLOAT};
+    cl_image_desc cid = {
+        .image_type = CL_MEM_OBJECT_IMAGE2D,
+        .image_width = width,
+        .image_height = height,
+        .image_depth = 1,
+        .image_array_size = 1,
+        .image_row_pitch = 0,
+        .image_slice_pitch = 0,
+        .num_mip_levels = 0,
+        .num_samples = 0,
+        // .buffer = nullptr
+    };
+    cid.buffer = nullptr;
+    cl_int err;
+    cl_mem cl_image = clCreateImage(
+        context, CL_MEM_READ_WRITE | (data ? CL_MEM_COPY_HOST_PTR : 0),
+        &cf,   // const cl_image_format *image_format
+        &cid,  // const cl_image_desc *image_desc
+        data,  // void *host_ptr
+        &err);
+    cl_image_.reset(cl_image);
+    if (err != CL_SUCCESS) {
+      CL_CHECK_ERRORS(err);
+      PADDLE_MOBILE_THROW_EXCEPTION(" create image 2d error ");
+    }
+  }
+
+  void InitReadOnlyCLImage(cl_context context, int width, int height, void *data) {
+    cl_image_format cf = {.image_channel_order = CL_RGBA,
+        .image_channel_data_type = CL_HALF_FLOAT};
     cl_image_desc cid = {
         .image_type = CL_MEM_OBJECT_IMAGE2D,
         .image_width = width,

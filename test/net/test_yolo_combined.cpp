@@ -23,8 +23,8 @@ int main() {
   //  ../../../test/models/mobilenet
   auto time1 = time();
 
-  if (paddle_mobile.Load(std::string(g_yolo_combined) + "/model",
-                         std::string(g_yolo_combined) + "/params", true)) {
+  if (paddle_mobile.Load(std::string(g_yolo_mul) + "/model",
+                         std::string(g_yolo_mul) + "/params", true)) {
     auto time2 = time();
     std::cout << "load cost :" << time_diff(time1, time1) << "ms" << std::endl;
 
@@ -33,20 +33,24 @@ int main() {
 
     GetInput<float>(g_test_image_desktop_1_3_416_416_nchw_float, &input, dims);
     std::cout << "input.size():  " << input.size() << std::endl;
-    for (int j = 0; j < 100; ++j) {
-      std::cout << j << " :  " << input[j] << std::endl;
-    }
+//    for (int j = 0; j < 100; ++j) {
+//      std::cout << j << " :  " << input[j] << std::endl;
+//    }
     //        // 预热十次
     //        for (int i = 0; i < 10; ++i) {
     //            paddle_mobile.Predict(input, dims);
     //        }
+    vector<float> vector_out = paddle_mobile.Predict(input, dims);
+
     auto time3 = time();
-    const vector<float> vector_out = paddle_mobile.Predict(input, dims);
+    for (int i = 0; i < 10; ++i) {
+       paddle_mobile.Predict(input, dims);
+    }
     std::cout << "--------------------------------------------" << std::endl;
 
-    for (float i : vector_out) {
-      std::cout << i << std::endl;
-    }
+//    for (float i : vector_out) {
+//      std::cout << i << std::endl;
+//    }
 
     std::cout << "--------------------------------------------" << std::endl;
 
@@ -55,6 +59,14 @@ int main() {
     auto time4 = time();
     std::cout << "predict cost :" << time_diff(time3, time4) / 10 << "ms"
               << std::endl;
+
+
+    std::vector<float>::iterator biggest =
+        std::max_element(std::begin(vector_out), std::end(vector_out));
+    std::cout << " Max element is " << *biggest << " at position "
+              << std::distance(std::begin(vector_out), biggest) << std::endl;
+
+
   }
   return 0;
 }

@@ -92,44 +92,44 @@ template <>
 void OperatorBase<GPU_CL>::Run() {
   RunImpl();
 #ifdef PADDLE_MOBILE_DEBUG
-  DLOG << "-------------" << type_ << "----------------------------";
-  vector<string> input_keys = GetInputKeys();
-  for (const auto key : input_keys) {
-    auto var_vec_in = inputs_.at(key);
-    for (int i = 0; i < var_vec_in.size(); ++i) {
-      auto vari = scope_->FindVar(var_vec_in[i]);
-      if (vari->IsInitialized()) {
-        if (type_ == "feed") {
-          const Tensor *tensor = vari->template Get<framework::LoDTensor>();
-          if (tensor) DLOG << type_ << " input- " << key << "=" << *tensor;
-        } else {
-          const CLImage *cl_image = vari->template Get<framework::CLImage>();
-          if (cl_image) {
-            DLOG << type_ << " input- " << key << "=" << *cl_image;
-          }
-        }
-      }
-    }
-  }
-  for (const auto key : GetOutKeys()) {
-    auto var_vec_out = outputs_.at(key);
-    for (int i = 0; i < var_vec_out.size(); ++i) {
-      auto vari = scope_->FindVar(var_vec_out[i]);
-      if (vari->IsInitialized()) {
-        if (type_ == "fetch") {
-          const Tensor *tensor = vari->template Get<framework::LoDTensor>();
-          if (tensor) {
-            DLOG << type_ << " output- " << key << "=" << *tensor;
-          }
-        } else {
-          const CLImage *cl_image = vari->template Get<framework::CLImage>();
-          if (cl_image) {
-            DLOG << type_ << " output- " << key << "=" << *cl_image;
-          }
-        }
-      }
-    }
-  }
+//  DLOG << "-------------" << type_ << "----------------------------";
+//  vector<string> input_keys = GetInputKeys();
+//  for (const auto key : input_keys) {
+//    auto var_vec_in = inputs_.at(key);
+//    for (int i = 0; i < var_vec_in.size(); ++i) {
+//      auto vari = scope_->FindVar(var_vec_in[i]);
+//      if (vari->IsInitialized()) {
+//        if (type_ == "feed") {
+//          const Tensor *tensor = vari->template Get<framework::LoDTensor>();
+//          if (tensor) DLOG << type_ << " input- " << key << "=" << *tensor;
+//        } else {
+//          const CLImage *cl_image = vari->template Get<framework::CLImage>();
+//          if (cl_image) {
+//            DLOG << type_ << " input- " << key << "=" << *cl_image;
+//          }
+//        }
+//      }
+//    }
+//  }
+//  for (const auto key : GetOutKeys()) {
+//    auto var_vec_out = outputs_.at(key);
+//    for (int i = 0; i < var_vec_out.size(); ++i) {
+//      auto vari = scope_->FindVar(var_vec_out[i]);
+//      if (vari->IsInitialized()) {
+//        if (type_ == "fetch") {
+//          const Tensor *tensor = vari->template Get<framework::LoDTensor>();
+//          if (tensor) {
+//            DLOG << type_ << " output- " << key << "=" << *tensor;
+//          }
+//        } else {
+//          const CLImage *cl_image = vari->template Get<framework::CLImage>();
+//          if (cl_image) {
+//            DLOG << type_ << " output- " << key << "=" << *cl_image;
+//          }
+//        }
+//      }
+//    }
+//  }
 #endif
 }
 #endif

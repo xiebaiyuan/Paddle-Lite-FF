@@ -25,16 +25,33 @@ limitations under the License. */
 
 namespace paddle_mobile {
 namespace framework {
-
+enum GpuType {
+  ADRENO,
+  MALI,
+  OTHERS,
+};
 class CLEngine {
  public:
   static CLEngine *Instance();
 
   bool Init();
 
+  bool GetWorkItemSize();
+
+  void getPlatformInfo(cl_platform_id id, cl_platform_info name,
+                       std::string str);
+  size_t getKernelWorkGroupInfo(cl_kernel kernel);
+  //  bool isMultipul(const uint32_t *gws, const vector <uint32_t> &lws, int j)
+  //  ;
+  inline bool isMultipul(int a, int b) { return a / b * b == a; }
+  inline bool suitMultipul(int a, int b) { return false; }
+  std::vector<uint32_t> LocalWorkSize1x1(size_t work_group_size,
+                                         const uint32_t *gws);
   std::unique_ptr<_cl_context, CLContextDeleter> CreateContext() {
     cl_int status;
-    cl_context c = clCreateContext(NULL, 1, devices_, NULL, NULL, &status);
+    cl_context c = clCreateContext(properties_.data()/*NULL*/, 1, devices_, NULL, NULL, &status);
+
+
     std::unique_ptr<_cl_context, CLContextDeleter> context_ptr(c);
     CL_CHECK_ERRORS(status);
     return std::move(context_ptr);
@@ -134,8 +151,14 @@ class CLEngine {
 
   cl_int status_;
 
+  GpuType gpu_type_;
+  std::vector<cl_context_properties> properties_;
   std::string cl_path_;
   std::unique_ptr<_cl_program, CLProgramDeleter> program_;
+  cl_ulong global_mem_cache_size_;
+  cl_uint max_compute_units_;
+
+
 
   //  bool SetClContext();
 
@@ -144,6 +167,9 @@ class CLEngine {
   //  bool LoadKernelFromFile(const char *kernel_file);
 
   //  bool BuildProgram();
+  void SetClInfos();
+
+  void parseDeviceName(char buffer[1024]);
 };
 
 }  // namespace framework

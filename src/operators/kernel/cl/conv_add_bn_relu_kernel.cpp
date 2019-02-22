@@ -16,12 +16,14 @@ limitations under the License. */
 
 #include "operators/kernel/conv_add_bn_relu_kernel.h"
 #include <cmath>
+#include <iostream>
 #include "framework/cl/cl_image.h"
 #include "framework/cl/cl_tool.h"
 
 namespace paddle_mobile {
 namespace operators {
-
+static int cont = 0;
+bool optimise = true;
 template <>
 bool ConvAddBNReluKernel<GPU_CL, float>::Init(
     FusionConvAddBNReluParam<GPU_CL> *param) {
@@ -139,7 +141,13 @@ bool ConvAddBNReluKernel<GPU_CL, float>::Init(
   if (param->Filter()->dims()[2] == 1 && param->Filter()->dims()[3] == 1) {
     param->Filter()->InitNImage(cl_helper_.CLContext(),
                                 cl_helper_.CLCommandQueue());
-    this->cl_helper_.AddKernel("conv_1x1", "conv_add_bn_relu_kernel.cl");
+    if (optimise) {
+      this->cl_helper_.AddKernel("conv_1x1_3", "conv_add_bn_relu_kernel.cl");
+    } else {
+      this->cl_helper_.AddKernel("conv_1x1", "conv_add_bn_relu_kernel.cl");
+    }
+    //    this->cl_helper_.AddKernel("conv_1x1_2",
+    //    "conv_add_bn_relu_kernel.cl");
     DLOG << " conv add bn relu conv 1x1";
   } else if (param->Filter()->dims()[1] == 1 &&
              param->Input()->dims()[1] == param->Output()->dims()[1] &&
@@ -166,6 +174,12 @@ bool ConvAddBNReluKernel<GPU_CL, float>::Init(
 template <>
 void ConvAddBNReluKernel<GPU_CL, float>::Compute(
     const FusionConvAddBNReluParam<GPU_CL> &param) {
+  if (param.Filter()->dims()[2] == 1 && param.Filter()->dims()[3] == 1) {
+    printf(
+        "\033[32m "
+        "---------------------------1x1-------------start--------------\033[0m "
+        "\n");
+  }
   auto kernel = this->cl_helper_.KernelAt(0);
   auto default_work_size = this->cl_helper_.DefaultWorkSize(*param.Output());
   int c_block = default_work_size[0];
@@ -188,73 +202,22 @@ void ConvAddBNReluKernel<GPU_CL, float>::Compute(
   int output_width = param.Output()->dims()[3];
   int output_height = param.Output()->dims()[2];
 
-  //  DLOG << " c block " << c_block;
-  //  DLOG << " w " << w;
-  //  DLOG << " nh " << nh;
-  //  DLOG << " stride " << stride;
-  //  DLOG << " offset " << offset;
-  //  DLOG << " input_c " << input_c;
-  //  DLOG << " dilation " << dilation;
-  //  DLOG << " input width " << input_width;
-  //  DLOG << " input height " << input_height;
-  //  DLOG << " output width " << output_width;
-  //  DLOG << " output height " << output_height;
-  //  DLOG << " input dim " << param.Input()->dims();
-  //  DLOG << " output dim " << param.Output()->dims();
-  //  DLOG << " filter dim " << param.Filter()->dims();
+  DLOG << " c block " << c_block;
+  DLOG << " w " << w;
+  DLOG << " nh " << nh;
+  DLOG << " stride " << stride;
+  DLOG << " offset " << offset;
+  DLOG << " input_c " << input_c;
+  DLOG << " dilation " << dilation;
+  DLOG << " input width " << input_width;
+  DLOG << " input height " << input_height;
+  DLOG << " output width " << output_width;
+  DLOG << " output height " << output_height;
+  DLOG << " input dim " << param.Input()->dims();
+  DLOG << " output dim " << param.Output()->dims();
+  DLOG << " filter dim " << param.Filter()->dims();
 
   cl_int status;
-
-  status = clSetKernelArg(kernel, 0, sizeof(int), &c_block);
-  CL_CHECK_ERRORS(status);
-
-  status = clSetKernelArg(kernel, 1, sizeof(int), &w);
-  CL_CHECK_ERRORS(status);
-
-  status = clSetKernelArg(kernel, 2, sizeof(int), &nh);
-  CL_CHECK_ERRORS(status);
-
-  status = clSetKernelArg(kernel, 3, sizeof(cl_mem), &input);
-  CL_CHECK_ERRORS(status);
-
-  status = clSetKernelArg(kernel, 4, sizeof(cl_mem), &filter);
-  CL_CHECK_ERRORS(status);
-
-  status = clSetKernelArg(kernel, 5, sizeof(cl_mem), &biase);
-  CL_CHECK_ERRORS(status);
-
-  status = clSetKernelArg(kernel, 6, sizeof(cl_mem), &new_scale);
-  CL_CHECK_ERRORS(status);
-
-  status = clSetKernelArg(kernel, 7, sizeof(cl_mem), &new_bias);
-  CL_CHECK_ERRORS(status);
-
-  status = clSetKernelArg(kernel, 8, sizeof(cl_mem), &output);
-  CL_CHECK_ERRORS(status);
-
-  status = clSetKernelArg(kernel, 9, sizeof(int), &stride);
-  CL_CHECK_ERRORS(status);
-
-  status = clSetKernelArg(kernel, 10, sizeof(int), &offset);
-  CL_CHECK_ERRORS(status);
-
-  status = clSetKernelArg(kernel, 11, sizeof(int), &input_c);
-  CL_CHECK_ERRORS(status);
-
-  status = clSetKernelArg(kernel, 12, sizeof(int), &dilation);
-  CL_CHECK_ERRORS(status);
-
-  status = clSetKernelArg(kernel, 13, sizeof(int), &input_width);
-  CL_CHECK_ERRORS(status);
-
-  status = clSetKernelArg(kernel, 14, sizeof(int), &input_height);
-  CL_CHECK_ERRORS(status);
-
-  status = clSetKernelArg(kernel, 15, sizeof(int), &output_width);
-  CL_CHECK_ERRORS(status);
-
-  status = clSetKernelArg(kernel, 16, sizeof(int), &output_height);
-  CL_CHECK_ERRORS(status);
 
   //  cl_event out_event = param.Output()->GetClEvent();
   //  cl_event wait_event = param.Input()->GetClEvent();
@@ -276,10 +239,225 @@ void ConvAddBNReluKernel<GPU_CL, float>::Compute(
   }
   */
 
-  status = clEnqueueNDRangeKernel(
-      this->cl_helper_.CLCommandQueue(), kernel, default_work_size.size(), NULL,
-      default_work_size.data(), NULL, 0, NULL, NULL);
-  CL_CHECK_ERRORS(status);
+  if (optimise) {
+    if (param.Filter()->dims()[2] == 1 && param.Filter()->dims()[3] == 1) {
+      printf(
+          "\033[31m "
+          "---------------------------1x1-------------optimise--------------"
+          "\033["
+          "0m \n");
+
+      status = clSetKernelArg(kernel, 0, sizeof(int), &c_block);
+      CL_CHECK_ERRORS(status);
+
+      int round_up_w = RoundUpDiv4(w);
+      status = clSetKernelArg(kernel, 1, sizeof(int), &round_up_w);
+      CL_CHECK_ERRORS(status);
+
+      status = clSetKernelArg(kernel, 2, sizeof(int), &nh);
+      CL_CHECK_ERRORS(status);
+
+      status = clSetKernelArg(kernel, 3, sizeof(cl_mem), &input);
+      CL_CHECK_ERRORS(status);
+
+      status = clSetKernelArg(kernel, 4, sizeof(cl_mem), &filter);
+      CL_CHECK_ERRORS(status);
+
+      status = clSetKernelArg(kernel, 5, sizeof(cl_mem), &biase);
+      CL_CHECK_ERRORS(status);
+
+      status = clSetKernelArg(kernel, 6, sizeof(cl_mem), &new_scale);
+      CL_CHECK_ERRORS(status);
+
+      status = clSetKernelArg(kernel, 7, sizeof(cl_mem), &new_bias);
+      CL_CHECK_ERRORS(status);
+
+      status = clSetKernelArg(kernel, 8, sizeof(cl_mem), &output);
+      CL_CHECK_ERRORS(status);
+
+      status = clSetKernelArg(kernel, 9, sizeof(int), &stride);
+      CL_CHECK_ERRORS(status);
+
+      status = clSetKernelArg(kernel, 10, sizeof(int), &offset);
+      CL_CHECK_ERRORS(status);
+
+      status = clSetKernelArg(kernel, 11, sizeof(int), &input_c);
+      CL_CHECK_ERRORS(status);
+
+      status = clSetKernelArg(kernel, 12, sizeof(int), &dilation);
+      CL_CHECK_ERRORS(status);
+
+      status = clSetKernelArg(kernel, 13, sizeof(int), &input_width);
+      CL_CHECK_ERRORS(status);
+
+      status = clSetKernelArg(kernel, 14, sizeof(int), &input_height);
+      CL_CHECK_ERRORS(status);
+
+      status = clSetKernelArg(kernel, 15, sizeof(int), &output_width);
+      CL_CHECK_ERRORS(status);
+
+      status = clSetKernelArg(kernel, 16, sizeof(int), &output_height);
+      CL_CHECK_ERRORS(status);
+
+      status = clSetKernelArg(kernel, 17, sizeof(int), &w);
+      printf("w - > %d \n",w);
+      CL_CHECK_ERRORS(status);
+
+      const size_t work_size[3] = {
+          static_cast<const uint32_t>(default_work_size.data()[0]),
+          static_cast<const uint32_t>(round_up_w),
+          static_cast<const uint32_t>(default_work_size.data()[2])};
+      for (int i = 0; i < 3; ++i) {
+        std::cout << "global_work_size.data()-" << i << ":  " << work_size[i]
+                  << std::endl;
+      }
+      //    for (int i = 0; i < 3; ++i) {
+      //      std::cout << "local_work_size-" << i << ":  " <<
+      //      local_work_size[i]
+      //                << std::endl;
+      //    }
+      status = clEnqueueNDRangeKernel(this->cl_helper_.CLCommandQueue(), kernel,
+                                      default_work_size.size(), NULL, work_size,
+                                      NULL, 0, NULL, NULL);
+      CL_CHECK_ERRORS(status);
+    } else {
+      status = clSetKernelArg(kernel, 0, sizeof(int), &c_block);
+      CL_CHECK_ERRORS(status);
+
+      status = clSetKernelArg(kernel, 1, sizeof(int), &w);
+      CL_CHECK_ERRORS(status);
+
+      status = clSetKernelArg(kernel, 2, sizeof(int), &nh);
+      CL_CHECK_ERRORS(status);
+
+      status = clSetKernelArg(kernel, 3, sizeof(cl_mem), &input);
+      CL_CHECK_ERRORS(status);
+
+      status = clSetKernelArg(kernel, 4, sizeof(cl_mem), &filter);
+      CL_CHECK_ERRORS(status);
+
+      status = clSetKernelArg(kernel, 5, sizeof(cl_mem), &biase);
+      CL_CHECK_ERRORS(status);
+
+      status = clSetKernelArg(kernel, 6, sizeof(cl_mem), &new_scale);
+      CL_CHECK_ERRORS(status);
+
+      status = clSetKernelArg(kernel, 7, sizeof(cl_mem), &new_bias);
+      CL_CHECK_ERRORS(status);
+
+      status = clSetKernelArg(kernel, 8, sizeof(cl_mem), &output);
+      CL_CHECK_ERRORS(status);
+
+      status = clSetKernelArg(kernel, 9, sizeof(int), &stride);
+      CL_CHECK_ERRORS(status);
+
+      status = clSetKernelArg(kernel, 10, sizeof(int), &offset);
+      CL_CHECK_ERRORS(status);
+
+      status = clSetKernelArg(kernel, 11, sizeof(int), &input_c);
+      CL_CHECK_ERRORS(status);
+
+      status = clSetKernelArg(kernel, 12, sizeof(int), &dilation);
+      CL_CHECK_ERRORS(status);
+
+      status = clSetKernelArg(kernel, 13, sizeof(int), &input_width);
+      CL_CHECK_ERRORS(status);
+
+      status = clSetKernelArg(kernel, 14, sizeof(int), &input_height);
+      CL_CHECK_ERRORS(status);
+
+      status = clSetKernelArg(kernel, 15, sizeof(int), &output_width);
+      CL_CHECK_ERRORS(status);
+
+      status = clSetKernelArg(kernel, 16, sizeof(int), &output_height);
+      CL_CHECK_ERRORS(status);
+
+      status = clEnqueueNDRangeKernel(
+          this->cl_helper_.CLCommandQueue(), kernel, default_work_size.size(),
+          NULL, default_work_size.data(), NULL, 0, NULL, NULL);
+      CL_CHECK_ERRORS(status);
+    }
+
+  } else {
+    status = clSetKernelArg(kernel, 0, sizeof(int), &c_block);
+    CL_CHECK_ERRORS(status);
+
+    status = clSetKernelArg(kernel, 1, sizeof(int), &w);
+    CL_CHECK_ERRORS(status);
+
+    status = clSetKernelArg(kernel, 2, sizeof(int), &nh);
+    CL_CHECK_ERRORS(status);
+
+    status = clSetKernelArg(kernel, 3, sizeof(cl_mem), &input);
+    CL_CHECK_ERRORS(status);
+
+    status = clSetKernelArg(kernel, 4, sizeof(cl_mem), &filter);
+    CL_CHECK_ERRORS(status);
+
+    status = clSetKernelArg(kernel, 5, sizeof(cl_mem), &biase);
+    CL_CHECK_ERRORS(status);
+
+    status = clSetKernelArg(kernel, 6, sizeof(cl_mem), &new_scale);
+    CL_CHECK_ERRORS(status);
+
+    status = clSetKernelArg(kernel, 7, sizeof(cl_mem), &new_bias);
+    CL_CHECK_ERRORS(status);
+
+    status = clSetKernelArg(kernel, 8, sizeof(cl_mem), &output);
+    CL_CHECK_ERRORS(status);
+
+    status = clSetKernelArg(kernel, 9, sizeof(int), &stride);
+    CL_CHECK_ERRORS(status);
+
+    status = clSetKernelArg(kernel, 10, sizeof(int), &offset);
+    CL_CHECK_ERRORS(status);
+
+    status = clSetKernelArg(kernel, 11, sizeof(int), &input_c);
+    CL_CHECK_ERRORS(status);
+
+    status = clSetKernelArg(kernel, 12, sizeof(int), &dilation);
+    CL_CHECK_ERRORS(status);
+
+    status = clSetKernelArg(kernel, 13, sizeof(int), &input_width);
+    CL_CHECK_ERRORS(status);
+
+    status = clSetKernelArg(kernel, 14, sizeof(int), &input_height);
+    CL_CHECK_ERRORS(status);
+
+    status = clSetKernelArg(kernel, 15, sizeof(int), &output_width);
+    CL_CHECK_ERRORS(status);
+
+    status = clSetKernelArg(kernel, 16, sizeof(int), &output_height);
+    CL_CHECK_ERRORS(status);
+    status = clEnqueueNDRangeKernel(
+        this->cl_helper_.CLCommandQueue(), kernel, default_work_size.size(),
+        NULL, default_work_size.data(), NULL, 0, NULL, NULL);
+    CL_CHECK_ERRORS(status);
+  }
+  if (param.Filter()->dims()[2] == 1 && param.Filter()->dims()[3] == 1) {
+    printf(
+        "\033[32m ---------第%d个1x1--下面是输入和输出--------isoptimise=%s-----\033[0m\n ",
+        cont++,optimise?"true": "false");
+  }
+//  if (cont==6) {
+//    //    std::unique_ptr<_cl_mem, CLMemDeleter> cl_image1_;
+//    //    cl_image1_.reset(param.Input()->GetCLImage());
+//        DLOG << "input:" <<"---------------------------------------------"<< optimise
+//        << *param.Input();
+//
+//    //    std::unique_ptr<_cl_mem, CLMemDeleter> cl_image2_;
+//    //
+//    //    cl_image2_.reset(param.Filter()->GetCLImage());
+//        DLOG << "filter" <<"---------------------------------------------"<< optimise
+//        << *param.Filter();
+//
+//    //    std::unique_ptr<_cl_mem, CLMemDeleter> cl_image3_;
+//    //
+//    //    cl_image3_.reset(param.Output()->GetCLImage());
+//
+//    DLOG << "output:" <<"---------------------------------------------"<< optimise
+//    << *param.Output();
+//  }
 }
 
 template class ConvAddBNReluKernel<GPU_CL, float>;

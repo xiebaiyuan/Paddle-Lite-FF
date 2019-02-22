@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.0.0)
 
-option(USE_OPENMP    "build with openmp support" ON)
+option(USE_OPENMP    "build with openmp support" OFF)
 option(USE_EXCEPTION "build with exception" ON)
-option(WITH_LOGGING  "print logging for debug" ON)
+option(WITH_LOGGING  "print logging for debug" OFF)
 option(WITH_SYMBOL   "build with all symbols" ON) # turn off if use jni or ios io
 option(WITH_PROFILE  "print op profile for debug" OFF)
 option(WITH_TEST     "build with unit tests" ON)
@@ -10,7 +10,7 @@ option(WITH_TEST     "build with unit tests" ON)
 # select the platform to build
 option(CPU        "build with arm CPU support" ON)
 option(GPU_MALI   "build with arm mali GPU support" OFF)
-option(GPU_CL     "build with OpenCL support" OFF)
+option(GPU_CL     "build with OpenCL support" ON)
 option(FPGA       "build with FPGA support" OFF)
 if(FPGA)
   option(FPGAV1     "build with fpga v1 support" ON)
@@ -33,7 +33,7 @@ else()
 endif()
 
 if(USE_OPENMP)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
+#    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
     add_definitions(-DPADDLE_MOBILE_USE_OPENMP)
 endif()
 
@@ -77,24 +77,31 @@ else()
     endforeach()
 endif()
 
+add_definitions(-DPADDLE_MOBILE_CL)
+
+# opencl version
+add_definitions(-DCL_TARGET_OPENCL_VERSION=220)
+
+link_libraries(${CMAKE_CURRENT_LIST_DIR}/third_party/opencl/libOpenCL.so)
+include_directories(third_party/opencl/OpenCL-Headers)
 if (GPU_CL)
-    add_definitions(-DPADDLE_MOBILE_CL)
-
-    # opencl version
-    add_definitions(-DCL_TARGET_OPENCL_VERSION=220)
-
-    link_libraries(${CMAKE_CURRENT_LIST_DIR}/third_party/opencl/libOpenCL.so)
-    include_directories(third_party/opencl/OpenCL-Headers)
+#    add_definitions(-DPADDLE_MOBILE_CL)
+#
+#    # opencl version
+#    add_definitions(-DCL_TARGET_OPENCL_VERSION=220)
+#
+#    link_libraries(${CMAKE_CURRENT_LIST_DIR}/third_party/opencl/libOpenCL.so)
+#    include_directories(third_party/opencl/OpenCL-Headers)
 else()
-    file(GLOB_RECURSE _tmp_list src/framework/cl/*.cpp src/operators/kernel/cl/*.cpp)
-    foreach(f ${_tmp_list})
-        list(REMOVE_ITEM PADDLE_MOBILE_CC ${f})
-    endforeach()
-
-    file(GLOB_RECURSE _tmp_list_h src/framework/cl/*.h)
-    foreach(f ${_tmp_list_h})
-        list(REMOVE_ITEM PADDLE_MOBILE_H ${f})
-    endforeach()
+#    file(GLOB_RECURSE _tmp_list src/framework/cl/*.cpp src/operators/kernel/cl/*.cpp)
+#    foreach(f ${_tmp_list})
+#        list(REMOVE_ITEM PADDLE_MOBILE_CC ${f})
+#    endforeach()
+#
+#    file(GLOB_RECURSE _tmp_list_h src/framework/cl/*.h)
+#    foreach(f ${_tmp_list_h})
+#        list(REMOVE_ITEM PADDLE_MOBILE_H ${f})
+#    endforeach()
 endif()
 
 if (GPU_MALI)
@@ -213,7 +220,7 @@ else()
     set(NET "default" CACHE STRING "select net type")
 endif()
 
-set_property(CACHE NET PROPERTY STRINGS "default" "googlenet" "mobilenet" "yolo" "squeezenet" "FPGA_NET_V1" "FPGA_NET_V2" "NLP" "op")
+set_property(CACHE NET PROPERTY STRINGS "default" "googlenet" "mobilenet" "yolo" "squeezenet" "FPGA_NET_V1" "FPGA_NET_V2" "NLP")
 include("${CMAKE_CURRENT_LIST_DIR}/tools/op.cmake")
 
 # build library

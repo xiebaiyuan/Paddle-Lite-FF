@@ -46,6 +46,10 @@ if (CON GREATER -1)
     target_link_libraries(test-yolo-combined paddle-mobile)
     set(FOUND_MATCH ON)
 
+    # gen test
+    ADD_EXECUTABLE(test-yologpu net/test_yologpu.cpp test_helper.h  test_include.h executor_for_test.h)
+    target_link_libraries(test-yologpu paddle-mobile)
+
 endif ()
 
 list(FIND NET "squeezenet" CON)
@@ -143,19 +147,6 @@ if (CON GREATER -1)
     target_link_libraries(test-super paddle-mobile)
     set(FOUND_MATCH ON)
 
-endif ()
-
-list(FIND NET "op" CON)
-if (CON GREATER -1)
-    # gen test
-    ADD_EXECUTABLE(test-sigmoid operators/test_sigmoid_op.cpp test_include.h)
-    target_link_libraries(test-sigmoid paddle-mobile)
-
-    # gen test
-    ADD_EXECUTABLE(test-sigmoid-cl operators/cl/test_sigmoid_cl_op.cpp test_helper.h  test_include.h)
-    target_link_libraries(test-sigmoid-cl paddle-mobile)
-
-    set(FOUND_MATCH ON)
 endif ()
 
 if (NOT FOUND_MATCH)
@@ -355,10 +346,6 @@ if (NOT FOUND_MATCH)
     # gen test
     ADD_EXECUTABLE(test-sigmoid-op operators/test_sigmoid_op.cpp test_include.h)
     target_link_libraries(test-sigmoid-op paddle-mobile)
-
-    # gen test
-    ADD_EXECUTABLE(test-sigmoid-cl operators/cl/test_sigmoid_cl_op.cpp test_helper.h  test_include.h)
-    target_link_libraries(test-sigmoid-cl paddle-mobile)
 
     # gen test
     ADD_EXECUTABLE(test-depthwise-conv-op operators/test_depthwise_conv_op.cpp test_helper.h test_include.h executor_for_test.h)
