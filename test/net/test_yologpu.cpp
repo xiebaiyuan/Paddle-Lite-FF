@@ -20,12 +20,12 @@ limitations under the License. */
 #include "../test_include.h"
 void t1() {
   paddle_mobile::PaddleMobile<paddle_mobile::GPU_CL> paddle_mobile_gpu;
-//  paddle_mobile::PaddleMobile<paddle_mobile::CPU> paddle_mobile_cpu;
-//  paddle_mobile::PaddleTester<paddle_mobile::CPU> paddle_test_cpu;
-//  paddle_mobile::PaddleTester<paddle_mobile::GPU_CL> paddle_test_gpu;
-//  printf("cpu time:%f\n", paddle_test_cpu.CaculatePredictTime());
-//  std::string path = "/data/local/tmp/bin";
-//  printf("gpu time:%f\n", paddle_test_gpu.CaculatePredictTime(&path));
+  paddle_mobile::PaddleMobile<paddle_mobile::CPU> paddle_mobile_cpu;
+  paddle_mobile::PaddleTester<paddle_mobile::CPU> paddle_test_cpu;
+  paddle_mobile::PaddleTester<paddle_mobile::GPU_CL> paddle_test_gpu;
+  printf("cpu time:%f\n", paddle_test_cpu.CaculatePredictTime());
+  std::string path = "/data/local/tmp/bin";
+  printf("gpu time:%f\n", paddle_test_gpu.CaculatePredictTime(&path));
   //    paddle_mobile.SetThreadNum(4);
 #ifdef PADDLE_MOBILE_CL
   paddle_mobile_gpu.SetCLPath("/data/local/tmp/bin");
@@ -42,18 +42,23 @@ void t1() {
 
     std::vector<float> input;
     std::vector<int64_t> dims{1, 3, 416, 416};
-    GetInput<float>(g_test_image_desktop_1_3_416_416_nchw_float, &input, dims);
+    GetInput<float>(g_yolo_img, &input, dims);
 
     std::vector<float> vec_result;
-    //            = paddle_mobile.Predict(input, dims);
     vec_result = paddle_mobile_gpu.Predict(input, dims);
+    //            = paddle_mobile.Predict(input, dims);
 
-    auto time3 = paddle_mobile::time();
+    printf("aaaa");
     int max = 10;
     for (int i = 0; i < max; ++i) {
-      vec_result = paddle_mobile_gpu.Predict(input, dims);
+      auto time3 = paddle_mobile::time();
+      paddle_mobile_gpu.Predict(input, dims);
+      auto time4 = paddle_mobile::time();
+      std::cout << i <<"---  predict cost :"
+                << paddle_mobile::time_diff(time3, time4) / 1 << "ms"
+                << std::endl;
+
     }
-    auto time4 = paddle_mobile::time();
 
     //    auto time3 = paddle_mobile::time();
 
@@ -63,9 +68,7 @@ void t1() {
 
     //    auto time4 = paddle_mobile::time();
 
-    std::cout << "predict cost :"
-              << paddle_mobile::time_diff(time3, time4) / max << "ms"
-              << std::endl;
+
     std::vector<float>::iterator biggest =
         std::max_element(std::begin(vec_result), std::end(vec_result));
     std::cout << " Max element is " << *biggest << " at position "
@@ -181,11 +184,10 @@ int main() {
   //  std::thread th1(t1);
   //      std::thread th2(t2);
   //  std::thread th3(t3);
-//  std::thread th1(t1);
-//  //  th1.join();
-//  //      th2.join();
-//  //  th3.join();
-//  th1.join();
-  t1();
+  std::thread th1(t1);
+  //  th1.join();
+  //      th2.join();
+  //  th3.join();
+  th1.join();
   return 0;
 }

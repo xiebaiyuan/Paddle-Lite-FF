@@ -42,16 +42,18 @@ int main() {
       vec_result =  paddle_mobile.Predict(input, dims);
     }
 
-    auto time3 = paddle_mobile::time();
     int max = 10;
     for (int i = 0; i < max; ++i) {
+      auto time3 = paddle_mobile::time();
       paddle_mobile.Predict(input, dims);
-    }
-    auto time4 = paddle_mobile::time();
+      auto time4 = paddle_mobile::time();
 
-    std::cout << "predict cost :"
-              << paddle_mobile::time_diff(time3, time4) / max << "ms"
-              << std::endl;
+      std::cout << i << "--- predict cost :"
+                << paddle_mobile::time_diff(time3, time4) / 1 << "ms"
+                << std::endl;
+    }
+
+
     std::vector<float>::iterator biggest =
         std::max_element(std::begin(vec_result), std::end(vec_result));
     std::cout << " Max element is " << *biggest << " at position "

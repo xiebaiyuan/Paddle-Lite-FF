@@ -165,10 +165,10 @@ void ConvAddKernel<GPU_CL, float>::Compute(
         static_cast<const uint32_t>(default_work_size.data()[0]),
         static_cast<const uint32_t>(round_up_w),
         static_cast<const uint32_t>(default_work_size.data()[2])};
-    for (int i = 0; i < 3; ++i) {
+   /* for (int i = 0; i < 3; ++i) {
       std::cout << "global_work_size.data()-" << i << ":  " << work_size[i]
                 << std::endl;
-    }
+    }*/
     //    for (int i = 0; i < 3; ++i) {
     //      std::cout << "local_work_size-" << i << ":  " <<
     //      local_work_size[i]

@@ -23,7 +23,7 @@ limitations under the License. */
 namespace paddle_mobile {
 namespace operators {
 static int cont = 0;
-bool optimise = true;
+bool optimise = false;
 template <>
 bool ConvAddBNReluKernel<GPU_CL, float>::Init(
     FusionConvAddBNReluParam<GPU_CL> *param) {
@@ -175,10 +175,10 @@ template <>
 void ConvAddBNReluKernel<GPU_CL, float>::Compute(
     const FusionConvAddBNReluParam<GPU_CL> &param) {
   if (param.Filter()->dims()[2] == 1 && param.Filter()->dims()[3] == 1) {
-    printf(
-        "\033[32m "
-        "---------------------------1x1-------------start--------------\033[0m "
-        "\n");
+//    printf(
+//        "\033[32m "
+//        "---------------------------1x1-------------start--------------\033[0m "
+//        "\n");
   }
   auto kernel = this->cl_helper_.KernelAt(0);
   auto default_work_size = this->cl_helper_.DefaultWorkSize(*param.Output());
@@ -241,11 +241,11 @@ void ConvAddBNReluKernel<GPU_CL, float>::Compute(
 
   if (optimise) {
     if (param.Filter()->dims()[2] == 1 && param.Filter()->dims()[3] == 1) {
-      printf(
-          "\033[31m "
-          "---------------------------1x1-------------optimise--------------"
-          "\033["
-          "0m \n");
+//      printf(
+//          "\033[31m "
+//          "---------------------------1x1-------------optimise--------------"
+//          "\033["
+//          "0m \n");
 
       status = clSetKernelArg(kernel, 0, sizeof(int), &c_block);
       CL_CHECK_ERRORS(status);
@@ -300,17 +300,17 @@ void ConvAddBNReluKernel<GPU_CL, float>::Compute(
       CL_CHECK_ERRORS(status);
 
       status = clSetKernelArg(kernel, 17, sizeof(int), &w);
-      printf("w - > %d \n",w);
+//      printf("w - > %d \n",w);
       CL_CHECK_ERRORS(status);
 
       const size_t work_size[3] = {
           static_cast<const uint32_t>(default_work_size.data()[0]),
           static_cast<const uint32_t>(round_up_w),
           static_cast<const uint32_t>(default_work_size.data()[2])};
-      for (int i = 0; i < 3; ++i) {
-        std::cout << "global_work_size.data()-" << i << ":  " << work_size[i]
-                  << std::endl;
-      }
+//      for (int i = 0; i < 3; ++i) {
+//        std::cout << "global_work_size.data()-" << i << ":  " << work_size[i]
+//                  << std::endl;
+//      }
       //    for (int i = 0; i < 3; ++i) {
       //      std::cout << "local_work_size-" << i << ":  " <<
       //      local_work_size[i]
@@ -434,11 +434,11 @@ void ConvAddBNReluKernel<GPU_CL, float>::Compute(
         NULL, default_work_size.data(), NULL, 0, NULL, NULL);
     CL_CHECK_ERRORS(status);
   }
-  if (param.Filter()->dims()[2] == 1 && param.Filter()->dims()[3] == 1) {
-    printf(
-        "\033[32m ---------第%d个1x1--下面是输入和输出--------isoptimise=%s-----\033[0m\n ",
-        cont++,optimise?"true": "false");
-  }
+//  if (param.Filter()->dims()[2] == 1 && param.Filter()->dims()[3] == 1) {
+//    printf(
+//        "\033[32m ---------第%d个1x1--下面是输入和输出--------isoptimise=%s-----\033[0m\n ",
+//        cont++,optimise?"true": "false");
+//  }
 //  if (cont==6) {
 //    //    std::unique_ptr<_cl_mem, CLMemDeleter> cl_image1_;
 //    //    cl_image1_.reset(param.Input()->GetCLImage());
