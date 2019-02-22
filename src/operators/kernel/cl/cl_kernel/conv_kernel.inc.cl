@@ -716,16 +716,16 @@ __kernel void conv_1x1_3(
   int outpos_main = mul24(out_c , old_w);
   int2 output_pos0 = (int2)(outpos_main + out_w0, out_nh);
 
-  if (out_w0 <global_size_dim1 * 4) {
+  if (out_w0 < old_w) {
     write_imageh(output_image, output_pos0, output0);
   }
   int2 output_pos1 = (int2)(outpos_main + out_w1, out_nh);
-  if (out_w1 < global_size_dim1 * 4){
+  if (out_w1 < old_w){
     write_imageh(output_image, output_pos1, output1);
   }
 
   int2 output_pos2 = (int2)(outpos_main + out_w2, out_nh);
-  if (out_w2 < global_size_dim1 * 4){
+  if (out_w2 < old_w){
     write_imageh(output_image, output_pos2, output2);
   }
 
