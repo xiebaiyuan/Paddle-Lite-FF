@@ -49,8 +49,8 @@ class CLEngine {
                                          const uint32_t *gws);
   std::unique_ptr<_cl_context, CLContextDeleter> CreateContext() {
     cl_int status;
-    cl_context c = clCreateContext(properties_.data()/*NULL*/, 1, devices_, NULL, NULL, &status);
-
+    cl_context c = clCreateContext(properties_.data() /*NULL*/, 1, devices_,
+                                   NULL, NULL, &status);
 
     std::unique_ptr<_cl_context, CLContextDeleter> context_ptr(c);
     CL_CHECK_ERRORS(status);
@@ -157,8 +157,6 @@ class CLEngine {
   std::unique_ptr<_cl_program, CLProgramDeleter> program_;
   cl_ulong global_mem_cache_size_;
   cl_uint max_compute_units_;
-
-
 
   //  bool SetClContext();
 

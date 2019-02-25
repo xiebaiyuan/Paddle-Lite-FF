@@ -19,7 +19,7 @@ limitations under the License. */
 
 namespace paddle_mobile {
 namespace operators {
-bool optimise_convadd = false;
+bool optimise_convadd = true;
 
 template <>
 bool ConvAddKernel<GPU_CL, float>::Init(FusionConvAddParam<GPU_CL> *param) {
@@ -38,7 +38,7 @@ bool ConvAddKernel<GPU_CL, float>::Init(FusionConvAddParam<GPU_CL> *param) {
     param->Filter()->InitNImage(cl_helper_.CLContext(),
                                 cl_helper_.CLCommandQueue());
     if (optimise_convadd) {
-      this->cl_helper_.AddKernel("conv_1x1_3", "conv_add_kernel.cl");
+      this->cl_helper_.AddKernel("conv_1x1_spl", "conv_add_kernel.cl");
     } else {
       this->cl_helper_.AddKernel("conv_1x1", "conv_add_kernel.cl");
     }
@@ -74,13 +74,13 @@ bool ConvAddKernel<GPU_CL, float>::Init(FusionConvAddParam<GPU_CL> *param) {
 template <>
 void ConvAddKernel<GPU_CL, float>::Compute(
     const FusionConvAddParam<GPU_CL> &param) {
-//  if (param.Filter()->dims()[2] == 1 && param.Filter()->dims()[3] == 1) {
-//    printf(
-//        "\033[32m "
-//        "---------------convadd------------1x1-------------start--------------"
-//        "\033[0m "
-//        "\n");
-//  }
+  //  if (param.Filter()->dims()[2] == 1 && param.Filter()->dims()[3] == 1) {
+  //    printf(
+  //        "\033[32m "
+  //        "---------------convadd------------1x1-------------start--------------"
+  //        "\033[0m "
+  //        "\n");
+  //  }
 
   auto kernel = this->cl_helper_.KernelAt(0);
   auto default_work_size = this->cl_helper_.DefaultWorkSize(*param.Output());
@@ -113,8 +113,8 @@ void ConvAddKernel<GPU_CL, float>::Compute(
     status = clSetKernelArg(kernel, 0, sizeof(int), &c_block);
     CL_CHECK_ERRORS(status);
 
-    int round_up_w = RoundUpDiv4(w);
-    status = clSetKernelArg(kernel, 1, sizeof(int), &round_up_w);
+    int maped_w = maptofactor(w, 4);
+    status = clSetKernelArg(kernel, 1, sizeof(int), &maped_w);
     CL_CHECK_ERRORS(status);
 
     status = clSetKernelArg(kernel, 2, sizeof(int), &nh);
@@ -163,12 +163,12 @@ void ConvAddKernel<GPU_CL, float>::Compute(
     //  cl_event wait_event = param.Input()->GetClEvent();
     const size_t work_size[3] = {
         static_cast<const uint32_t>(default_work_size.data()[0]),
-        static_cast<const uint32_t>(round_up_w),
+        static_cast<const uint32_t>(maped_w),
         static_cast<const uint32_t>(default_work_size.data()[2])};
-   /* for (int i = 0; i < 3; ++i) {
-      std::cout << "global_work_size.data()-" << i << ":  " << work_size[i]
-                << std::endl;
-    }*/
+    /* for (int i = 0; i < 3; ++i) {
+       std::cout << "global_work_size.data()-" << i << ":  " << work_size[i]
+                 << std::endl;
+     }*/
     //    for (int i = 0; i < 3; ++i) {
     //      std::cout << "local_work_size-" << i << ":  " <<
     //      local_work_size[i]

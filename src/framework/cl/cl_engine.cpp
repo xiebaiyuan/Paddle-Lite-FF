@@ -125,7 +125,7 @@ bool CLEngine::GetWorkItemSize() {
   if (devices_ == nullptr) {
     return false;
   }
-  /* cl_int clGetDeviceInfo(	cl_device_id device,
+  /* cl_int clGetDeviceInfo(    cl_device_id device,
        cl_device_info param_name,
        size_t param_value_size,
        void *param_value,
@@ -166,7 +166,7 @@ bool CLEngine::GetWorkItemSize() {
     printf("%lu\t", max_work_item_sizes[i]);
   printf("\n");
   free(max_work_item_sizes);
-//  cl_ulong global_mem_cache_size;
+  //  cl_ulong global_mem_cache_size;
   clGetDeviceInfo(*devices_, CL_DEVICE_GLOBAL_MEM_CACHE_SIZE,
                   sizeof(global_mem_cache_size_), &global_mem_cache_size_,
                   nullptr);
@@ -203,43 +203,48 @@ std::vector<uint32_t> CLEngine::LocalWorkSize1x1(size_t work_group_size,
   if (work_group_size == 0) {
     lws[0] = lws[1] = lws[2] = 1;
   } else {
+    //    cl_uint max_work_item_dimensions;
+    //    clGetDeviceInfo(*devices_, CL_DEVICE_MAX_WORK_ITEM_DIMENSIONS,
+    //                    sizeof(max_work_item_dimensions),
+    //                    &max_work_item_dimensions, nullptr);
+    //    printf(" LocalWorkSize1x1: CL_DEVICE_MAX_WORK_ITEM_DIMENSIONS %u\n",
+    //           max_work_item_dimensions);
+    //    size_t *max_work_item_sizes =
+    //        (size_t *)malloc(sizeof(size_t) * max_work_item_dimensions);
+    //    clGetDeviceInfo(*devices_, CL_DEVICE_MAX_WORK_ITEM_SIZES,
+    //                    sizeof(size_t) * max_work_item_dimensions,
+    //                    max_work_item_sizes, nullptr);
+    //    printf("LocalWorkSize1x1: CL_DEVICE_MAX_WORK_ITEM_SIZES: ");
+    //    for (size_t i = 0; i < max_work_item_dimensions; ++i)
+    //      printf("%lu\t", max_work_item_sizes[i]);
+    //    printf("\n");
+    //    free(max_work_item_sizes);
+    //    clGetDeviceInfo(*devices_, CL_DEVICE_GLOBAL_MEM_CACHE_SIZE,
+    //                    sizeof(global_mem_cache_size_),
+    //                    &global_mem_cache_size_, nullptr);
+    //    printf("LocalWorkSize1x1: CL_DEVICE_GLOBAL_MEM_CACHE_SIZE: %lu B = %lu
+    //    KB\n",
+    //           static_cast<unsigned long>(global_mem_cache_size_),
+    //           static_cast<unsigned long>(global_mem_cache_size_ / 1024));
+    //    clGetDeviceInfo(*devices_, CL_DEVICE_MAX_COMPUTE_UNITS,
+    //                    sizeof(max_compute_units_), &max_compute_units_,
+    //                    NULL);
+    //    printf("LocalWorkSize1x1: CL_DEVICE_MAX_COMPUTE_UNITS: %u\n",
+    //    max_compute_units_);
 
-//    cl_uint max_work_item_dimensions;
-//    clGetDeviceInfo(*devices_, CL_DEVICE_MAX_WORK_ITEM_DIMENSIONS,
-//                    sizeof(max_work_item_dimensions), &max_work_item_dimensions,
-//                    nullptr);
-//    printf(" LocalWorkSize1x1: CL_DEVICE_MAX_WORK_ITEM_DIMENSIONS %u\n",
-//           max_work_item_dimensions);
-//    size_t *max_work_item_sizes =
-//        (size_t *)malloc(sizeof(size_t) * max_work_item_dimensions);
-//    clGetDeviceInfo(*devices_, CL_DEVICE_MAX_WORK_ITEM_SIZES,
-//                    sizeof(size_t) * max_work_item_dimensions,
-//                    max_work_item_sizes, nullptr);
-//    printf("LocalWorkSize1x1: CL_DEVICE_MAX_WORK_ITEM_SIZES: ");
-//    for (size_t i = 0; i < max_work_item_dimensions; ++i)
-//      printf("%lu\t", max_work_item_sizes[i]);
-//    printf("\n");
-//    free(max_work_item_sizes);
-//    clGetDeviceInfo(*devices_, CL_DEVICE_GLOBAL_MEM_CACHE_SIZE,
-//                    sizeof(global_mem_cache_size_), &global_mem_cache_size_,
-//                    nullptr);
-//    printf("LocalWorkSize1x1: CL_DEVICE_GLOBAL_MEM_CACHE_SIZE: %lu B = %lu KB\n",
-//           static_cast<unsigned long>(global_mem_cache_size_),
-//           static_cast<unsigned long>(global_mem_cache_size_ / 1024));
-//    clGetDeviceInfo(*devices_, CL_DEVICE_MAX_COMPUTE_UNITS,
-//                    sizeof(max_compute_units_), &max_compute_units_, NULL);
-//    printf("LocalWorkSize1x1: CL_DEVICE_MAX_COMPUTE_UNITS: %u\n", max_compute_units_);
-
-//    uint32_t compute_units = max_compute_units_;
+    //    uint32_t compute_units = max_compute_units_;
 
     // Base GPU cache size used for computing local work group size.
-    const int32_t kBaseGPUMemCacheSize = 16384/2;
-//    const int32_t kBaseGPUMemCacheSize = 65536;
+    const int32_t kBaseGPUMemCacheSize = 16384 / 2;
+    //    const int32_t kBaseGPUMemCacheSize = 65536;
 
-    const uint32_t lw_base = std::max<uint32_t>(
-        static_cast<const uint32_t &>(global_mem_cache_size_ / kBaseGPUMemCacheSize), 1);
+    const uint32_t lw_base =
+        std::max<uint32_t>(static_cast<const uint32_t &>(
+                               global_mem_cache_size_ / kBaseGPUMemCacheSize),
+                           1);
     // work_group_size 是getKernelGroupInfo
-    lws[1] = std::min<uint32_t>(gws[1],static_cast<const uint32_t &>(work_group_size));
+    lws[1] = std::min<uint32_t>(gws[1],
+                                static_cast<const uint32_t &>(work_group_size));
     if (lws[1] >= lw_base) {
       lws[0] = std::min<uint32_t>(gws[0], lw_base);
     } else if ((1 < lws[1] && lws[1] < lw_base) && gws[0] >= lws_limit) {
@@ -253,10 +258,12 @@ std::vector<uint32_t> CLEngine::LocalWorkSize1x1(size_t work_group_size,
     lws[0] = std::min<uint32_t>(
         lws[0], static_cast<const uint32_t &>(work_group_size / lws[1]));
     const uint32_t lws_size = lws[0] * lws[1];
-    lws[2] = std::min<uint32_t>(
-        static_cast<const uint32_t &>(
-            (global_mem_cache_size_ / kernel_cache_size / lws_size / max_compute_units_) * 8),
-        gws[2]);
+    lws[2] =
+        std::min<uint32_t>(static_cast<const uint32_t &>(
+                               (global_mem_cache_size_ / kernel_cache_size /
+                                lws_size / max_compute_units_) *
+                               8),
+                           gws[2]);
     if (lws[2] == 0) {
       lws[2] = std::min<uint32_t>(gws[2], lw_base);
     }
@@ -280,7 +287,7 @@ void CLEngine::SetClInfos() {
 
   cl_uint num_platforms;
   clGetPlatformIDs(0, NULL, &num_platforms);
-  //	printf("%d PLATFORMS FOUND\n", num_platforms);
+  //    printf("%d PLATFORMS FOUND\n", num_platforms);
   cl_platform_id *platforms =
       (cl_platform_id *)malloc(sizeof(cl_platform_id) * num_platforms);
   clGetPlatformIDs(num_platforms, platforms, NULL);
@@ -305,7 +312,7 @@ void CLEngine::SetClInfos() {
 
     cl_uint num_devices;
     clGetDeviceIDs(platform, CL_DEVICE_TYPE_ALL, 0, NULL, &num_devices);
-    //		printf("%d DEVICES FOUND\n", num_devices);
+    //        printf("%d DEVICES FOUND\n", num_devices);
     cl_device_id *devices =
         (cl_device_id *)malloc(sizeof(cl_device_id) * num_devices);
     clGetDeviceIDs(platform, CL_DEVICE_TYPE_ALL, num_devices, devices, NULL);
@@ -328,9 +335,9 @@ void CLEngine::SetClInfos() {
       printf("CL_DEVICE_NAME: %s\n", buffer);
 
       parseDeviceName(buffer);
-//      std::vector<cl_context_properties> properties;
+      //      std::vector<cl_context_properties> properties;
 
-      if (gpu_type_ == GpuType ::ADRENO){
+      if (gpu_type_ == GpuType ::ADRENO) {
         printf("use anreno properties \n");
         properties_.push_back(0x40C2);
         properties_.push_back(0x40C3);
@@ -339,8 +346,6 @@ void CLEngine::SetClInfos() {
         properties_.push_back(0);
         properties_.reserve(5);
       }
-
-
 
       clGetDeviceInfo(device, CL_DEVICE_VENDOR, sizeof(buffer), buffer, NULL);
       printf("CL_DEVICE_VENDOR: %s\n", buffer);
@@ -613,10 +618,10 @@ void CLEngine::SetClInfos() {
       //                      &preferred_interop_user_sync, NULL);
       //      printf("CL_DEVICE_PREFERRED_INTEROP_USER_SYNC: %u\n",
       //             preferred_interop_user_sync);
-      //			cl_device_id parent_device;
-      //			 clGetDeviceInfo(device,
+      //            cl_device_id parent_device;
+      //             clGetDeviceInfo(device,
       // CL_DEVICE_PARENT_DEVICE, sizeof(parent_device), &parent_device, NULL);
-      //			printf("CL_DEVICE_PARENT_DEVICE: %u\n",
+      //            printf("CL_DEVICE_PARENT_DEVICE: %u\n",
       // parent_device);
       //      cl_uint reference_count;
       //      clGetDeviceInfo(device, CL_DEVICE_REFERENCE_COUNT,

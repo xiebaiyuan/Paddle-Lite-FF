@@ -42,9 +42,9 @@ class ConvAddKernel
  public:
   void Compute(const FusionConvAddParam<DeviceType> &param);
   bool Init(FusionConvAddParam<DeviceType> *param);
-  inline int RoundUpDiv(int i, int factor) { return (i + factor - 1) / factor; }
-
-  inline int RoundUpDiv4(int i) { return (i + 3) >> 2; }
+  inline int maptofactor(int i, int factor) {
+    return (i + factor - 1) / factor;
+  }
 };
 
 }  // namespace operators

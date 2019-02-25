@@ -229,7 +229,7 @@ class Tensor : public TensorBase {
 #ifdef PADDLE_MOBILE_DEBUG
 inline Print &operator<<(Print &printer, const Tensor &tensor) {
   printer << " hha dims: " << tensor.dims() << "\n";
-//  int stride = tensor.numel() / 20;
+  //  int stride = tensor.numel() / 20;
   int stride = tensor.numel() / 20;
   stride = stride > 0 ? stride : 1;
 #ifndef PADDLE_MOBILE_FPGA

@@ -113,7 +113,7 @@ class CLImage {
     DLOG << " end init cl image";
   }
   void InitReadOnlyCLImage(cl_context context, cl_command_queue command_queue,
-                   CLImageConverterBase *converter) {
+                           CLImageConverterBase *converter) {
     if (image_converter_ != nullptr) {
       delete (image_converter_);
     }
@@ -255,9 +255,10 @@ class CLImage {
     }
   }
 
-  void InitReadOnlyCLImage(cl_context context, int width, int height, void *data) {
+  void InitReadOnlyCLImage(cl_context context, int width, int height,
+                           void *data) {
     cl_image_format cf = {.image_channel_order = CL_RGBA,
-        .image_channel_data_type = CL_HALF_FLOAT};
+                          .image_channel_data_type = CL_HALF_FLOAT};
     cl_image_desc cid = {
         .image_type = CL_MEM_OBJECT_IMAGE2D,
         .image_width = width,

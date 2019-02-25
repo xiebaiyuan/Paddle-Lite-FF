@@ -25,11 +25,11 @@ int main() {
   paddle_mobile.SetCLPath("/data/local/tmp/bin");
 #endif
 
-    auto isok =
-        paddle_mobile.Load(std::string(g_mobilenet_classfication) + "/model",
-                           std::string(g_mobilenet_classfication) + "/params", true);
+  auto isok = paddle_mobile.Load(
+      std::string(g_mobilenet_classfication) + "/model",
+      std::string(g_mobilenet_classfication) + "/params", true);
 
-//  auto isok = paddle_mobile.Load(std::string(g_mobilenet), true);
+  //  auto isok = paddle_mobile.Load(std::string(g_mobilenet), true);
   if (isok) {
     auto time2 = paddle_mobile::time();
     std::cout << "load cost :" << paddle_mobile::time_diff(time1, time2) << "ms"
@@ -37,9 +37,9 @@ int main() {
     std::vector<float> input;
     std::vector<int64_t> dims{1, 3, 224, 224};
     GetInput<float>(g_test_image_1x3x224x224_banana, &input, dims);
-    std::vector<float> vec_result ;
+    std::vector<float> vec_result;
     for (int i = 0; i < 1; ++i) {
-      vec_result =  paddle_mobile.Predict(input, dims);
+      vec_result = paddle_mobile.Predict(input, dims);
     }
 
     int max = 10;
@@ -52,7 +52,6 @@ int main() {
                 << paddle_mobile::time_diff(time3, time4) / 1 << "ms"
                 << std::endl;
     }
-
 
     std::vector<float>::iterator biggest =
         std::max_element(std::begin(vec_result), std::end(vec_result));

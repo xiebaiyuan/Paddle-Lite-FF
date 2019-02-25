@@ -54,10 +54,9 @@ void t1() {
       auto time3 = paddle_mobile::time();
       paddle_mobile_gpu.Predict(input, dims);
       auto time4 = paddle_mobile::time();
-      std::cout << i <<"---  predict cost :"
+      std::cout << i << "---  predict cost :"
                 << paddle_mobile::time_diff(time3, time4) / 1 << "ms"
                 << std::endl;
-
     }
 
     //    auto time3 = paddle_mobile::time();
@@ -67,7 +66,6 @@ void t1() {
     //    }
 
     //    auto time4 = paddle_mobile::time();
-
 
     std::vector<float>::iterator biggest =
         std::max_element(std::begin(vec_result), std::end(vec_result));

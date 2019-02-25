@@ -142,7 +142,7 @@ bool ConvAddBNReluKernel<GPU_CL, float>::Init(
     param->Filter()->InitNImage(cl_helper_.CLContext(),
                                 cl_helper_.CLCommandQueue());
     if (optimise) {
-      this->cl_helper_.AddKernel("conv_1x1_3", "conv_add_bn_relu_kernel.cl");
+      this->cl_helper_.AddKernel("conv_1x1_spl", "conv_add_bn_relu_kernel.cl");
     } else {
       this->cl_helper_.AddKernel("conv_1x1", "conv_add_bn_relu_kernel.cl");
     }
@@ -175,10 +175,11 @@ template <>
 void ConvAddBNReluKernel<GPU_CL, float>::Compute(
     const FusionConvAddBNReluParam<GPU_CL> &param) {
   if (param.Filter()->dims()[2] == 1 && param.Filter()->dims()[3] == 1) {
-//    printf(
-//        "\033[32m "
-//        "---------------------------1x1-------------start--------------\033[0m "
-//        "\n");
+    //    printf(
+    //        "\033[32m "
+    //        "---------------------------1x1-------------start--------------\033[0m
+    //        "
+    //        "\n");
   }
   auto kernel = this->cl_helper_.KernelAt(0);
   auto default_work_size = this->cl_helper_.DefaultWorkSize(*param.Output());
@@ -241,17 +242,17 @@ void ConvAddBNReluKernel<GPU_CL, float>::Compute(
 
   if (optimise) {
     if (param.Filter()->dims()[2] == 1 && param.Filter()->dims()[3] == 1) {
-//      printf(
-//          "\033[31m "
-//          "---------------------------1x1-------------optimise--------------"
-//          "\033["
-//          "0m \n");
+      //      printf(
+      //          "\033[31m "
+      //          "---------------------------1x1-------------optimise--------------"
+      //          "\033["
+      //          "0m \n");
 
       status = clSetKernelArg(kernel, 0, sizeof(int), &c_block);
       CL_CHECK_ERRORS(status);
 
-      int round_up_w = RoundUpDiv4(w);
-      status = clSetKernelArg(kernel, 1, sizeof(int), &round_up_w);
+      int maped_w = maptofactor(w, 4);
+      status = clSetKernelArg(kernel, 1, sizeof(int), &maped_w);
       CL_CHECK_ERRORS(status);
 
       status = clSetKernelArg(kernel, 2, sizeof(int), &nh);
@@ -300,17 +301,18 @@ void ConvAddBNReluKernel<GPU_CL, float>::Compute(
       CL_CHECK_ERRORS(status);
 
       status = clSetKernelArg(kernel, 17, sizeof(int), &w);
-//      printf("w - > %d \n",w);
+      //      printf("w - > %d \n",w);
       CL_CHECK_ERRORS(status);
 
       const size_t work_size[3] = {
           static_cast<const uint32_t>(default_work_size.data()[0]),
-          static_cast<const uint32_t>(round_up_w),
+          static_cast<const uint32_t>(maped_w),
           static_cast<const uint32_t>(default_work_size.data()[2])};
-//      for (int i = 0; i < 3; ++i) {
-//        std::cout << "global_work_size.data()-" << i << ":  " << work_size[i]
-//                  << std::endl;
-//      }
+      //      for (int i = 0; i < 3; ++i) {
+      //        std::cout << "global_work_size.data()-" << i << ":  " <<
+      //        work_size[i]
+      //                  << std::endl;
+      //      }
       //    for (int i = 0; i < 3; ++i) {
       //      std::cout << "local_work_size-" << i << ":  " <<
       //      local_work_size[i]
@@ -434,30 +436,34 @@ void ConvAddBNReluKernel<GPU_CL, float>::Compute(
         NULL, default_work_size.data(), NULL, 0, NULL, NULL);
     CL_CHECK_ERRORS(status);
   }
-//  if (param.Filter()->dims()[2] == 1 && param.Filter()->dims()[3] == 1) {
-//    printf(
-//        "\033[32m ---------第%d个1x1--下面是输入和输出--------isoptimise=%s-----\033[0m\n ",
-//        cont++,optimise?"true": "false");
-//  }
-//  if (cont==6) {
-//    //    std::unique_ptr<_cl_mem, CLMemDeleter> cl_image1_;
-//    //    cl_image1_.reset(param.Input()->GetCLImage());
-//        DLOG << "input:" <<"---------------------------------------------"<< optimise
-//        << *param.Input();
-//
-//    //    std::unique_ptr<_cl_mem, CLMemDeleter> cl_image2_;
-//    //
-//    //    cl_image2_.reset(param.Filter()->GetCLImage());
-//        DLOG << "filter" <<"---------------------------------------------"<< optimise
-//        << *param.Filter();
-//
-//    //    std::unique_ptr<_cl_mem, CLMemDeleter> cl_image3_;
-//    //
-//    //    cl_image3_.reset(param.Output()->GetCLImage());
-//
-//    DLOG << "output:" <<"---------------------------------------------"<< optimise
-//    << *param.Output();
-//  }
+  //  if (param.Filter()->dims()[2] == 1 && param.Filter()->dims()[3] == 1) {
+  //    printf(
+  //        "\033[32m
+  //        ---------第%d个1x1--下面是输入和输出--------isoptimise=%s-----\033[0m\n
+  //        ", cont++,optimise?"true": "false");
+  //  }
+  //  if (cont==6) {
+  //    //    std::unique_ptr<_cl_mem, CLMemDeleter> cl_image1_;
+  //    //    cl_image1_.reset(param.Input()->GetCLImage());
+  //        DLOG << "input:" <<"---------------------------------------------"<<
+  //        optimise
+  //        << *param.Input();
+  //
+  //    //    std::unique_ptr<_cl_mem, CLMemDeleter> cl_image2_;
+  //    //
+  //    //    cl_image2_.reset(param.Filter()->GetCLImage());
+  //        DLOG << "filter" <<"---------------------------------------------"<<
+  //        optimise
+  //        << *param.Filter();
+  //
+  //    //    std::unique_ptr<_cl_mem, CLMemDeleter> cl_image3_;
+  //    //
+  //    //    cl_image3_.reset(param.Output()->GetCLImage());
+  //
+  //    DLOG << "output:" <<"---------------------------------------------"<<
+  //    optimise
+  //    << *param.Output();
+  //  }
 }
 
 template class ConvAddBNReluKernel<GPU_CL, float>;

@@ -152,37 +152,42 @@ void ConvAddReluKernel<GPU_CL, float>::Compute(
   CL_CHECK_ERRORS(status);
 
   printf("conv add relu\n");
-//  framework::CLEngine::Instance()->GetWorkItemSize();
-//  size_t workGroupInfo = framework::CLEngine::Instance()->getKernelWorkGroupInfo(kernel);
-//
-//  if (param.Filter()->dims()[2] == 1 && param.Filter()->dims()[3] == 1 /*&& false*/) {
-//    printf("in\n");
-//
-//    for (int i = 0; i < default_work_size.size(); ++i) {
-//      std::cout << "default_work_size.data()-" << i << ":  "
-//                << default_work_size.data()[i] << std::endl;
-//    }
-//    const size_t work_size[3] = {default_work_size.data()[0],
-//                                 default_work_size.data()[1],
-//                                 default_work_size.data()[2]};
-//    const vector<uint32_t> &local = framework::CLEngine::Instance()->LocalWorkSize1x1(workGroupInfo,
-//                                                                                      reinterpret_cast<const uint32_t *>(&work_size));
-//
-//    const size_t local_work_size[3] = {local[0], local[1], local[2]};
-//    for (int i = 0; i < 3; ++i) {
-//      std::cout << "local_work_size-" << i << ":  "
-//                << local_work_size[i] << std::endl;
-//    }
-//    status = clEnqueueNDRangeKernel(this->cl_helper_.CLCommandQueue(), kernel,
-//                                    default_work_size.size(), NULL, work_size,
-//                                    local_work_size, 0, NULL, NULL);
-//    CL_CHECK_ERRORS(status);
-//  } else {
-//    status = clEnqueueNDRangeKernel(
-//        this->cl_helper_.CLCommandQueue(), kernel, default_work_size.size(),
-//        NULL, default_work_size.data(), NULL, 0, NULL, NULL);
-//    CL_CHECK_ERRORS(status);
-//  }
+  //  framework::CLEngine::Instance()->GetWorkItemSize();
+  //  size_t workGroupInfo =
+  //  framework::CLEngine::Instance()->getKernelWorkGroupInfo(kernel);
+  //
+  //  if (param.Filter()->dims()[2] == 1 && param.Filter()->dims()[3] == 1 /*&&
+  //  false*/) {
+  //    printf("in\n");
+  //
+  //    for (int i = 0; i < default_work_size.size(); ++i) {
+  //      std::cout << "default_work_size.data()-" << i << ":  "
+  //                << default_work_size.data()[i] << std::endl;
+  //    }
+  //    const size_t work_size[3] = {default_work_size.data()[0],
+  //                                 default_work_size.data()[1],
+  //                                 default_work_size.data()[2]};
+  //    const vector<uint32_t> &local =
+  //    framework::CLEngine::Instance()->LocalWorkSize1x1(workGroupInfo,
+  //                                                                                      reinterpret_cast<const uint32_t *>(&work_size));
+  //
+  //    const size_t local_work_size[3] = {local[0], local[1], local[2]};
+  //    for (int i = 0; i < 3; ++i) {
+  //      std::cout << "local_work_size-" << i << ":  "
+  //                << local_work_size[i] << std::endl;
+  //    }
+  //    status = clEnqueueNDRangeKernel(this->cl_helper_.CLCommandQueue(),
+  //    kernel,
+  //                                    default_work_size.size(), NULL,
+  //                                    work_size, local_work_size, 0, NULL,
+  //                                    NULL);
+  //    CL_CHECK_ERRORS(status);
+  //  } else {
+  //    status = clEnqueueNDRangeKernel(
+  //        this->cl_helper_.CLCommandQueue(), kernel, default_work_size.size(),
+  //        NULL, default_work_size.data(), NULL, 0, NULL, NULL);
+  //    CL_CHECK_ERRORS(status);
+  //  }
 }
 template class ConvAddReluKernel<GPU_CL, float>;
 

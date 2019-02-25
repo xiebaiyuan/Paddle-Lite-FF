@@ -126,13 +126,13 @@ Print &operator<<(Print &printer, const CLImage &cl_image) {
   auto converter = cl_image.Converter();
   converter->ImageToNCHW(image_data, tensor_data, cl_image.ImageDims(),
                          cl_image.dims());
-//  int stride = cl_image.numel() / 20;
+  //  int stride = cl_image.numel() / 20;
   int stride = 1;
   stride = stride > 0 ? stride : 1;
 
   printer << " dims: " << cl_image.dims() << "\n";
   for (int i = 0; i < cl_image.numel(); i += stride) {
-    printer << tensor_data[i] << "  ------  "<< i <<" \n";
+    printer << tensor_data[i] << "  ------  " << i << " \n";
   }
 
   delete[](tensor_data);

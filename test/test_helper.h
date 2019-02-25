@@ -36,7 +36,8 @@ static const char *g_squeezenet = "../models/squeezenet";
 static const char *g_googlenet = "../models/googlenet";
 static const char *g_googlenet_quali = "../models/googlenet_combine_quali";
 static const char *g_mobilenet = "../models/mobilenet";
-static const char *g_mobilenet_classfication = "../models/mobilenet_classfication_combined";
+static const char *g_mobilenet_classfication =
+    "../models/mobilenet_classfication_combined";
 static const char *g_mobilenet_mul = "../models/r";
 static const char *g_alexnet = "../models/alexnet";
 static const char *g_inceptionv4 = "../models/inceptionv4";

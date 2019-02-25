@@ -37,13 +37,8 @@ class ConvAddBNReluKernel
  public:
   void Compute(const FusionConvAddBNReluParam<DeviceType> &param);
   bool Init(FusionConvAddBNReluParam<DeviceType> *param);
-
-  inline int RoundUpDiv(int i, int factor) {
+  inline int maptofactor(int i, int factor) {
     return (i + factor - 1) / factor;
-  }
-
-  inline int RoundUpDiv4(int i) {
-    return (i + 3) >> 2;
   }
 };
 

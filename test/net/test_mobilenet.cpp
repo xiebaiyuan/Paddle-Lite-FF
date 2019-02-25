@@ -20,10 +20,11 @@ int main() {
   paddle_mobile::PaddleMobile<paddle_mobile::CPU> paddle_mobile;
   paddle_mobile.SetThreadNum(4);
   auto time1 = paddle_mobile::time();
-    auto isok = paddle_mobile.Load(std::string(g_mobilenet_classfication) + "/model",
-                       std::string(g_mobilenet_classfication) + "/params", true);
+  auto isok = paddle_mobile.Load(
+      std::string(g_mobilenet_classfication) + "/model",
+      std::string(g_mobilenet_classfication) + "/params", true);
 
-//  auto isok = paddle_mobile.Load(g_mobilenet, true);
+  //  auto isok = paddle_mobile.Load(g_mobilenet, true);
   if (isok) {
     auto time2 = paddle_mobile::time();
     std::cout << "load cost :" << paddle_mobile::time_diff(time1, time1) << "ms"
@@ -34,7 +35,6 @@ int main() {
     GetInput<float>(g_test_image_1x3x224x224_banana, &input, dims);
 
     auto vec_result = paddle_mobile.Predict(input, dims);
-
 
     // 预热十次
     for (int i = 0; i < 10; ++i) {
