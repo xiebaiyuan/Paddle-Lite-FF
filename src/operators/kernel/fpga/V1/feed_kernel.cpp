@@ -25,11 +25,6 @@ bool FeedKernel<FPGA, float>::Init(FeedParam<FPGA> *param) {
   input->Resize(output->dims());
 
   if (output->dims().size() != 4) {
-    auto input_ptr = input->mutable_data<float>();
-    size_t size = output->numel() * sizeof(float);
-    auto p = fpga::fpga_malloc(size);
-    memcpy(p, input_ptr, size);
-    output->reset_data_ptr(p);
     return true;
   }
   fpga::format_fp16_ofm(output);
@@ -41,12 +36,22 @@ void FeedKernel<FPGA, float>::Compute(const FeedParam<FPGA> &param) {
   auto output = param.Out();
   auto input = const_cast<LoDTensor *>(param.InputX());
 
-  if (input->dims().size() != 4) {
+  if (output->dims().size() != 4) {
+    size_t size = output->numel() * sizeof(float);
+    auto output_ptr = output->data<float>();
+    auto input_ptr = input->data<float>();
+    auto external_ptr = reinterpret_cast<float *>(input->external_data);
+    float *p_data = external_ptr == nullptr ? input_ptr : external_ptr;
+    memcpy(output_ptr, p_data, size);
+    input->external_data = nullptr;
     return;
   }
 
   fpga::format_image(input);
   auto input_ptr = input->data<float>();
+  auto external_ptr = reinterpret_cast<float *>(input->external_data);
+  float *p_data = external_ptr == nullptr ? input_ptr : external_ptr;
+
   auto output_ptr = output->data<half>();
 
   fpga::BypassArgs args = {fpga::DATA_TYPE_FP32};
@@ -55,7 +60,7 @@ void FeedKernel<FPGA, float>::Compute(const FeedParam<FPGA> &param) {
   args.output_data_type = fpga::DATA_TYPE_FP16;
   args.input_layout_type = fpga::LAYOUT_CHW;
   args.output_layout_type = fpga::LAYOUT_HWC;
-  args.image.address = input_ptr;
+  args.image.address = p_data;
   args.image.channels = (uint32_t)input->dims()[1];
   args.image.height = (uint32_t)input->dims()[2];
   args.image.width = (uint32_t)input->dims()[3];

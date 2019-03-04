@@ -49,17 +49,21 @@ bool FetchKernel<FPGA, float>::Init(FetchParam<FPGA> *param) {
 
 template <>
 void FetchKernel<FPGA, float>::Compute(const FetchParam<FPGA> &param) {
-  auto input = param.InputX();
+  auto input = const_cast<Tensor *>(param.InputX());
   if (input->type() == typeid(float)) {
     auto output = param.Out();
     output->ShareDataWith(*input);
     return;
   }
-  fpga::PerformBypass(param.fpga_bypass_args);
+  fpga::BypassArgs args = param.fpga_bypass_args;
+  auto input_address = (input->data<half>());
+  args.image.address = static_cast<void *>(input_address);
+
+  fpga::PerformBypass(args);
   fpga::fpga_invalidate(param.fpga_bypass_args.output.address,
                         param.fpga_bypass_args.image.channels * sizeof(float));
 
-  // TODO: DEalign: get rid of extra 0
+  // TODO(zhangyang): DEalign: get rid of extra 0
 }
 
 template class FetchKernel<FPGA, float>;
