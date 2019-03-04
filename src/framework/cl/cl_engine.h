@@ -68,6 +68,20 @@ class CLEngine {
     return std::move(command_queue_ptr);
   }
 
+  cl_context getContext() {
+    if (context_ == nullptr) {
+      context_ = CreateContext();
+    }
+    return context_.get();
+  }
+
+  cl_command_queue getClCommandQueue() {
+    if (command_queue_ == nullptr) {
+      command_queue_ = CreateClCommandQueue(getContext());
+    }
+    return command_queue_.get();
+  }
+
   std::unique_ptr<_cl_program, CLProgramDeleter> CreateProgramWith(
       cl_context context, std::string file_name) {
     FILE *file = fopen(file_name.c_str(), "rb");
@@ -155,9 +169,12 @@ class CLEngine {
   std::vector<cl_context_properties> properties_;
   std::string cl_path_;
   std::unique_ptr<_cl_program, CLProgramDeleter> program_;
+
+  std::unique_ptr<_cl_context, CLContextDeleter> context_ = nullptr;
+
+  std::unique_ptr<_cl_command_queue, CLCommQueueDeleter> command_queue_ = nullptr;
   cl_ulong global_mem_cache_size_;
   cl_uint max_compute_units_;
-
   //  bool SetClContext();
 
   //  bool SetClCommandQueue();
