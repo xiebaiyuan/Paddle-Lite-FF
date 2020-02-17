@@ -10,7 +10,7 @@ option(USE_EXCEPTION    "build with exception"           ON)
 option(WITH_LOGGING     "print logging for debug"        OFF)
 option(WITH_SYMBOL      "build with all symbols"         ON) # turn off if use jni or ios io
 option(WITH_PROFILE     "print op profile for debug"     OFF)
-option(WITH_TEST        "build with unit tests"          ON)
+option(WITH_TEST        "build with unit tests"          OFF)
 
 # select platform: CPU, GPU_CL, FPGA
 option(CPU              "build with arm CPU support"     ON)
@@ -22,7 +22,7 @@ if(FPGA)
   option(FPGAKD     "build with fpga KD support"   OFF)
 endif()
 
-project(paddle-mobile)
+project(paddle-mobile-lens)
 
 # source code
 file(GLOB_RECURSE PADDLE_MOBILE_CC src/*.cc src/*.cpp src/*.c src/*.mm)
@@ -257,21 +257,21 @@ include("${CMAKE_CURRENT_LIST_DIR}/tools/op.cmake")
 # build library
 if(ANDROID_NDK_TOOLCHAIN_INCLUDED)
     list(REMOVE_DUPLICATES CMAKE_CXX_FLAGS)
-    add_library(paddle-mobile SHARED ${PADDLE_MOBILE_CC} ${PADDLE_MOBILE_H})
+    add_library(paddle-mobile-lens SHARED ${PADDLE_MOBILE_CC} ${PADDLE_MOBILE_H})
 elseif(IS_IOS)
     if(USE_OPENMP)
-        add_library(paddle-mobile-stage0 STATIC ${PADDLE_MOBILE_CC} ${PADDLE_MOBILE_H})
-        add_custom_target(paddle-mobile ALL
-            COMMAND libtool -static -o ${CMAKE_BINARY_DIR}/libpaddle-mobile.a ${CMAKE_CURRENT_LIST_DIR}/tools/libomp.a $<TARGET_FILE:paddle-mobile-stage0>
+        add_library(paddle-mobile-lens-stage0 STATIC ${PADDLE_MOBILE_CC} ${PADDLE_MOBILE_H})
+        add_custom_target(paddle-mobile-lens ALL
+            COMMAND libtool -static -o ${CMAKE_BINARY_DIR}/libpaddle-mobile.a ${CMAKE_CURRENT_LIST_DIR}/tools/libomp.a $<TARGET_FILE:paddle-mobile-lens-stage0>
             WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-            DEPENDS paddle-mobile
+            DEPENDS paddle-mobile-lens
         )
-        add_dependencies(paddle-mobile paddle-mobile-stage0)
+        add_dependencies(paddle-mobile-lens paddle-mobile-lens-stage0)
     else()
-        add_library(paddle-mobile STATIC ${PADDLE_MOBILE_CC} ${PADDLE_MOBILE_H})
+        add_library(paddle-mobile-lens STATIC ${PADDLE_MOBILE_CC} ${PADDLE_MOBILE_H})
     endif()
 else()
-  add_library(paddle-mobile SHARED ${PADDLE_MOBILE_CC} ${PADDLE_MOBILE_H})
+  add_library(paddle-mobile-lens SHARED ${PADDLE_MOBILE_CC} ${PADDLE_MOBILE_H})
 endif()
 
 # unit test
@@ -286,7 +286,7 @@ endif()
 
 # # if you want to combine third party static librares into paddle mobile so, please uncomment this code block
 # target_link_libraries(
-#     paddle-mobile
+#     paddle-mobile-lens
 #     -Wl,--whole-archive
 #     "path_to_third_party_static_library"
 #     -Wl,--no-whole-archive
