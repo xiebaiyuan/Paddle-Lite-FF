@@ -16,7 +16,7 @@ limitations under the License. */
 
 #include "operators/kernel/tanh_kernel.h"
 #include <math.h>
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -74,6 +74,6 @@ void TanhKernel<FPGA, float>::Compute(const TanhParam<FPGA> &param) {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

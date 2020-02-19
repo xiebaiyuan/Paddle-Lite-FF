@@ -22,7 +22,7 @@ limitations under the License. */
 #include <arm_neon.h>
 #endif
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 #if defined(__ARM_NEON__) || defined(__ARM_NEON)
@@ -173,10 +173,10 @@ float find_abs_max(const Tensor *input) {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 #endif  // __ARM_NEON__
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -216,6 +216,6 @@ void QuantizeKernel<CPU, float>::Compute(const QuantizeParam<CPU> &param) {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // QUANT_OP

@@ -20,7 +20,7 @@ limitations under the License. */
 #include <cmath>
 #include <vector>
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <typename T>
@@ -156,6 +156,6 @@ void DensityPriorBoxCompute(const DensityPriorBoxParam<CPU> &param) {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

@@ -16,7 +16,7 @@ limitations under the License. */
 #include "../test_helper.h"
 #include "io/paddle_inference_api.h"
 
-using namespace paddle_mobile;  // NOLINT
+using namespace paddle_mobile_lens;  // NOLINT
 
 PaddleMobileConfig GetConfig() {
   PaddleMobileConfig config;

@@ -15,7 +15,7 @@ limitations under the License. */
 #include "operators/detection_ops.h"
 #include <vector>
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 #ifdef ANCHOR_GENERATOR_OP
@@ -110,9 +110,9 @@ void RoiPerspectiveOp<DeviceType, T>::InferShape() const {
 #endif
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
-namespace ops = paddle_mobile::operators;
+namespace ops = paddle_mobile_lens::operators;
 #ifdef PADDLE_MOBILE_CPU
 #ifdef ANCHOR_GENERATOR_OP
 REGISTER_OPERATOR_CPU(anchor_generator, ops::AnchorGeneratorOp);

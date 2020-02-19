@@ -21,7 +21,7 @@ limitations under the License. */
 #include "framework/operator.h"
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 inline void GetSize(float start, float end, float step, int64_t *size) {
@@ -66,6 +66,6 @@ class RangeParam : public OpParam {
 DECLARE_KERNEL(Range, RangeParam);
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // RANGE_OP

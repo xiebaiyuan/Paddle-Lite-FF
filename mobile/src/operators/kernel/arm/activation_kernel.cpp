@@ -20,7 +20,7 @@ limitations under the License. */
 #include <arm_neon.h>
 #endif
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 #ifdef RELU_OP
@@ -113,4 +113,4 @@ void LeakyReluKernel<CPU, float>::Compute(const LeakyReluParam<CPU> &param) {
 #endif
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

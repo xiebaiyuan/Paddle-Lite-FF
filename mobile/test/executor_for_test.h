@@ -28,14 +28,14 @@ limitations under the License. */
 #include "operators/softmax_op.h"
 #include "operators/transpose_op.h"
 
-using paddle_mobile::framework::BlockDesc;
-using paddle_mobile::framework::DDim;
-using paddle_mobile::framework::Executor;
-using paddle_mobile::framework::LoDTensor;
-using paddle_mobile::framework::OpDesc;
-using paddle_mobile::framework::Program;
-using paddle_mobile::framework::Tensor;
-using paddle_mobile::framework::Variable;
+using paddle_mobile_lens::framework::BlockDesc;
+using paddle_mobile_lens::framework::DDim;
+using paddle_mobile_lens::framework::Executor;
+using paddle_mobile_lens::framework::LoDTensor;
+using paddle_mobile_lens::framework::OpDesc;
+using paddle_mobile_lens::framework::Program;
+using paddle_mobile_lens::framework::Tensor;
+using paddle_mobile_lens::framework::Variable;
 using std::string;
 using std::vector;
 
@@ -54,7 +54,7 @@ class Executor4Test : public Executor<DeviceType> {
     }
 
     if (this->program_.originProgram == nullptr) {
-      LOG(paddle_mobile::LogLevel::kLOG_ERROR) << "program_desc_ == nullptr";
+      LOG(paddle_mobile_lens::LogLevel::kLOG_ERROR) << "program_desc_ == nullptr";
     }
 
     const std::vector<std::shared_ptr<BlockDesc>> &blocks =
@@ -66,8 +66,8 @@ class Executor4Test : public Executor<DeviceType> {
         DLOG << "匹配到: " << op->Type();
 
         /// test first meeting op in program
-        std::shared_ptr<paddle_mobile::framework::OperatorBase<DeviceType>>
-            op_ptr = paddle_mobile::framework::OpRegistry<DeviceType>::CreateOp(
+        std::shared_ptr<paddle_mobile_lens::framework::OperatorBase<DeviceType>>
+            op_ptr = paddle_mobile_lens::framework::OpRegistry<DeviceType>::CreateOp(
                 op->Type(), op->GetInputs(), op->GetOutputs(), op->GetAttrMap(),
                 this->program_.scope.get());
         this->ops_of_block0_.push_back(op_ptr);
@@ -132,7 +132,7 @@ class Executor4Test : public Executor<DeviceType> {
       op->Run();
     }
 
-    return std::make_shared<paddle_mobile::framework::Tensor>(
-        paddle_mobile::framework::Tensor(*output_tensor));
+    return std::make_shared<paddle_mobile_lens::framework::Tensor>(
+        paddle_mobile_lens::framework::Tensor(*output_tensor));
   }
 };

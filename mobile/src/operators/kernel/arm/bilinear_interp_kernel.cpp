@@ -17,7 +17,7 @@ limitations under the License. */
 #include "operators/kernel/bilinear_interp_kernel.h"
 #include "operators/kernel/central-arm-func/bilinear_interp_arm_func.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -32,6 +32,6 @@ void BilinearInterpKernel<CPU, float>::Compute(
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

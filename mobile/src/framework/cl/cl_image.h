@@ -27,7 +27,7 @@ limitations under the License. */
 #include "framework/ddim.h"
 #include "framework/tensor.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 class CLImage {
@@ -345,4 +345,4 @@ Print &operator<<(Print &printer, const CLImage &image);
 #endif
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

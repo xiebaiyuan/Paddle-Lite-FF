@@ -19,7 +19,7 @@ limitations under the License. */
 #include "framework/data_type.h"
 #include "operators/kernel/kernels.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <typename InT>
@@ -79,6 +79,6 @@ void CastKernel<CPU, float>::Compute(const CastParam<CPU>& param) {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // CAST_OP

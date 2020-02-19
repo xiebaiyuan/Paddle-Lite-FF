@@ -18,7 +18,7 @@ limitations under the License. */
 #include <string>
 #include <vector>
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 
 typedef enum {
   _void = 0,
@@ -173,13 +173,13 @@ REGISTER_TYPE_ID(framework::Dim<9>, _dim9)
 #ifdef PADDLE_MOBILE_CL
 REGISTER_TYPE_ID(framework::CLImage, _cl_image)
 #endif
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 namespace std {
 
 template <>
-struct hash<paddle_mobile::kTypeId_t> {
-  size_t operator()(const paddle_mobile::kTypeId_t &t) const {
+struct hash<paddle_mobile_lens::kTypeId_t> {
+  size_t operator()(const paddle_mobile_lens::kTypeId_t &t) const {
     return std::hash<int>{}(static_cast<int>(t));
   }
 };

@@ -18,7 +18,7 @@ limitations under the License. */
 
 #include "framework/tensor.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 namespace math {
 
@@ -37,6 +37,6 @@ void winograd_transform_output(const framework::Tensor &input,
 
 }  // namespace math
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

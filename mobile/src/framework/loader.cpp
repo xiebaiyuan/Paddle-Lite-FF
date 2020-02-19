@@ -20,7 +20,7 @@ limitations under the License. */
 #include "framework/cl/cl_image.h"
 #endif
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 template <typename Device, typename T>
@@ -296,4 +296,4 @@ template class Loader<FPGA, float>;
 template class Loader<GPU_CL, float>;
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

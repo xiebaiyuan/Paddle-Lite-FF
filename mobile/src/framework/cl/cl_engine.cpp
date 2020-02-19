@@ -19,7 +19,7 @@ limitations under the License. */
 #include <cstdlib>
 #include <cstring>
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 bool CLEngine::Init() {
@@ -133,4 +133,4 @@ bool CLEngine::SetClDeviceId() {
 //}
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

@@ -17,7 +17,7 @@ limitations under the License. */
 #include "../test_include.h"
 #include "operators/softmax_op.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 
 void Softmax(const framework::Tensor *X, framework::Tensor *Y) {
   const framework::DDim &dims = X->dims();
@@ -91,7 +91,7 @@ int TestSoftmaxOp(const std::vector<int> input_shape) {
   return 0;
 }
 
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 int main(int argc, char *argv[]) {
   TestSoftmaxOp({128, 1000});

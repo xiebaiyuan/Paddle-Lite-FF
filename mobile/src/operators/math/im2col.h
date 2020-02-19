@@ -17,7 +17,7 @@ limitations under the License. */
 #include <vector>
 #include "framework/tensor.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 namespace math {
 
@@ -126,4 +126,4 @@ class Col2ImFunctor {
 
 }  // namespace math
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

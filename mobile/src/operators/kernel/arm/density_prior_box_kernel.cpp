@@ -17,7 +17,7 @@ limitations under the License. */
 #include "operators/kernel/central-arm-func/density_prior_box_arm_func.h"
 #include "operators/kernel/prior_box_kernel.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -32,6 +32,6 @@ void DensityPriorBoxKernel<CPU, float>::Compute(
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // DENSITY_PRIORBOX_OP

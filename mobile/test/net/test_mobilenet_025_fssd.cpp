@@ -27,7 +27,7 @@ int main(int argc, char **argv) {
     std::cout << "input times: " << times << std::endl;
   }
 
-  paddle_mobile::PaddleMobile<paddle_mobile::CPU> paddle_mobile;
+  paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::CPU> paddle_mobile;
   paddle_mobile.SetThreadNum(1);
   auto isok =
       paddle_mobile.Load(std::string(g_fluid_fssd_new) + "/model",

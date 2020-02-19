@@ -21,7 +21,7 @@ limitations under the License. */
 #include "framework/operator.h"
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 // template <typename Dtype>
@@ -49,6 +49,6 @@ namespace operators {
 DECLARE_KERNEL(Pad2D, Pad2DParam);
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // PAD2D_OP

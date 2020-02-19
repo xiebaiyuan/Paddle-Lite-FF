@@ -34,16 +34,16 @@ void test(int argc, char *argv[]) {
 
   bool fuse = false;
   bool enable_memory_optimization = true;
-  paddle_mobile::PaddleMobileConfigInternal config;
+  paddle_mobile_lens::PaddleMobileConfigInternal config;
   config.memory_optimization_level = enable_memory_optimization
                                          ? MemoryOptimizationWithoutFeeds
                                          : NoMemoryOptimization;
 #ifdef PADDLE_MOBILE_CL
   // config.load_when_predict = true;
-  paddle_mobile::PaddleMobile<paddle_mobile::GPU_CL> paddle_mobile(config);
+  paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::GPU_CL> paddle_mobile(config);
   paddle_mobile.SetCLPath("/data/local/tmp/bin");
 #else
-  paddle_mobile::PaddleMobile<paddle_mobile::CPU> paddle_mobile(config);
+  paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::CPU> paddle_mobile(config);
   paddle_mobile.SetThreadNum(1);
 #endif
 
@@ -79,8 +79,8 @@ void test(int argc, char *argv[]) {
       float num = input_data_array[i];
       input_data.push_back(num);
     }
-    paddle_mobile::framework::Tensor input_tensor(
-        input_data, paddle_mobile::framework::make_ddim(dims));
+    paddle_mobile_lens::framework::Tensor input_tensor(
+        input_data, paddle_mobile_lens::framework::make_ddim(dims));
     auto time4 = time();
     std::cout << "auto-test"
               << " preprocess-time-cost :" << time_diff(time3, time4) << "ms"

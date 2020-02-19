@@ -17,7 +17,7 @@ limitations under the License. */
 #include "operators/kernel/dwconv_bn_relu_kernel.h"
 #include <cmath>
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -171,6 +171,6 @@ void DWConvBNReluKernel<GPU_CL, float>::Compute(
 template class DWConvBNReluKernel<GPU_CL, float>;
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

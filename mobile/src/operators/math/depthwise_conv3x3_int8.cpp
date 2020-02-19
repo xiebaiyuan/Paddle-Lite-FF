@@ -17,7 +17,7 @@ limitations under the License. */
 #include <arm_neon.h>
 #include "operators/math/depthwise_conv3x3.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 namespace math {
 
@@ -1655,6 +1655,6 @@ void DepthwiseConv3x3S2<int8_t, int32_t>(const framework::Tensor &input,
 
 }  // namespace math
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // __ARM_NEON__

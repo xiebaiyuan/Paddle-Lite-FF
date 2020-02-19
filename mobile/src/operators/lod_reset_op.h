@@ -21,12 +21,12 @@ limitations under the License. */
 #include "operators/kernel/kernels.h"
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 DECLARE_OPERATOR(LodReset, LodResetParam, LodResetKernel);
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // LOD_RESET_OP

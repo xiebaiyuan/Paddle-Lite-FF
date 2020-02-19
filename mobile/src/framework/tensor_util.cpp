@@ -14,7 +14,7 @@ limitations under the License. */
 
 #include "tensor_util.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 void TensorCopy(const Tensor &src, Tensor *dst) {
@@ -27,4 +27,4 @@ void TensorCopy(const Tensor &src, Tensor *dst) {
 }
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

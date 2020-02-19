@@ -17,7 +17,7 @@ limitations under the License. */
 #include <vector>
 #include "operators/kernel/detection_kernel.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -32,6 +32,6 @@ void AnchorGeneratorKernel<CPU, float>::Compute(
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // ANCHOR_GENERATOR_OP

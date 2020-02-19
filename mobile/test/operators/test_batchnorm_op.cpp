@@ -16,7 +16,7 @@ limitations under the License. */
 #include "../test_include.h"
 #include "operators/batchnorm_op.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 
 void BatchNorm(const framework::Tensor *X, const framework::Tensor *Mean,
                const framework::Tensor *Var, const framework::Tensor *Scale,
@@ -113,7 +113,7 @@ int TestBatchNormOp(const std::vector<int> input_shape) {
   }
 }
 
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 int main() {
   TestBatchNormOp({1, 1, 10, 10});

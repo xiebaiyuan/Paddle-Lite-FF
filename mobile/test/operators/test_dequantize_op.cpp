@@ -16,7 +16,7 @@ limitations under the License. */
 #include "../test_include.h"
 #include "operators/dequantize_op.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 
 void dequantize(const Tensor* input, const float scale, Tensor* output) {
   const int32_t* x = input->data<int32_t>();
@@ -71,6 +71,6 @@ int TestDequqntizeOp() {
   return 0;
 }
 
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
-int main() { return paddle_mobile::TestDequqntizeOp(); }
+int main() { return paddle_mobile_lens::TestDequqntizeOp(); }

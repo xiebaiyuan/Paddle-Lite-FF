@@ -17,7 +17,7 @@ limitations under the License. */
 #include <algorithm>
 #include "operators/kernel/kernels.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -63,6 +63,6 @@ void LodResetKernel<CPU, float>::Compute(const LodResetParam<CPU> &param) {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // LOD_RESET_OP

@@ -16,7 +16,7 @@ limitations under the License. */
 #include "operators/kernel/lookup_kernel.h"
 #include "operators/kernel/central-arm-func/lookup_arm_func.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -31,6 +31,6 @@ void LookupKernel<CPU, float>::Compute(const LookupParam<CPU> &param) {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

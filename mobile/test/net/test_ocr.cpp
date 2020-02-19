@@ -54,7 +54,7 @@ int main(int argc, char **argv) {
   std::shared_ptr<framework::LoDTensor> outputs[output_fetch_nodes.size()];
 
   // init paddle instance
-  paddle_mobile::PaddleMobile<paddle_mobile::CPU> paddle_mobile;
+  paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::CPU> paddle_mobile;
   paddle_mobile.SetThreadNum(1);
   std::cout << "start load " << std::endl;
   auto load_success = paddle_mobile.Load(std::string(model_dir) + "/model",
@@ -69,7 +69,7 @@ int main(int argc, char **argv) {
   GetInput<float>(image_path, &input_vec, input_shape);
 
   // model predict
-  auto pred_start_time = paddle_mobile::time();
+  auto pred_start_time = paddle_mobile_lens::time();
   for (int run_idx = 0; run_idx < max_run_times; ++run_idx) {
     paddle_mobile.Predict(input_vec, input_shape);
     for (int out_idx = 0; out_idx < output_fetch_nodes.size(); ++out_idx) {
@@ -77,11 +77,11 @@ int main(int argc, char **argv) {
       outputs[out_idx] = paddle_mobile.Fetch(fetch_name);
     }
   }
-  auto pred_end_time = paddle_mobile::time();
+  auto pred_end_time = paddle_mobile_lens::time();
 
   // inference time
   double pred_time =
-      paddle_mobile::time_diff(pred_start_time, pred_end_time) / max_run_times;
+      paddle_mobile_lens::time_diff(pred_start_time, pred_end_time) / max_run_times;
   std::cout << "predict time(ms): " << pred_time << std::endl;
 
   // output result

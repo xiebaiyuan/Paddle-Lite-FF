@@ -18,7 +18,7 @@ limitations under the License. */
 #include "framework/context.h"
 #include "operators/math/depthwise/faster_depthwise_conv3x3.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 namespace math {
 namespace depthwise {
@@ -2006,6 +2006,6 @@ void conv_depthwise_3x3s1p1_bias_s_relu(float *dout, const float *din,
 }  // namespace depthwise
 }  // namespace math
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

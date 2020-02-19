@@ -22,7 +22,7 @@ limitations under the License. */
 #endif
 #include "operators/math/math.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 namespace math {
 
@@ -796,6 +796,6 @@ void write_back(const int mc, const int nc, const float alpha, const float *c,
 
 }  // namespace math
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // __ARM_NEON__

@@ -17,7 +17,7 @@ limitations under the License. */
 #include "fpga/KD/llapi/bias_scale.h"
 #include "fpga/KD/llapi/zynqmp_api.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace zynqmp {
 namespace bias_scale {
 
@@ -97,4 +97,4 @@ void format_bias_array(float **bias_array, int num) {
 
 }  // namespace bias_scale
 }  // namespace zynqmp
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

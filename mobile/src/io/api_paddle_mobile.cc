@@ -24,7 +24,7 @@
 #include <fpga/common/fpga_common.h>
 #endif
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 
 template <typename Device, typename T>
 PaddleMobilePredictor<Device, T>::PaddleMobilePredictor(
@@ -96,7 +96,7 @@ bool PaddleMobilePredictor<Device, T>::Run(
   int input_length = framework::product(ddim);
   if (input.lod.size() > 0) {
     framework::LoDTensor input_lod_tensor;
-    paddle_mobile::framework::LoD lod{{}};
+    paddle_mobile_lens::framework::LoD lod{{}};
     for (int i = 0; i < input.lod.size(); ++i) {
       lod[0].push_back(input.lod[i]);
     }
@@ -292,4 +292,4 @@ CreatePaddlePredictor<PaddleMobileConfig, PaddleEngineKind::kPaddleMobile>(
   return std::move(x);
 }
 
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

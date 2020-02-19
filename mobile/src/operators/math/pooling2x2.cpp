@@ -21,7 +21,7 @@ limitations under the License. */
 
 // TODO(hjchen2): Optimize Pooling2x2NormalRow and use inline assembly
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 namespace math {
 
@@ -785,7 +785,7 @@ template struct Pooling2x2<AVG, 2>;
 
 }  // namespace math
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // __ARM_NEON__
 #endif  // POOL_OP

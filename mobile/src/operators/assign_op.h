@@ -22,12 +22,12 @@ limitations under the License. */
 #include "operators/kernel/assign_kernel.h"
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 DECLARE_OPERATOR(Assign, AssignParam, AssignKernel);
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

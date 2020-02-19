@@ -21,17 +21,17 @@ limitations under the License. */
 
 #include <math.h>
 #include <operators/kernel/exp_kernel.h>
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 template <>
 bool EXPKernel<CPU, float>::Init(
-    paddle_mobile::operators::EXPParam<paddle_mobile::CPU> *param) {
+    paddle_mobile_lens::operators::EXPParam<paddle_mobile_lens::CPU> *param) {
   return true;
 }
 
 template <>
 void EXPKernel<CPU, float>::Compute(
-    const paddle_mobile::operators::EXPParam<paddle_mobile::CPU> &param) {
+    const paddle_mobile_lens::operators::EXPParam<paddle_mobile_lens::CPU> &param) {
   const auto input_ = param.InputX();
   auto output = param.Out();
   float *output_data = output->mutable_data<float>();
@@ -42,6 +42,6 @@ void EXPKernel<CPU, float>::Compute(
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // EXP_OP

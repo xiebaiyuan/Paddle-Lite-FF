@@ -19,7 +19,7 @@ limitations under the License. */
 #include <arm_neon.h>
 #include "operators/math/pooling.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 namespace math {
 
@@ -1311,7 +1311,7 @@ template struct Pooling3x3<AVG, 2>;
 
 }  // namespace math
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // __ARM_NEON
 #endif  // POOL_OP

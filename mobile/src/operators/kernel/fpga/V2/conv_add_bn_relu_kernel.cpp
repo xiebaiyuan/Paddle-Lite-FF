@@ -17,7 +17,7 @@ limitations under the License. */
 #include "operators/kernel/conv_add_bn_relu_kernel.h"
 #include <cmath>
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 template <>
 bool ConvAddBNReluKernel<FPGA, float>::Init(
@@ -99,6 +99,6 @@ void ConvAddBNReluKernel<FPGA, float>::Compute(
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

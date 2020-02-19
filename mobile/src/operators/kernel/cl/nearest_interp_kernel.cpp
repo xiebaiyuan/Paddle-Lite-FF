@@ -16,11 +16,11 @@ limitations under the License. */
 
 #include <operators/kernel/nearest_interp_kernel.h>
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 template <>
 bool NearestInterpolationKernel<GPU_CL, float>::Init(
-    paddle_mobile::operators::NearestInterpolationParam<paddle_mobile::GPU_CL>
+    paddle_mobile_lens::operators::NearestInterpolationParam<paddle_mobile_lens::GPU_CL>
         *param) {
   this->cl_helper_.AddKernel("nearest_interp", "nearest_interp_kernel.cl");
   return true;
@@ -28,8 +28,8 @@ bool NearestInterpolationKernel<GPU_CL, float>::Init(
 
 template <>
 void NearestInterpolationKernel<GPU_CL, float>::Compute(
-    const paddle_mobile::operators::NearestInterpolationParam<
-        paddle_mobile::GPU_CL> &param) {
+    const paddle_mobile_lens::operators::NearestInterpolationParam<
+        paddle_mobile_lens::GPU_CL> &param) {
   auto kernel = this->cl_helper_.KernelAt(0);
   auto default_work_size = this->cl_helper_.DefaultWorkSize(*(param.Out()));
   auto input = param.InputX();
@@ -68,6 +68,6 @@ void NearestInterpolationKernel<GPU_CL, float>::Compute(
 }
 template class NearestInterpolationKernel<GPU_CL, float>;
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

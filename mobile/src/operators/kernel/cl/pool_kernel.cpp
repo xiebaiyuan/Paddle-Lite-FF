@@ -16,7 +16,7 @@ limitations under the License. */
 
 #include "operators/kernel/pool_kernel.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -102,6 +102,6 @@ void PoolKernel<GPU_CL, float>::Compute(const PoolParam<GPU_CL> &param) {
 template class PoolKernel<GPU_CL, float>;
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

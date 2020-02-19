@@ -5,13 +5,13 @@
 extension=$1
 
 convert () {
-    perl -pi -e "s/namespace paddle_mobile/namespace paddle_mobile_${1}/g" "${2}"
-    perl -pi -e "s/paddle_mobile::/paddle_mobile_${1}::/g" "${2}"
+    perl -pi -e "s/namespace paddle_mobile_lens/namespace paddle_mobile_${1}/g" "${2}"
+    perl -pi -e "s/paddle_mobile_lens::/paddle_mobile_${1}::/g" "${2}"
 }
 
 revert () {
-    perl -pi -e "s/namespace paddle_mobile_[\w]*/namespace paddle_mobile/g" "${2}"
-    perl -pi -e "s/paddle_mobile_[\w]*::/paddle_mobile::/g" "${2}"
+    perl -pi -e "s/namespace paddle_mobile_[\w]*/namespace paddle_mobile_lens/g" "${2}"
+    perl -pi -e "s/paddle_mobile_[\w]*::/paddle_mobile_lens::/g" "${2}"
 }
 
 if [[ $2 == "revert" ]]; then

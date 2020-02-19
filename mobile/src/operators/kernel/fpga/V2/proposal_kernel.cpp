@@ -19,7 +19,7 @@ limitations under the License. */
 #include <vector>
 #include "operators/kernel/detection_kernel.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 static const double kBBoxClipDefault = std::log(1000.0 / 16.0);
@@ -447,6 +447,6 @@ void ProposalKernel<FPGA, float>::Compute(const ProposalParam<FPGA> &param) {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // PROPOSAL_OP

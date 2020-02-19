@@ -20,7 +20,7 @@ limitations under the License. */
 #include "framework/operator.h"
 #include "operators/kernel/conv_kernel.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <typename DeviceType, typename T>
@@ -38,6 +38,6 @@ class DepthwiseConvOp : public framework::OperatorWithKernel<
 };
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

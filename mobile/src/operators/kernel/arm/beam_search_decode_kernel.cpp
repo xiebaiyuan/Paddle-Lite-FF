@@ -18,7 +18,7 @@ limitations under the License. */
 #include <algorithm>
 #include "framework/data_type.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 using LoDTensor = framework::LoDTensor;
@@ -273,6 +273,6 @@ void BeamSearchDecodeKernel<CPU, float>::Compute(
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

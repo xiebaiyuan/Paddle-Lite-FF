@@ -18,7 +18,7 @@ limitations under the License. */
 #include <string>
 #include "fpga/V1/api.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -26,8 +26,8 @@ bool ElementwiseAddKernel<FPGA, float>::Init(ElementwiseAddParam<FPGA> *param) {
   auto *input_y = const_cast<LoDTensor *>(param->InputY());
   auto *out = param->Out();
   if (input_y->type() != type_id<float>()) {
-    paddle_mobile::fpga::ActivationType activation_enable =
-        paddle_mobile::fpga::NONE;
+    paddle_mobile_lens::fpga::ActivationType activation_enable =
+        paddle_mobile_lens::fpga::NONE;
     int16_t leaky_relu_negative_slope = 0;
     auto *input_x = const_cast<LoDTensor *>(param->InputX());
     auto input_x_ptr = input_x->data<half>();
@@ -186,6 +186,6 @@ void ElementwiseAddKernel<FPGA, float>::Compute(
   }
 }
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

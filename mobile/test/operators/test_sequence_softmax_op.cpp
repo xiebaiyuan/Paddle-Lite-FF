@@ -17,7 +17,7 @@ limitations under the License. */
 #include "../test_include.h"
 #include "operators/sequence_ops/sequence_softmax_op.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 
 void SequenceSoftmax(const framework::LoDTensor *X, framework::LoDTensor *Y) {
   const float *x = X->data<float>();
@@ -90,7 +90,7 @@ int TestSequenceSoftmaxOp(const std::vector<int> &input_shape,
   return 0;
 }
 
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 int main(int argc, char *argv[]) {
   TestSequenceSoftmaxOp({2, 1}, {0, 2});

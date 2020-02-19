@@ -20,13 +20,13 @@ limitations under the License. */
 #include "framework/operator.h"
 #include "operators/kernel/beam_search_decode_kernel.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 DECLARE_OPERATOR(BeamSearchDecode, BeamSearchDecodeParam,
                  BeamSearchDecodeKernel);
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // BEAM_SEARCH_DECODE_OP

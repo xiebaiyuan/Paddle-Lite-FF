@@ -15,7 +15,7 @@ limitations under the License. */
 #include "framework/cl/cl_image.h"
 #include "framework/cl/cl_tensor.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 void CLImageToTensor(CLImage *cl_image, Tensor *tensor, cl_context context,
@@ -153,4 +153,4 @@ Print &operator<<(Print &printer, const CLImage &cl_image) {
 }
 #endif
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

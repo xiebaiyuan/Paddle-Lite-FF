@@ -13,7 +13,7 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 #ifdef EXP_OP
 #include "exp_op.h"
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <typename DeviceType, typename T>
@@ -22,8 +22,8 @@ void EXPOp<DeviceType, T>::InferShape() const {
   this->param_.Out()->Resize(shape);
 }
 }  // namespace operators
-}  // namespace paddle_mobile
-namespace ops = paddle_mobile::operators;
+}  // namespace paddle_mobile_lens
+namespace ops = paddle_mobile_lens::operators;
 
 #ifdef PADDLE_MOBILE_CPU
 REGISTER_OPERATOR_CPU(exp, ops::EXPOp);

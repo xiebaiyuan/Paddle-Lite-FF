@@ -17,7 +17,7 @@ limitations under the License. */
 #include "../test_include.h"
 #include "operators/compare_op.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 
 template <typename T>
 void LessThan(const framework::Tensor *X, const framework::Tensor *Y,
@@ -102,20 +102,20 @@ int TestLessThanOp(const std::vector<int> &x_shape,
   return 0;
 }
 
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 int main() {
-  paddle_mobile::TestLessThanOp<float>({1, 2, 3}, {1, 2, 3}, 0);
-  paddle_mobile::TestLessThanOp<float>({10, 2, 1}, {10, 2, 1}, 0);
+  paddle_mobile_lens::TestLessThanOp<float>({1, 2, 3}, {1, 2, 3}, 0);
+  paddle_mobile_lens::TestLessThanOp<float>({10, 2, 1}, {10, 2, 1}, 0);
 
-  paddle_mobile::TestLessThanOp<float>({2, 10, 1}, {1, 10, 1}, 1);
-  paddle_mobile::TestLessThanOp<float>({10, 2, 1}, {1, 2, 1}, 1);
+  paddle_mobile_lens::TestLessThanOp<float>({2, 10, 1}, {1, 10, 1}, 1);
+  paddle_mobile_lens::TestLessThanOp<float>({10, 2, 1}, {1, 2, 1}, 1);
 
-  paddle_mobile::TestLessThanOp<int64_t>({1, 2, 3}, {1, 2, 3}, 0);
-  paddle_mobile::TestLessThanOp<int64_t>({10, 2, 1}, {10, 2, 1}, 0);
+  paddle_mobile_lens::TestLessThanOp<int64_t>({1, 2, 3}, {1, 2, 3}, 0);
+  paddle_mobile_lens::TestLessThanOp<int64_t>({10, 2, 1}, {10, 2, 1}, 0);
 
-  paddle_mobile::TestLessThanOp<int64_t>({2, 10, 1}, {1, 10, 1}, 1);
-  paddle_mobile::TestLessThanOp<int64_t>({10, 2, 1}, {1, 2, 1}, 1);
+  paddle_mobile_lens::TestLessThanOp<int64_t>({2, 10, 1}, {1, 10, 1}, 1);
+  paddle_mobile_lens::TestLessThanOp<int64_t>({10, 2, 1}, {1, 2, 1}, 1);
 
   std::cout << "test less_than op pass." << std::endl;
   return 0;

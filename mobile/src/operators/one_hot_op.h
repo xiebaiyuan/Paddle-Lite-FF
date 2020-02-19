@@ -20,12 +20,12 @@ limitations under the License. */
 #include "framework/operator.h"
 #include "operators/kernel/one_hot_kernel.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 DECLARE_OPERATOR(Onehot, OnehotParam, OnehotKernel);
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // ONE_HOT_OP

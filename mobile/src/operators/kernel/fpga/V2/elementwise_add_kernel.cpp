@@ -15,7 +15,7 @@ limitations under the License. */
 #include <math.h>
 #include "operators/kernel/elementwise_add_kernel.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -89,6 +89,6 @@ void ElementwiseAddKernel<FPGA, float>::Compute(
   ComputeCPUEWAdd(param.FpgaArgs());
 }
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

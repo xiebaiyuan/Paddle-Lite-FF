@@ -20,8 +20,8 @@ limitations under the License. */
 
 int main(int argc, char *argv[]) {
 #ifndef PADDLE_MOBILE_FPGA
-  paddle_mobile::wrap::Net *net =
-      new paddle_mobile::wrap::Net(paddle_mobile::wrap::kGPU_CL);
+  paddle_mobile_lens::wrap::Net *net =
+      new paddle_mobile_lens::wrap::Net(paddle_mobile_lens::wrap::kGPU_CL);
   net->SetCLPath("/data/local/tmp/bin");
   net->Load("./checked_model/model", "./checked_model/params", false, false, 1,
             true);
@@ -44,8 +44,8 @@ int main(int argc, char *argv[]) {
   //     std::cout << item << std::endl;
   // }
   // input as float pointer
-  paddle_mobile::wrap::Tensor input(data,
-                                    paddle_mobile::wrap::make_ddim(shape));
+  paddle_mobile_lens::wrap::Tensor input(data,
+                                    paddle_mobile_lens::wrap::make_ddim(shape));
   net->Feed("image", input);
   net->Predict();
   auto output = net->Fetch("save_infer_model/scale_0");

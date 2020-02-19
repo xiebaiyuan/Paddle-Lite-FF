@@ -14,7 +14,7 @@ limitations under the License. */
 
 #include "operators/kernel/feed_kernel.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -32,4 +32,4 @@ void FeedKernel<CPU, float>::Compute(const FeedParam<CPU> &param) {
 template class FeedKernel<CPU, float>;
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

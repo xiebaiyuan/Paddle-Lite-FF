@@ -17,7 +17,7 @@ limitations under the License. */
 #include "operators/kernel/concat_kernel.h"
 #include "operators/kernel/central-arm-func/concat_arm_func.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -36,6 +36,6 @@ void ConcatKernel<CPU, float>::Compute(const ConcatParam<CPU> &param) {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

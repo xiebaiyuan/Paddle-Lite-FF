@@ -17,7 +17,7 @@ limitations under the License. */
 #include "operators/kernel/conv_transpose_kernel.h"
 #include "operators/kernel/central-arm-func/conv_transpose_arm_func.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -34,6 +34,6 @@ void ConvTransposeKernel<CPU, float>::Compute(
 template class ConvTransposeKernel<CPU, float>;
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

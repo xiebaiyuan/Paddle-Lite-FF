@@ -18,7 +18,7 @@ limitations under the License. */
 #include <algorithm>
 #include <cstdint>
 #include "fpga/common/fpga_common.h"
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace fpga {
 namespace image {
 
@@ -73,4 +73,4 @@ void split_image(int16_t* image_in, const float* scale_in, void** images_out,
                  const uint32_t* channel_nums, int height, int width);
 }  // namespace image
 }  // namespace fpga
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

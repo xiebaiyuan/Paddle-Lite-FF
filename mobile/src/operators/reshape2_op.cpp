@@ -17,7 +17,7 @@ limitations under the License. */
 #include "operators/reshape2_op.h"
 #include <vector>
 #include "operators/kernel/reshape_kernel.h"
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <typename Dtype, typename T>
@@ -84,9 +84,9 @@ void Reshape2Op<Dtype, T>::InferShape() const {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
-namespace ops = paddle_mobile::operators;
+namespace ops = paddle_mobile_lens::operators;
 #ifdef PADDLE_MOBILE_CPU
 REGISTER_OPERATOR_CPU(reshape2, ops::Reshape2Op);
 #endif

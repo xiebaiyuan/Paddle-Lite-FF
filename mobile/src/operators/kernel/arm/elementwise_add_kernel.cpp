@@ -17,7 +17,7 @@ limitations under the License. */
 #include "operators/kernel/elementwise_add_kernel.h"
 #include "operators/kernel/central-arm-func/elementwise_add_arm_func.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -38,6 +38,6 @@ void ElementwiseAddKernel<CPU, float>::Compute(
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

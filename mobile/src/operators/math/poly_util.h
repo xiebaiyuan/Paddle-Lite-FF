@@ -18,7 +18,7 @@ limitations under the License. */
 #include <vector>
 #include "operators/math/gpc.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 namespace math {
 
@@ -65,6 +65,6 @@ T PolyOverlapArea(const T* box1, const T* box2, const size_t box_size,
 
 }  // namespace math
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

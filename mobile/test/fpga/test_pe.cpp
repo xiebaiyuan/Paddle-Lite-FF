@@ -16,7 +16,7 @@ limitations under the License. */
 #include "fpga/V2/api.h"
 #include "fpga/V2/filter.h"
 
-namespace fpga = paddle_mobile::fpga;
+namespace fpga = paddle_mobile_lens::fpga;
 
 static const uint32_t N = 64;
 static const uint32_t C = 3;
@@ -96,7 +96,7 @@ void test_bypass() {
 }
 
 int main() {
-  paddle_mobile::fpga::open_device();
+  paddle_mobile_lens::fpga::open_device();
   format_data();
   DLOG << "format data done";
   print_fp32(reinterpret_cast<float*>(ifm), ifm_size, 200);

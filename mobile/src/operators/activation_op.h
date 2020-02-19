@@ -19,7 +19,7 @@ limitations under the License. */
 #include "operators/kernel/activation_kernel.h"
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 #ifdef RELU_OP
@@ -44,4 +44,4 @@ DECLARE_OPERATOR(LeakyRelu, LeakyReluParam, LeakyReluKernel);
 #endif
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

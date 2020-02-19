@@ -16,7 +16,7 @@ limitations under the License. */
 
 #include "../pe.hpp"
 #include "../pe_params.hpp"
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace zynqmp {
 
 class PoolingPE : public PE {
@@ -69,4 +69,4 @@ class PoolingPE : public PE {
 };
 
 }  // namespace zynqmp
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

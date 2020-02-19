@@ -15,7 +15,7 @@ limitations under the License. */
 #include "../test_include.h"
 #include "operators/box_coder_op.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 template <typename Dtype>
@@ -109,30 +109,30 @@ class TestBoxCoderOp {
 
 template class TestBoxCoderOp<CPU>;
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 int main() {
   DLOG << "----------**********----------";
   DLOG << "begin to run BoxCoderOp Test";
-  paddle_mobile::framework::Loader<paddle_mobile::CPU> loader;
+  paddle_mobile_lens::framework::Loader<paddle_mobile_lens::CPU> loader;
   auto program = loader.Load(std::string(g_mobilenet_ssd));
 
-  paddle_mobile::framework::Tensor priorbox;
+  paddle_mobile_lens::framework::Tensor priorbox;
   SetupTensor<float>(&priorbox, {1917, 4}, static_cast<float>(0),
                      static_cast<float>(1));
   auto *priorbox_ptr = priorbox.data<float>();
 
-  paddle_mobile::framework::Tensor priorboxvar;
+  paddle_mobile_lens::framework::Tensor priorboxvar;
   SetupTensor<float>(&priorboxvar, {1917, 4}, static_cast<float>(0.1),
                      static_cast<float>(0.2));
   auto *priorboxvar_ptr = priorboxvar.data<float>();
 
-  paddle_mobile::framework::Tensor targetbox;
+  paddle_mobile_lens::framework::Tensor targetbox;
   SetupTensor<float>(&targetbox, {1, 1917, 4}, static_cast<float>(0),
                      static_cast<float>(1));
   auto *targetbox_ptr = targetbox.data<float>();
 
-  paddle_mobile::framework::TestBoxCoderOp<paddle_mobile::CPU> testBoxCoderOp(
+  paddle_mobile_lens::framework::TestBoxCoderOp<paddle_mobile_lens::CPU> testBoxCoderOp(
       program);
 
   auto output_boxcoder =

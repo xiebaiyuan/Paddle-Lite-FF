@@ -26,7 +26,7 @@ limitations under the License. */
 #include "framework/cl/cl_engine.h"
 #include "framework/cl/cl_tool.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 
 extern const std::map<std::string, std::vector<unsigned char>> opencl_kernels;
 extern const std::map<std::string, std::vector<unsigned char>> opencl_headers;
@@ -126,4 +126,4 @@ class CLScope {
 };
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

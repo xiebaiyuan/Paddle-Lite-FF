@@ -16,13 +16,13 @@ limitations under the License. */
 
 #include "operators/kernel/activation_kernel.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
 bool SigmoidKernel<FPGA, float>::Init(SigmoidParam<FPGA> *param) {
-  paddle_mobile::fpga::ActivationType activation_enable =
-      paddle_mobile::fpga::SIGMOID;
+  paddle_mobile_lens::fpga::ActivationType activation_enable =
+      paddle_mobile_lens::fpga::SIGMOID;
   int16_t leaky_relu_negative_slope = 0;
   auto input = const_cast<LoDTensor *>(param->InputX());
   auto input_ptr = input->data<half>();
@@ -49,6 +49,6 @@ void SigmoidKernel<FPGA, float>::Compute(const SigmoidParam<FPGA> &param) {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

@@ -13,7 +13,7 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 #include "operators/kernel/pad2d_kernel.h"
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 template <>
 bool Pad2DKernel<FPGA, float>::Init(Pad2DParam<FPGA> *param) {
@@ -32,7 +32,7 @@ void pad2dFunc(const framework::Tensor *input, framework::Tensor *output) {
   auto copysize = input_c * input_w;
   for (int h = 0; h < input_h; ++h) {
     auto input_offset = h * input_c * input_w;
-    auto output_offset = h * paddle_mobile::fpga::align_to_x(
+    auto output_offset = h * paddle_mobile_lens::fpga::align_to_x(
                                  output_c * output_w, IMAGE_ALIGNMENT);
     memcpy((output_data + output_offset), (input_data + input_offset),
            copysize * sizeof(half));
@@ -51,10 +51,10 @@ void Pad2DKernel<FPGA, float>::Compute(const Pad2DParam<FPGA> &param) {
   DLOG << (out->scale)[1];
   size_t outputSize =
       out->dims()[2] *
-      paddle_mobile::fpga::align_to_x((out->dims()[1]) * (out->dims()[3]),
+      paddle_mobile_lens::fpga::align_to_x((out->dims()[1]) * (out->dims()[3]),
                                       IMAGE_ALIGNMENT) *
       sizeof(half);
   fpga::fpga_flush(out->data<half>(), outputSize);
 }
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

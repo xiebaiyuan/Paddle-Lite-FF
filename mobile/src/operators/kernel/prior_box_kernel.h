@@ -22,7 +22,7 @@ limitations under the License. */
 #include "operators/math/transform.h"
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 #ifdef PRIORBOX_OP
@@ -117,4 +117,4 @@ DECLARE_KERNEL(DensityPriorBox, DensityPriorBoxParam);
 #endif  // DENSITY_PRIORBOX_OP
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

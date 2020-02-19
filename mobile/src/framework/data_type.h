@@ -19,7 +19,7 @@ limitations under the License. */
 #include "common/type_define.h"
 #include "framework/framework.pb-c.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 
 namespace framework {
 
@@ -77,4 +77,4 @@ inline std::ostream& operator<<(
 }
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

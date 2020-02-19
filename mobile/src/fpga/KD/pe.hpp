@@ -22,7 +22,7 @@ limitations under the License. */
 #include "pe_params.hpp"
 #include "tensor_util.hpp"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace zynqmp {
 
 class PE {
@@ -40,6 +40,6 @@ class PE {
 };
 
 }  // namespace zynqmp
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif /* PE_hpp */

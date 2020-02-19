@@ -22,7 +22,7 @@ limitations under the License. */
 #include "framework/tensor.h"
 #include "memory/t_malloc.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 class SelectedRows {
@@ -135,4 +135,4 @@ void SerializeToStream(std::ostream& os, const SelectedRows& selected_rows);
 void DeserializeFromStream(std::istream& is, SelectedRows* selected_rows);
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

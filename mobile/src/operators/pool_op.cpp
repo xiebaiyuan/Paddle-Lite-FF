@@ -19,7 +19,7 @@ limitations under the License. */
 #include "framework/op_proto_maker.h"
 #include "framework/op_registry.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 int PoolOutputSize(int input_size, int filter_size, int padding, int stride,
@@ -57,9 +57,9 @@ void PoolOp<DeviceType, T>::InferShape() const {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
-namespace ops = paddle_mobile::operators;
+namespace ops = paddle_mobile_lens::operators;
 #ifdef PADDLE_MOBILE_CPU
 REGISTER_OPERATOR_CPU(pool2d, ops::PoolOp);
 #endif

@@ -28,7 +28,7 @@ limitations under the License. */
 #include "framework/cl/cl_engine.h"
 #endif
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 
 template <typename Device, typename T = float>
 class PaddleMobile {
@@ -122,4 +122,4 @@ class PaddleMobile {
   PaddleMobileConfigInternal config_;
 };
 
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

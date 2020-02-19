@@ -17,7 +17,7 @@ limitations under the License. */
 #include "operators/math/pooling.h"
 #include "operators/pool_op.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 
 namespace math = operators::math;
 
@@ -102,117 +102,117 @@ int TestPoolOp(int in_channels, int in_height, int in_width) {
   delete op;
   return 0;
 }
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 int Test(const int in_channels, const int in_height, const int in_width) {
-  LOG(paddle_mobile::kLOG_INFO)
+  LOG(paddle_mobile_lens::kLOG_INFO)
       << "float, pooling_type=max, kernel=3, pad=0, stride=1";
-  paddle_mobile::TestPoolOp<0, 3, 0, 1>(in_channels, in_height, in_width);
-  LOG(paddle_mobile::kLOG_INFO)
+  paddle_mobile_lens::TestPoolOp<0, 3, 0, 1>(in_channels, in_height, in_width);
+  LOG(paddle_mobile_lens::kLOG_INFO)
       << "float, pooling_type=max, kernel=3, pad=1, stride=1";
-  paddle_mobile::TestPoolOp<0, 3, 1, 1>(in_channels, in_height, in_width);
-  LOG(paddle_mobile::kLOG_INFO)
+  paddle_mobile_lens::TestPoolOp<0, 3, 1, 1>(in_channels, in_height, in_width);
+  LOG(paddle_mobile_lens::kLOG_INFO)
       << "float, pooling_type=max, kernel=3, pad=2, stride=1";
-  paddle_mobile::TestPoolOp<0, 3, 2, 1>(in_channels, in_height, in_width);
-  LOG(paddle_mobile::kLOG_INFO)
+  paddle_mobile_lens::TestPoolOp<0, 3, 2, 1>(in_channels, in_height, in_width);
+  LOG(paddle_mobile_lens::kLOG_INFO)
       << "float, pooling_type=max, kernel=3, pad=5, stride=1";
-  paddle_mobile::TestPoolOp<0, 3, 5, 1>(in_channels, in_height, in_width);
+  paddle_mobile_lens::TestPoolOp<0, 3, 5, 1>(in_channels, in_height, in_width);
 
-  LOG(paddle_mobile::kLOG_INFO)
+  LOG(paddle_mobile_lens::kLOG_INFO)
       << "float, pooling_type=avg, kernel=3, pad=0, stride=1";
-  paddle_mobile::TestPoolOp<1, 3, 0, 1>(in_channels, in_height, in_width);
-  LOG(paddle_mobile::kLOG_INFO)
+  paddle_mobile_lens::TestPoolOp<1, 3, 0, 1>(in_channels, in_height, in_width);
+  LOG(paddle_mobile_lens::kLOG_INFO)
       << "float, pooling_type=avg, kernel=3, pad=1, stride=1";
-  paddle_mobile::TestPoolOp<1, 3, 1, 1>(in_channels, in_height, in_width);
-  LOG(paddle_mobile::kLOG_INFO)
+  paddle_mobile_lens::TestPoolOp<1, 3, 1, 1>(in_channels, in_height, in_width);
+  LOG(paddle_mobile_lens::kLOG_INFO)
       << "float, pooling_type=avg, kernel=3, pad=2, stride=1";
-  paddle_mobile::TestPoolOp<1, 3, 2, 1>(in_channels, in_height, in_width);
-  LOG(paddle_mobile::kLOG_INFO)
+  paddle_mobile_lens::TestPoolOp<1, 3, 2, 1>(in_channels, in_height, in_width);
+  LOG(paddle_mobile_lens::kLOG_INFO)
       << "float, pooling_type=avg, kernel=3, pad=5, stride=1";
-  paddle_mobile::TestPoolOp<1, 3, 5, 1>(in_channels, in_height, in_width);
+  paddle_mobile_lens::TestPoolOp<1, 3, 5, 1>(in_channels, in_height, in_width);
 
-  LOG(paddle_mobile::kLOG_INFO)
+  LOG(paddle_mobile_lens::kLOG_INFO)
       << "float, pooling_type=max, kernel=3, pad=0, stride=2";
-  paddle_mobile::TestPoolOp<0, 3, 0, 2>(in_channels, in_height, in_width);
-  LOG(paddle_mobile::kLOG_INFO)
+  paddle_mobile_lens::TestPoolOp<0, 3, 0, 2>(in_channels, in_height, in_width);
+  LOG(paddle_mobile_lens::kLOG_INFO)
       << "float, pooling_type=max, kernel=3, pad=1, stride=2";
-  paddle_mobile::TestPoolOp<0, 3, 1, 2>(in_channels, in_height, in_width);
-  LOG(paddle_mobile::kLOG_INFO)
+  paddle_mobile_lens::TestPoolOp<0, 3, 1, 2>(in_channels, in_height, in_width);
+  LOG(paddle_mobile_lens::kLOG_INFO)
       << "float, pooling_type=max, kernel=3, pad=2, stride=2";
-  paddle_mobile::TestPoolOp<0, 3, 2, 2>(in_channels, in_height, in_width);
-  LOG(paddle_mobile::kLOG_INFO)
+  paddle_mobile_lens::TestPoolOp<0, 3, 2, 2>(in_channels, in_height, in_width);
+  LOG(paddle_mobile_lens::kLOG_INFO)
       << "float, pooling_type=max, kernel=3, pad=5, stride=2";
-  paddle_mobile::TestPoolOp<0, 3, 5, 2>(in_channels, in_height, in_width);
+  paddle_mobile_lens::TestPoolOp<0, 3, 5, 2>(in_channels, in_height, in_width);
 
-  LOG(paddle_mobile::kLOG_INFO)
+  LOG(paddle_mobile_lens::kLOG_INFO)
       << "float, pooling_type=avg, kernel=3, pad=0, stride=2";
-  paddle_mobile::TestPoolOp<1, 3, 0, 2>(in_channels, in_height, in_width);
-  LOG(paddle_mobile::kLOG_INFO)
+  paddle_mobile_lens::TestPoolOp<1, 3, 0, 2>(in_channels, in_height, in_width);
+  LOG(paddle_mobile_lens::kLOG_INFO)
       << "float, pooling_type=avg, kernel=3, pad=1, stride=2";
-  paddle_mobile::TestPoolOp<1, 3, 1, 2>(in_channels, in_height, in_width);
-  LOG(paddle_mobile::kLOG_INFO)
+  paddle_mobile_lens::TestPoolOp<1, 3, 1, 2>(in_channels, in_height, in_width);
+  LOG(paddle_mobile_lens::kLOG_INFO)
       << "float, pooling_type=avg, kernel=3, pad=2, stride=2";
-  paddle_mobile::TestPoolOp<1, 3, 2, 2>(in_channels, in_height, in_width);
-  LOG(paddle_mobile::kLOG_INFO)
+  paddle_mobile_lens::TestPoolOp<1, 3, 2, 2>(in_channels, in_height, in_width);
+  LOG(paddle_mobile_lens::kLOG_INFO)
       << "float, pooling_type=avg, kernel=3, pad=5, stride=2";
-  paddle_mobile::TestPoolOp<1, 3, 5, 2>(in_channels, in_height, in_width);
+  paddle_mobile_lens::TestPoolOp<1, 3, 5, 2>(in_channels, in_height, in_width);
 
-  LOG(paddle_mobile::kLOG_INFO)
+  LOG(paddle_mobile_lens::kLOG_INFO)
       << "float, pooling_type=max, kernel=2, pad=0, stride=1";
-  paddle_mobile::TestPoolOp<0, 2, 0, 1>(in_channels, in_height, in_width);
-  LOG(paddle_mobile::kLOG_INFO)
+  paddle_mobile_lens::TestPoolOp<0, 2, 0, 1>(in_channels, in_height, in_width);
+  LOG(paddle_mobile_lens::kLOG_INFO)
       << "float, pooling_type=max, kernel=2, pad=1, stride=1";
-  paddle_mobile::TestPoolOp<0, 2, 1, 1>(in_channels, in_height, in_width);
-  LOG(paddle_mobile::kLOG_INFO)
+  paddle_mobile_lens::TestPoolOp<0, 2, 1, 1>(in_channels, in_height, in_width);
+  LOG(paddle_mobile_lens::kLOG_INFO)
       << "float, pooling_type=max, kernel=2, pad=2, stride=1";
-  paddle_mobile::TestPoolOp<0, 2, 2, 1>(in_channels, in_height, in_width);
-  LOG(paddle_mobile::kLOG_INFO)
+  paddle_mobile_lens::TestPoolOp<0, 2, 2, 1>(in_channels, in_height, in_width);
+  LOG(paddle_mobile_lens::kLOG_INFO)
       << "float, pooling_type=max, kernel=2, pad=5, stride=1";
-  paddle_mobile::TestPoolOp<0, 2, 5, 1>(in_channels, in_height, in_width);
+  paddle_mobile_lens::TestPoolOp<0, 2, 5, 1>(in_channels, in_height, in_width);
 
-  LOG(paddle_mobile::kLOG_INFO)
+  LOG(paddle_mobile_lens::kLOG_INFO)
       << "float, pooling_type=avg, kernel=2, pad=0, stride=1";
-  paddle_mobile::TestPoolOp<1, 2, 0, 1>(in_channels, in_height, in_width);
-  LOG(paddle_mobile::kLOG_INFO)
+  paddle_mobile_lens::TestPoolOp<1, 2, 0, 1>(in_channels, in_height, in_width);
+  LOG(paddle_mobile_lens::kLOG_INFO)
       << "float, pooling_type=avg, kernel=2, pad=1, stride=1";
-  paddle_mobile::TestPoolOp<1, 2, 1, 1>(in_channels, in_height, in_width);
-  LOG(paddle_mobile::kLOG_INFO)
+  paddle_mobile_lens::TestPoolOp<1, 2, 1, 1>(in_channels, in_height, in_width);
+  LOG(paddle_mobile_lens::kLOG_INFO)
       << "float, pooling_type=avg, kernel=2, pad=2, stride=1";
-  paddle_mobile::TestPoolOp<1, 2, 2, 1>(in_channels, in_height, in_width);
-  LOG(paddle_mobile::kLOG_INFO)
+  paddle_mobile_lens::TestPoolOp<1, 2, 2, 1>(in_channels, in_height, in_width);
+  LOG(paddle_mobile_lens::kLOG_INFO)
       << "float, pooling_type=avg, kernel=2, pad=5, stride=1";
-  paddle_mobile::TestPoolOp<1, 2, 5, 1>(in_channels, in_height, in_width);
+  paddle_mobile_lens::TestPoolOp<1, 2, 5, 1>(in_channels, in_height, in_width);
 
-  LOG(paddle_mobile::kLOG_INFO)
+  LOG(paddle_mobile_lens::kLOG_INFO)
       << "float, pooling_type=max, kernel=2, pad=0, stride=2";
-  paddle_mobile::TestPoolOp<0, 2, 0, 2>(in_channels, in_height, in_width);
-  LOG(paddle_mobile::kLOG_INFO)
+  paddle_mobile_lens::TestPoolOp<0, 2, 0, 2>(in_channels, in_height, in_width);
+  LOG(paddle_mobile_lens::kLOG_INFO)
       << "float, pooling_type=max, kernel=2, pad=1, stride=2";
-  paddle_mobile::TestPoolOp<0, 2, 1, 2>(in_channels, in_height, in_width);
-  LOG(paddle_mobile::kLOG_INFO)
+  paddle_mobile_lens::TestPoolOp<0, 2, 1, 2>(in_channels, in_height, in_width);
+  LOG(paddle_mobile_lens::kLOG_INFO)
       << "float, pooling_type=max, kernel=2, pad=2, stride=2";
-  paddle_mobile::TestPoolOp<0, 2, 2, 2>(in_channels, in_height, in_width);
-  LOG(paddle_mobile::kLOG_INFO)
+  paddle_mobile_lens::TestPoolOp<0, 2, 2, 2>(in_channels, in_height, in_width);
+  LOG(paddle_mobile_lens::kLOG_INFO)
       << "float, pooling_type=max, kernel=2, pad=5, stride=2";
-  paddle_mobile::TestPoolOp<0, 2, 5, 2>(in_channels, in_height, in_width);
+  paddle_mobile_lens::TestPoolOp<0, 2, 5, 2>(in_channels, in_height, in_width);
 
-  LOG(paddle_mobile::kLOG_INFO)
+  LOG(paddle_mobile_lens::kLOG_INFO)
       << "float, pooling_type=avg, kernel=2, pad=0, stride=2";
-  paddle_mobile::TestPoolOp<1, 2, 0, 2>(in_channels, in_height, in_width);
-  LOG(paddle_mobile::kLOG_INFO)
+  paddle_mobile_lens::TestPoolOp<1, 2, 0, 2>(in_channels, in_height, in_width);
+  LOG(paddle_mobile_lens::kLOG_INFO)
       << "float, pooling_type=avg, kernel=2, pad=1, stride=2";
-  paddle_mobile::TestPoolOp<1, 2, 1, 2>(in_channels, in_height, in_width);
-  LOG(paddle_mobile::kLOG_INFO)
+  paddle_mobile_lens::TestPoolOp<1, 2, 1, 2>(in_channels, in_height, in_width);
+  LOG(paddle_mobile_lens::kLOG_INFO)
       << "float, pooling_type=avg, kernel=2, pad=2, stride=2";
-  paddle_mobile::TestPoolOp<1, 2, 2, 2>(in_channels, in_height, in_width);
-  LOG(paddle_mobile::kLOG_INFO)
+  paddle_mobile_lens::TestPoolOp<1, 2, 2, 2>(in_channels, in_height, in_width);
+  LOG(paddle_mobile_lens::kLOG_INFO)
       << "float, pooling_type=avg, kernel=2, pad=5, stride=2";
-  paddle_mobile::TestPoolOp<1, 2, 5, 2>(in_channels, in_height, in_width);
+  paddle_mobile_lens::TestPoolOp<1, 2, 5, 2>(in_channels, in_height, in_width);
 }
 
 int main(int argc, char *argv[]) {
   //  if (argc < 4) {
-  //    LOG(paddle_mobile::kLOG_INFO)
+  //    LOG(paddle_mobile_lens::kLOG_INFO)
   //        << "Usage:\n"
   //        << "  ./test-pool-op in_channels in_height in_width \n"
   //        << "  params:\n"

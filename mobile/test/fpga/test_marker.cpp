@@ -29,8 +29,8 @@ limitations under the License. */
 #include <iostream>
 #include "../../src/io/paddle_inference_api.h"
 
-using namespace paddle_mobile;        // NOLINT
-using namespace paddle_mobile::fpga;  // NOLINT
+using namespace paddle_mobile_lens;        // NOLINT
+using namespace paddle_mobile_lens::fpga;  // NOLINT
 
 static const char *g_image = "../models/marker/marker1/image.bin";
 static const char *g_model = "../models/marker/marker1/model";

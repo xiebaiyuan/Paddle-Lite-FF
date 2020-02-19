@@ -40,7 +40,7 @@ limitations under the License. */
 
 #define s_min(i, j) ((i) < (j) ? (i) : (j))
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 namespace math {
 
@@ -309,13 +309,13 @@ void Gemm::Sgemm(int32_t m, int32_t n, int32_t k, float alpha, const int8_t *A,
   }
   //  DLOG << "nblock_num = " << nblock_num << ", NC = " << NC << "\n";
   packedA_int8 = static_cast<int8_t *>(
-      paddle_mobile::memory::Alloc(sizeof(int8_t) * MC * KC));
+      paddle_mobile_lens::memory::Alloc(sizeof(int8_t) * MC * KC));
   packedB_int8 = static_cast<int8_t *>(
-      paddle_mobile::memory::Alloc(sizeof(int8_t) * KC * NC));
+      paddle_mobile_lens::memory::Alloc(sizeof(int8_t) * KC * NC));
   packedC_int32 = static_cast<int32_t *>(
-      paddle_mobile::memory::Alloc(sizeof(int32_t) * MC * NC));
+      paddle_mobile_lens::memory::Alloc(sizeof(int32_t) * MC * NC));
   zero_int8 =
-      static_cast<int8_t *>(paddle_mobile::memory::Alloc(sizeof(int8_t) * k));
+      static_cast<int8_t *>(paddle_mobile_lens::memory::Alloc(sizeof(int8_t) * k));
 
   memset(static_cast<void *>(zero_int8), 0, sizeof(int8_t) * k);
   int32_t mc, nc;
@@ -346,10 +346,10 @@ void Gemm::Sgemm(int32_t m, int32_t n, int32_t k, float alpha, const int8_t *A,
     }
   }
 
-  paddle_mobile::memory::Free(packedA_int8);
-  paddle_mobile::memory::Free(packedB_int8);
-  paddle_mobile::memory::Free(packedC_int32);
-  paddle_mobile::memory::Free(zero_int8);
+  paddle_mobile_lens::memory::Free(packedA_int8);
+  paddle_mobile_lens::memory::Free(packedB_int8);
+  paddle_mobile_lens::memory::Free(packedC_int32);
+  paddle_mobile_lens::memory::Free(zero_int8);
 }
 
 // 8 bits int matrix product (m*k x k*n), omp version
@@ -368,7 +368,7 @@ void Gemm::Sgemm_omp(int32_t m, int32_t n, int32_t k, float alpha,
   const int32_t k_complete = (k + 15) - ((k + 15) & 15);
   KC = k_complete;
   zero_int8 =
-      static_cast<int8_t *>(paddle_mobile::memory::Alloc(sizeof(int8_t) * k));
+      static_cast<int8_t *>(paddle_mobile_lens::memory::Alloc(sizeof(int8_t) * k));
   memset(static_cast<void *>(zero_int8), 0, sizeof(int8_t) * k);
   if (m > n) {
     // 对 A 分块
@@ -384,14 +384,14 @@ void Gemm::Sgemm_omp(int32_t m, int32_t n, int32_t k, float alpha,
     NC = (n + NR_INT8 - 1) / NR_INT8 * NR_INT8;
 
     packedB_int8 = static_cast<int8_t *>(
-        paddle_mobile::memory::Alloc(sizeof(int8_t) * KC * NC));
+        paddle_mobile_lens::memory::Alloc(sizeof(int8_t) * KC * NC));
 #if __aarch64__
     PackMatrixB_omp_4c_16(k, n, n % NR_INT8, B, ldb, packedB_int8);
 #else
     PackMatrixB_omp_2c_16(k, n, n % NR_INT8, B, ldb, packedB_int8);
 #endif
     packedA_int8 = static_cast<int8_t *>(
-        paddle_mobile::memory::Alloc(sizeof(int8_t) * MC * KC * max_threads));
+        paddle_mobile_lens::memory::Alloc(sizeof(int8_t) * MC * KC * max_threads));
   } else {
     // 对 B 分块
     NC = L1 / (KC * sizeof(int8_t));
@@ -406,17 +406,17 @@ void Gemm::Sgemm_omp(int32_t m, int32_t n, int32_t k, float alpha,
     MC = (m + MR_INT8 - 1) / MR_INT8 * MR_INT8;
 
     packedA_int8 = static_cast<int8_t *>(
-        paddle_mobile::memory::Alloc(sizeof(int8_t) * MC * KC));
+        paddle_mobile_lens::memory::Alloc(sizeof(int8_t) * MC * KC));
 #if __aarch64__
     PackMatrixA_omp_4r_16(m, k, m % MR_INT8, A, lda, packedA_int8);
 #else
     PackMatrixA_omp_4r_16(m, k, m % MR_INT8, A, lda, packedA_int8);
 #endif
     packedB_int8 = static_cast<int8_t *>(
-        paddle_mobile::memory::Alloc(sizeof(int8_t) * KC * NC * max_threads));
+        paddle_mobile_lens::memory::Alloc(sizeof(int8_t) * KC * NC * max_threads));
   }
   packedC_int32 = static_cast<int32_t *>(
-      paddle_mobile::memory::Alloc(sizeof(int32_t) * MC * NC * max_threads));
+      paddle_mobile_lens::memory::Alloc(sizeof(int32_t) * MC * NC * max_threads));
 
   if (m > n) {
 #pragma omp parallel for
@@ -481,12 +481,12 @@ void Gemm::Sgemm_omp(int32_t m, int32_t n, int32_t k, float alpha,
     }
   }
 
-  paddle_mobile::memory::Free(packedA_int8);
-  paddle_mobile::memory::Free(packedB_int8);
-  paddle_mobile::memory::Free(packedC_int32);
-  paddle_mobile::memory::Free(zero_int8);
+  paddle_mobile_lens::memory::Free(packedA_int8);
+  paddle_mobile_lens::memory::Free(packedB_int8);
+  paddle_mobile_lens::memory::Free(packedC_int32);
+  paddle_mobile_lens::memory::Free(zero_int8);
 }
 
 }  // namespace math
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

@@ -25,7 +25,7 @@ limitations under the License. */
 #include "framework/cl/cl_deleter.h"
 #include "framework/cl/cl_tool.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 class CLLocalWorkSizeInfo {
@@ -264,4 +264,4 @@ class CLEngine {
 };
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

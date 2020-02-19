@@ -30,16 +30,16 @@ limitations under the License. */
 extern "C" {
 #endif
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace jni {
 
 using framework::DDim;
 using framework::Program;
 using framework::Tensor;
-using paddle_mobile::CPU;
+using paddle_mobile_lens::CPU;
 using std::string;
 
-paddle_mobile::PaddleMobile<paddle_mobile::CPU> paddle_mobile;
+paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::CPU> paddle_mobile;
 static std::mutex shared_mutex;
 
 PaddleMobile<CPU> *getPaddleMobileInstance() { return &paddle_mobile; }
@@ -64,7 +64,7 @@ JNIEXPORT jboolean JNICALL Java_com_baidu_paddle_PML_load(JNIEnv *env,
     isLoadOk = getPaddleMobileInstance()->Load(
         jstring2cppstring(env, modelPath), optimize, false, 1,
         static_cast<bool>(lodMode));
-  } catch (paddle_mobile::PaddleMobileException &e) {
+  } catch (paddle_mobile_lens::PaddleMobileException &e) {
     ANDROIDLOGE("jni got an PaddleMobileException! ", e.what());
     isLoadOk = false;
   }
@@ -90,7 +90,7 @@ JNIEXPORT jboolean JNICALL Java_com_baidu_paddle_PML_loadQualified(
     isLoadOk = getPaddleMobileInstance()->Load(
         jstring2cppstring(env, modelPath), optimize, qualified, 1,
         static_cast<bool>(lodMode));
-  } catch (paddle_mobile::PaddleMobileException &e) {
+  } catch (paddle_mobile_lens::PaddleMobileException &e) {
     ANDROIDLOGE("jni got an PaddleMobileException! ", e.what());
     isLoadOk = false;
   }
@@ -116,7 +116,7 @@ JNIEXPORT jboolean JNICALL Java_com_baidu_paddle_PML_loadCombined(
     isLoadOk = getPaddleMobileInstance()->Load(
         jstring2cppstring(env, modelPath), jstring2cppstring(env, paramPath),
         optimize, false, 1, static_cast<bool>(lodMode));
-  } catch (paddle_mobile::PaddleMobileException &e) {
+  } catch (paddle_mobile_lens::PaddleMobileException &e) {
     ANDROIDLOGE("jni got an PaddleMobileException! ", e.what());
     isLoadOk = false;
   }
@@ -142,7 +142,7 @@ JNIEXPORT jboolean JNICALL Java_com_baidu_paddle_PML_loadCombinedQualified(
     isLoadOk = getPaddleMobileInstance()->Load(
         jstring2cppstring(env, modelPath), jstring2cppstring(env, paramPath),
         optimize, qualified, 1, static_cast<bool>(lodMode));
-  } catch (paddle_mobile::PaddleMobileException &e) {
+  } catch (paddle_mobile_lens::PaddleMobileException &e) {
     ANDROIDLOGE("jni got an PaddleMobileException! ", e.what());
     isLoadOk = false;
   }
@@ -193,7 +193,7 @@ JNIEXPORT jfloatArray JNICALL Java_com_baidu_paddle_PML_predictImage(
     env->DeleteLocalRef(ddims);
     env->ReleaseFloatArrayElements(buf, dataPointer, 0);
     env->DeleteLocalRef(buf);
-  } catch (paddle_mobile::PaddleMobileException &e) {
+  } catch (paddle_mobile_lens::PaddleMobileException &e) {
     ANDROIDLOGE("jni got an PaddleMobileException! ", e.what());
   }
 #else
@@ -244,7 +244,7 @@ JNIEXPORT jfloatArray JNICALL Java_com_baidu_paddle_PML_fetch(JNIEnv *env,
     int count = output->numel();
     result = env->NewFloatArray(count);
     env->SetFloatArrayRegion(result, 0, count, output->data<float>());
-  } catch (paddle_mobile::PaddleMobileException &e) {
+  } catch (paddle_mobile_lens::PaddleMobileException &e) {
     ANDROIDLOGE("jni got an PaddleMobileException! ", e.what());
   }
 #else
@@ -346,7 +346,7 @@ JNIEXPORT jfloatArray JNICALL Java_com_baidu_paddle_PML_predictYuv(
     env->ReleaseIntArrayElements(ddims, ddim_ptr, 0);
     env->ReleaseFloatArrayElements(meanValues, meansPointer, 0);
     ANDROIDLOGI("predictYuv finished");
-  } catch (paddle_mobile::PaddleMobileException &e) {
+  } catch (paddle_mobile_lens::PaddleMobileException &e) {
     ANDROIDLOGE("jni got an PaddleMobileException! ", e.what());
   }
 #else
@@ -399,11 +399,11 @@ Java_com_baidu_paddle_PML_predictLod(JNIEnv *env, jclass thiz, jlongArray buf) {
     ids.push_back((int64_t)x);
   }
 
-  paddle_mobile::framework::LoDTensor words;
+  paddle_mobile_lens::framework::LoDTensor words;
 
   auto size = static_cast<int>(ids.size());
 
-  paddle_mobile::framework::LoD lod{{0, ids.size()}};
+  paddle_mobile_lens::framework::LoD lod{{0, ids.size()}};
   DDim dims{size, 1};
   words.Resize(dims);
   words.set_lod(lod);
@@ -432,7 +432,7 @@ JNIEXPORT void JNICALL Java_com_baidu_paddle_PML_setThread(JNIEnv *env,
 #ifdef ENABLE_EXCEPTION
   try {
     getPaddleMobileInstance()->SetThreadNum(static_cast<int>(threadCount));
-  } catch (paddle_mobile::PaddleMobileException &e) {
+  } catch (paddle_mobile_lens::PaddleMobileException &e) {
     ANDROIDLOGE("jni got an PaddleMobileException! ", e.what());
   }
 #else
@@ -447,7 +447,7 @@ JNIEXPORT void JNICALL Java_com_baidu_paddle_PML_clear(JNIEnv *env,
 #ifdef ENABLE_EXCEPTION
   try {
     getPaddleMobileInstance()->Clear();
-  } catch (paddle_mobile::PaddleMobileException &e) {
+  } catch (paddle_mobile_lens::PaddleMobileException &e) {
     ANDROIDLOGE("jni got an PaddleMobileException! ", e.what());
   }
 #else
@@ -456,7 +456,7 @@ JNIEXPORT void JNICALL Java_com_baidu_paddle_PML_clear(JNIEnv *env,
 }
 
 }  // namespace jni
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #ifdef __cplusplus
 }

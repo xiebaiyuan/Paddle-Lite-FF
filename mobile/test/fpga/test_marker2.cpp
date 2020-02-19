@@ -80,7 +80,7 @@ void dump_stride_half(std::string filename, Tensor input_tensor,
   int stride = input_tensor.numel() / dumpnum;
   stride = stride > 0 ? stride : 1;
   for (int i = 0; i < input_tensor.numel(); i += stride) {
-    result = paddle_mobile::fpga::fp16_2_fp32(data_tmp[i]);
+    result = paddle_mobile_lens::fpga::fp16_2_fp32(data_tmp[i]);
     out << result << std::endl;
   }
   out.close();
@@ -125,8 +125,8 @@ static const char *g_image_src_float =
     "../models/marker/marker_2segment/marker_2.bin";
 // static const char *g_image_src_float = "../models/marker/model2/data.bin";
 int main() {
-  paddle_mobile::fpga::open_device();
-  paddle_mobile::PaddleMobile<paddle_mobile::FPGA> paddle_mobile;
+  paddle_mobile_lens::fpga::open_device();
+  paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::FPGA> paddle_mobile;
 
   if (paddle_mobile.Load(std::string(g_marker_combine) + "/model",
                          std::string(g_marker_combine) + "/params", true, false,
@@ -164,7 +164,7 @@ int main() {
       auto tensor_ptr = paddle_mobile.FetchResult(i);
       std::string saveName = "marker_" + std::to_string(i);
       // if(i != 58)
-      paddle_mobile::fpga::fpga_invalidate((*tensor_ptr).get_data(),
+      paddle_mobile_lens::fpga::fpga_invalidate((*tensor_ptr).get_data(),
                                            tensor_ptr->numel() * sizeof(float));
       //                                   tensor_ptr->numel() * sizeof(float));
 

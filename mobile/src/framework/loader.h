@@ -19,7 +19,7 @@ limitations under the License. */
 #include "common/types.h"
 #include "framework/program/program.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 template <typename Device = CPU, typename T = float>
@@ -63,4 +63,4 @@ class Loader {
 };
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

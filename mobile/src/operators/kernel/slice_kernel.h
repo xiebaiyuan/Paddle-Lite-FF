@@ -17,7 +17,7 @@ limitations under the License. */
 
 #pragma once
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <typename DeviceType, typename T>
@@ -28,4 +28,4 @@ class SliceKernel
   bool Init(SliceParam<DeviceType>* param);
 };
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

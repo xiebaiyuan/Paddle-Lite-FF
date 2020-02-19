@@ -16,7 +16,7 @@ limitations under the License. */
 
 #include "operators/sequence_ops/sequence_softmax_op.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <typename DeviceType, typename T>
@@ -29,9 +29,9 @@ void SequenceSoftmaxOp<DeviceType, T>::InferShape() const {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
-namespace ops = paddle_mobile::operators;
+namespace ops = paddle_mobile_lens::operators;
 #ifdef PADDLE_MOBILE_CPU
 REGISTER_OPERATOR_CPU(sequence_softmax, ops::SequenceSoftmaxOp);
 #endif

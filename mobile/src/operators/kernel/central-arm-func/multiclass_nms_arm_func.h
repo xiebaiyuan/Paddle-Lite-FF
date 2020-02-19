@@ -23,7 +23,7 @@ limitations under the License. */
 #include "operators/math/poly_util.h"
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <class T>
@@ -302,6 +302,6 @@ void MultiClassNMSCompute(const MultiClassNMSParam<CPU>& param) {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

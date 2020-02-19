@@ -17,7 +17,7 @@ limitations under the License. */
 #include "io/api_paddle_mobile.h"
 #include "io/paddle_mobile.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace wrap {
 
 #ifndef PADDLE_MOBILE_FPGA
@@ -64,7 +64,7 @@ DDim Tensor::dims() const { return this->ddim_; }
 void Net::SetThreadNum(int threads) {
   if (this->device_ == kCPU) {
     auto engine =
-        (paddle_mobile::PaddleMobile<paddle_mobile::CPU> *)this->engine_;
+        (paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::CPU> *)this->engine_;
     if (engine != nullptr) {
       engine->SetThreadNum(threads);
     }
@@ -75,7 +75,7 @@ void Net::SetCLPath(std::string path) {
 #ifdef PADDLE_MOBILE_CL
   if (this->device_ == kGPU_CL) {
     auto engine =
-        (paddle_mobile::PaddleMobile<paddle_mobile::GPU_CL> *)this->engine_;
+        (paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::GPU_CL> *)this->engine_;
     engine->SetCLPath(path);
   }
 #endif
@@ -86,20 +86,20 @@ bool Net::Load(const std::string &dirname, const bool optimize,
                const bool lod_mode) {
   if (this->device_ == kCPU) {
     auto engine =
-        (paddle_mobile::PaddleMobile<paddle_mobile::CPU> *)this->engine_;
+        (paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::CPU> *)this->engine_;
     if (engine != nullptr) {
-      paddle_mobile::PMStatus status =
+      paddle_mobile_lens::PMStatus status =
           engine->Load(dirname, optimize, quantification, batch_size, lod_mode);
-      return status == paddle_mobile::PMSuccess;
+      return status == paddle_mobile_lens::PMSuccess;
     }
   } else if (this->device_ == kGPU_CL) {
 #ifdef PADDLE_MOBILE_CL
     auto engine =
-        (paddle_mobile::PaddleMobile<paddle_mobile::GPU_CL> *)this->engine_;
+        (paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::GPU_CL> *)this->engine_;
     if (engine != nullptr) {
-      paddle_mobile::PMStatus status =
+      paddle_mobile_lens::PMStatus status =
           engine->Load(dirname, optimize, quantification, batch_size, lod_mode);
-      return status == paddle_mobile::PMSuccess;
+      return status == paddle_mobile_lens::PMSuccess;
     }
 #else
     return false;
@@ -113,22 +113,22 @@ bool Net::Load(const std::string &model_path, const std::string &para_path,
                const int batch_size, const bool lod_mode) {
   if (this->device_ == kCPU) {
     auto engine =
-        (paddle_mobile::PaddleMobile<paddle_mobile::CPU> *)this->engine_;
+        (paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::CPU> *)this->engine_;
     if (engine != nullptr) {
-      paddle_mobile::PMStatus status =
+      paddle_mobile_lens::PMStatus status =
           engine->Load(model_path, para_path, optimize, quantification,
                        batch_size, lod_mode);
-      return status == paddle_mobile::PMSuccess;
+      return status == paddle_mobile_lens::PMSuccess;
     }
   } else if (this->device_ == kGPU_CL) {
 #ifdef PADDLE_MOBILE_CL
     auto engine =
-        (paddle_mobile::PaddleMobile<paddle_mobile::GPU_CL> *)this->engine_;
+        (paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::GPU_CL> *)this->engine_;
     if (engine != nullptr) {
-      paddle_mobile::PMStatus status =
+      paddle_mobile_lens::PMStatus status =
           engine->Load(model_path, para_path, optimize, quantification,
                        batch_size, lod_mode);
-      return status == paddle_mobile::PMSuccess;
+      return status == paddle_mobile_lens::PMSuccess;
     }
 #else
     return false;
@@ -144,7 +144,7 @@ bool Net::LoadCombinedMemory(size_t model_len, const uint8_t *model_buf,
                              bool lod_mode) {
   if (this->device_ == kCPU) {
     auto engine =
-        (paddle_mobile::PaddleMobile<paddle_mobile::CPU> *)this->engine_;
+        (paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::CPU> *)this->engine_;
     if (engine != nullptr) {
       bool status = engine->LoadCombinedMemory(
           model_len, model_buf, combined_params_len, combined_params_buf,
@@ -154,7 +154,7 @@ bool Net::LoadCombinedMemory(size_t model_len, const uint8_t *model_buf,
   } else if (this->device_ == kGPU_CL) {
 #ifdef PADDLE_MOBILE_CL
     auto engine =
-        (paddle_mobile::PaddleMobile<paddle_mobile::GPU_CL> *)this->engine_;
+        (paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::GPU_CL> *)this->engine_;
     if (engine != nullptr) {
       bool status = engine->LoadCombinedMemory(
           model_len, model_buf, combined_params_len, combined_params_buf,
@@ -172,7 +172,7 @@ std::vector<float> Net::Predict(const std::vector<float> &input,
                                 const std::vector<int64_t> &dims) {
   if (this->device_ == kCPU) {
     auto engine =
-        (paddle_mobile::PaddleMobile<paddle_mobile::CPU> *)this->engine_;
+        (paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::CPU> *)this->engine_;
     if (engine != nullptr) {
       auto result = engine->Predict(input, dims);
       return result;
@@ -180,7 +180,7 @@ std::vector<float> Net::Predict(const std::vector<float> &input,
   } else if (this->device_ == kGPU_CL) {
 #ifdef PADDLE_MOBILE_CL
     auto engine =
-        (paddle_mobile::PaddleMobile<paddle_mobile::GPU_CL> *)this->engine_;
+        (paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::GPU_CL> *)this->engine_;
     if (engine != nullptr) {
       auto result = engine->Predict(input, dims);
       return result;
@@ -195,18 +195,18 @@ std::vector<float> Net::Predict(const std::vector<float> &input,
 bool Net::Predict() {
   if (this->device_ == kCPU) {
     auto engine =
-        (paddle_mobile::PaddleMobile<paddle_mobile::CPU> *)this->engine_;
+        (paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::CPU> *)this->engine_;
     if (engine != nullptr) {
-      paddle_mobile::PMStatus status = engine->Predict();
-      return status == paddle_mobile::PMSuccess;
+      paddle_mobile_lens::PMStatus status = engine->Predict();
+      return status == paddle_mobile_lens::PMSuccess;
     }
   } else if (this->device_ == kGPU_CL) {
 #ifdef PADDLE_MOBILE_CL
     auto engine =
-        (paddle_mobile::PaddleMobile<paddle_mobile::GPU_CL> *)this->engine_;
+        (paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::GPU_CL> *)this->engine_;
     if (engine != nullptr) {
-      paddle_mobile::PMStatus status = engine->Predict();
-      return status == paddle_mobile::PMSuccess;
+      paddle_mobile_lens::PMStatus status = engine->Predict();
+      return status == paddle_mobile_lens::PMSuccess;
     }
 #else
     return false;
@@ -218,30 +218,30 @@ bool Net::Predict() {
 bool Net::Predict(const Tensor &input) {
   if (this->device_ == kCPU) {
     auto engine =
-        (paddle_mobile::PaddleMobile<paddle_mobile::CPU> *)this->engine_;
+        (paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::CPU> *)this->engine_;
     if (engine != nullptr) {
       auto input_data = input.data();
       auto input_dims = input.dims();
       std::vector<int64_t> input_dims_as_vector = input_dims.dims;
-      paddle_mobile::framework::Tensor input_inner(
+      paddle_mobile_lens::framework::Tensor input_inner(
           input_data,
-          paddle_mobile::framework::make_ddim(input_dims_as_vector));
-      paddle_mobile::PMStatus status = engine->Predict(input_inner);
-      return status == paddle_mobile::PMSuccess;
+          paddle_mobile_lens::framework::make_ddim(input_dims_as_vector));
+      paddle_mobile_lens::PMStatus status = engine->Predict(input_inner);
+      return status == paddle_mobile_lens::PMSuccess;
     }
   } else if (this->device_ == kGPU_CL) {
 #ifdef PADDLE_MOBILE_CL
     auto engine =
-        (paddle_mobile::PaddleMobile<paddle_mobile::GPU_CL> *)this->engine_;
+        (paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::GPU_CL> *)this->engine_;
     if (engine != nullptr) {
       auto input_data = input.data();
       auto input_dims = input.dims();
       std::vector<int64_t> input_dims_as_vector = input_dims.dims;
-      paddle_mobile::framework::Tensor input_inner(
+      paddle_mobile_lens::framework::Tensor input_inner(
           input_data,
-          paddle_mobile::framework::make_ddim(input_dims_as_vector));
-      paddle_mobile::PMStatus status = engine->Predict(input_inner);
-      return status == paddle_mobile::PMSuccess;
+          paddle_mobile_lens::framework::make_ddim(input_dims_as_vector));
+      paddle_mobile_lens::PMStatus status = engine->Predict(input_inner);
+      return status == paddle_mobile_lens::PMSuccess;
     }
 #else
     return false;
@@ -253,27 +253,27 @@ bool Net::Predict(const Tensor &input) {
 void Net::Feed(const std::string &var_name, const Tensor &input) {
   if (this->device_ == kCPU) {
     auto engine =
-        (paddle_mobile::PaddleMobile<paddle_mobile::CPU> *)this->engine_;
+        (paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::CPU> *)this->engine_;
     if (engine != nullptr) {
       auto input_data = input.data();
       auto input_dims = input.dims();
       std::vector<int64_t> input_dims_as_vector = input_dims.dims;
-      paddle_mobile::framework::Tensor input_inner(
+      paddle_mobile_lens::framework::Tensor input_inner(
           input_data,
-          paddle_mobile::framework::make_ddim(input_dims_as_vector));
+          paddle_mobile_lens::framework::make_ddim(input_dims_as_vector));
       engine->Feed(var_name, input_inner);
     }
   } else if (this->device_ == kGPU_CL) {
 #ifdef PADDLE_MOBILE_CL
     auto engine =
-        (paddle_mobile::PaddleMobile<paddle_mobile::GPU_CL> *)this->engine_;
+        (paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::GPU_CL> *)this->engine_;
     if (engine != nullptr) {
       auto input_data = input.data();
       auto input_dims = input.dims();
       std::vector<int64_t> input_dims_as_vector = input_dims.dims;
-      paddle_mobile::framework::Tensor input_inner(
+      paddle_mobile_lens::framework::Tensor input_inner(
           input_data,
-          paddle_mobile::framework::make_ddim(input_dims_as_vector));
+          paddle_mobile_lens::framework::make_ddim(input_dims_as_vector));
       engine->Feed(var_name, input_inner);
     }
 #else
@@ -285,7 +285,7 @@ void Net::Feed(const std::string &var_name, const Tensor &input) {
 std::shared_ptr<Tensor> Net::Fetch(const std::string &var_name) {
   if (this->device_ == kCPU) {
     auto engine =
-        (paddle_mobile::PaddleMobile<paddle_mobile::CPU> *)this->engine_;
+        (paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::CPU> *)this->engine_;
     if (engine != nullptr) {
       auto output_inner = engine->Fetch(var_name);
       auto ddim_inner = output_inner->dims();
@@ -301,7 +301,7 @@ std::shared_ptr<Tensor> Net::Fetch(const std::string &var_name) {
   } else if (this->device_ == kGPU_CL) {
 #ifdef PADDLE_MOBILE_CL
     auto engine =
-        (paddle_mobile::PaddleMobile<paddle_mobile::GPU_CL> *)this->engine_;
+        (paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::GPU_CL> *)this->engine_;
     if (engine != nullptr) {
       auto output_inner = engine->Fetch(var_name);
       auto ddim_inner = output_inner->dims();
@@ -327,11 +327,11 @@ Net::Net(DeviceTypeEnum device) {
     this->device_ = device;
     if (this->device_ == kCPU) {
       this->engine_ =
-          new paddle_mobile::PaddleMobile<paddle_mobile::CPU>(config);
+          new paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::CPU>(config);
     } else if (this->device_ == kGPU_CL) {
 #ifdef PADDLE_MOBILE_CL
       this->engine_ =
-          new paddle_mobile::PaddleMobile<paddle_mobile::GPU_CL>(config);
+          new paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::GPU_CL>(config);
 #endif
     }
   }
@@ -341,13 +341,13 @@ Net::~Net() {
   if (this->engine_ != nullptr) {
     if (this->device_ == kCPU) {
       auto engine =
-          (paddle_mobile::PaddleMobile<paddle_mobile::CPU> *)this->engine_;
+          (paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::CPU> *)this->engine_;
       delete engine;
       this->engine_ = nullptr;
     } else if (this->device_ == kGPU_CL) {
 #ifdef PADDLE_MOBILE_CL
       auto engine =
-          (paddle_mobile::PaddleMobile<paddle_mobile::GPU_CL> *)this->engine_;
+          (paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::GPU_CL> *)this->engine_;
       delete engine;
       this->engine_ = nullptr;
 #endif
@@ -358,4 +358,4 @@ Net::~Net() {
 #endif
 
 }  // namespace wrap
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

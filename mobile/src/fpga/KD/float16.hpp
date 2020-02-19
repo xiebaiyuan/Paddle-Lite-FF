@@ -14,7 +14,7 @@ limitations under the License. */
 
 #pragma once
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace zynqmp {
 
 typedef uint16_t float16;
@@ -503,4 +503,4 @@ inline float half_to_float(float16 h) {
 }
 
 }  // namespace zynqmp
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

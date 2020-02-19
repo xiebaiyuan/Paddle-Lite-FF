@@ -20,7 +20,7 @@ limitations under the License. */
 #include <vector>
 #include "operators/kernel/detection_kernel.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -82,6 +82,6 @@ void AnchorGeneratorKernel<FPGA, float>::Compute(
     const AnchorGeneratorParam<FPGA> &param) {}
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // ANCHOR_GENERATOR_OP

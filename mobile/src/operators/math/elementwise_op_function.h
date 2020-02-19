@@ -17,7 +17,7 @@ limitations under the License. */
 
 #define UNLIKELY(condition) __builtin_expect(static_cast<bool>(condition), 0)
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 /*
@@ -175,4 +175,4 @@ void ElementwiseComputeEx(const framework::Tensor *x,
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

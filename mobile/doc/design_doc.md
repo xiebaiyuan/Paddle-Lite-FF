@@ -103,7 +103,7 @@ executor 主要是用于 op 运算的上层调度操作, 主要有两个操作, 
 
 ```c++
 // 三个平台都注册了 conv op
-namespace ops = paddle_mobile::operators;
+namespace ops = paddle_mobile_lens::operators;
 #ifdef PADDLE_MOBILE_CPU
 USE_OP_CPU(conv2d);
 REGISTER_OPERATOR_CPU(conv2d, ops::ConvOp);
@@ -130,7 +130,7 @@ __一个关于包大小的优化__:
 #include "framework/operator.h"
 #include "operators/kernel/conv_kernel.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 using std::string;
 template <typename DeviceType, typename T>
@@ -139,7 +139,7 @@ class ConvOp
 };
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif
 

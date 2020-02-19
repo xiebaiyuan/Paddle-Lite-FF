@@ -19,7 +19,7 @@ limitations under the License. */
 #include "operators/kernel/while_kernel.h"
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 #ifdef WHILE_OP
@@ -27,4 +27,4 @@ DECLARE_OPERATOR(While, WhileParam, WhileKernel);
 #endif  // WHILE_OP
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

@@ -15,7 +15,7 @@ limitations under the License. */
 #include "framework/operator.h"
 #include <memory>
 #include "operators/op_param.h"
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 template <typename Dtype>
@@ -151,4 +151,4 @@ template class OperatorBase<FPGA>;
 template class OperatorBase<GPU_CL>;
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

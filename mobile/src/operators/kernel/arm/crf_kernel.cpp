@@ -18,7 +18,7 @@ limitations under the License. */
 #include "common/types.h"
 #include "operators/kernel/central-arm-func/crf_arm_func.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -34,6 +34,6 @@ void CrfKernel<CPU, float>::Compute(const CrfParam<CPU> &param) {
 template class CrfKernel<CPU, float>;
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

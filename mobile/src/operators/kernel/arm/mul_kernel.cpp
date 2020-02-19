@@ -17,7 +17,7 @@ limitations under the License. */
 #include "operators/kernel/mul_kernel.h"
 #include "operators/kernel/central-arm-func/mul_arm_func.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -34,6 +34,6 @@ void MulKernel<CPU, float>::Compute(const MulParam<CPU> &param) {
 template class MulKernel<CPU, float>;
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

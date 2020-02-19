@@ -18,7 +18,7 @@ limitations under the License. */
 #include "operators/math/gemm/executor.h"
 #include "operators/math/gemm/strategy.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 namespace math {
 
@@ -45,6 +45,6 @@ void cblas_sgemv(const bool trans, const int M, const int N, const float alpha,
 
 }  // namespace math
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

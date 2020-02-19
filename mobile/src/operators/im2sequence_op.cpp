@@ -17,7 +17,7 @@ limitations under the License. */
 #include "operators/im2sequence_op.h"
 #include <vector>
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 int Im2SequenceOutputSize(int input_size, int kernel, int padding_1,
@@ -45,9 +45,9 @@ void Im2SequenceOp<Dtype, T>::InferShape() const {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
-namespace ops = paddle_mobile::operators;
+namespace ops = paddle_mobile_lens::operators;
 #ifdef PADDLE_MOBILE_CPU
 REGISTER_OPERATOR_CPU(im2sequence, ops::Im2SequenceOp);
 #endif

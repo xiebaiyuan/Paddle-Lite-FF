@@ -24,7 +24,7 @@ limitations under the License. */
 #include "operators/math/math.h"
 #endif
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 namespace math {
 
@@ -184,4 +184,4 @@ inline float Active<RELU6>(const float &x, const float &alpha) {
 
 }  // namespace math
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

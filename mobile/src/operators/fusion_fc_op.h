@@ -23,7 +23,7 @@ limitations under the License. */
 #include "framework/program/program-optimize/fusion_op_register.h"
 #include "operators/kernel/fusion_fc_kernel.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 class FusionFcMatcher : public framework::FusionOpMatcher {
@@ -59,6 +59,6 @@ class FusionFcOp : public framework::OperatorWithKernel<
 };
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // FUSION_FC_OP

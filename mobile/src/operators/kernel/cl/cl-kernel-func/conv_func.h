@@ -19,7 +19,7 @@ limitations under the License. */
 #include "framework/cl/cl_helper.h"
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 inline int maptofactor(int i, int factor) { return (i + factor - 1) / factor; }
@@ -84,6 +84,6 @@ void ConvTranspose3x3s2AddBnRelu(framework::CLHelper *cl_helper,
                                  const framework::CLImage *new_bias = nullptr);
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

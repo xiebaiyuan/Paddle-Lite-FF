@@ -12,7 +12,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 #include "operators/kernel/fetch_kernel.h"
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -45,7 +45,7 @@ bool FetchKernel<FPGA, float>::Init(FetchParam<FPGA> *param) {
 }
 void dealign(float *src, float *dst, int input_c, int input_h, int input_w) {
   int alignCW =
-      paddle_mobile::fpga::align_to_x(input_c * input_w, IMAGE_ALIGNMENT);
+      paddle_mobile_lens::fpga::align_to_x(input_c * input_w, IMAGE_ALIGNMENT);
   int dealignCW = input_c * input_w;
   for (int h = 0; h < input_h; ++h) {
     auto input_offset = h * alignCW;
@@ -115,4 +115,4 @@ void FetchKernel<FPGA, float>::Compute(const FetchParam<FPGA> &param) {
 template class FetchKernel<FPGA, float>;
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

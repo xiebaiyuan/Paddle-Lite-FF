@@ -20,7 +20,7 @@ limitations under the License. */
 
 #include "fpga/V2/api.h"
 #include "fpga/V2/image.h"
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -184,6 +184,6 @@ void PSRoiPoolKernel<FPGA, float>::Compute(const PSRoiPoolParam<FPGA>& param) {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // PSROI_POOL_OP

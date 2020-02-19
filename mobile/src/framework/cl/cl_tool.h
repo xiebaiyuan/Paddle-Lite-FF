@@ -16,7 +16,7 @@ limitations under the License. */
 
 #include "CL/cl.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 const char* opencl_error_to_str(cl_int error);
@@ -26,9 +26,9 @@ const char* opencl_error_to_str(cl_int error);
     printf(                                                           \
         "OpenCL error with code %s happened in file %s at line %d. "  \
         "Exiting.\n",                                                 \
-        paddle_mobile::framework::opencl_error_to_str(ERR), __FILE__, \
+        paddle_mobile_lens::framework::opencl_error_to_str(ERR), __FILE__, \
         __LINE__);                                                    \
   }
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

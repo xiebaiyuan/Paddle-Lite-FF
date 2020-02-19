@@ -17,7 +17,7 @@ limitations under the License. */
 #include "../softmax_kernel.h"
 #include "../central-arm-func/softmax_arm_func.h"
 #include "operators/math/softmax.h"
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -33,6 +33,6 @@ void SoftmaxKernel<CPU, float>::Compute(const SoftmaxParam<CPU> &param) {
 
 template class SoftmaxKernel<CPU, float>;
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

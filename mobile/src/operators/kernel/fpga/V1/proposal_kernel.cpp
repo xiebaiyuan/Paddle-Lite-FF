@@ -19,7 +19,7 @@ limitations under the License. */
 #include <vector>
 #include "operators/kernel/detection_kernel.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 static const double kBBoxClipDefault = std::log(1000.0 / 16.0);
@@ -457,7 +457,7 @@ void ProposalKernel<FPGA, float>::Compute(const ProposalParam<FPGA> &param) {
       for (int c = 0; c < score_channels; c++) {
         idx++;
         // DLOG  << "wong input_score: "<<
-        // paddle_mobile::fpga::fp16_2_fp32(input_score_data[idx]);
+        // paddle_mobile_lens::fpga::fp16_2_fp32(input_score_data[idx]);
         *(score_tmp_data + c * amount_per_side + score_width * h + w) =
             (*(input_score_data_tmp++));
       }
@@ -471,14 +471,14 @@ void ProposalKernel<FPGA, float>::Compute(const ProposalParam<FPGA> &param) {
       for (int c = 0; c < bbox_channels; c++) {
         idx++;
         // DLOG  << "wong input_score: "<<
-        // paddle_mobile::fpga::fp16_2_fp32(input_score_data[idx]);
+        // paddle_mobile_lens::fpga::fp16_2_fp32(input_score_data[idx]);
         *(bbox_tmp_data + c * amount_per_side + bbox_width * h + w) =
             (*(input_bbox_data_tmp++));
       }
     }
   }
-  struct paddle_mobile::fpga::BypassArgs temp_score_arg;
-  struct paddle_mobile::fpga::BypassArgs temp_bbox_arg;
+  struct paddle_mobile_lens::fpga::BypassArgs temp_score_arg;
+  struct paddle_mobile_lens::fpga::BypassArgs temp_bbox_arg;
   temp_score_arg = param.score_arg;
   temp_score_arg.image.address = score_tmp->data<half>();
 
@@ -562,6 +562,6 @@ void ProposalKernel<FPGA, float>::Compute(const ProposalParam<FPGA> &param) {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // PROPOSAL_OP

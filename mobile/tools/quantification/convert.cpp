@@ -84,7 +84,7 @@ std::shared_ptr<ProgramDesc> loadParams(const std::string &model_path) {
 
 }
 
-void LoadWithDumpForInt8(const paddle_mobile::framework::VarDesc &var_desc, char **dataP, FILE *out_file, int quantification_fold) {
+void LoadWithDumpForInt8(const paddle_mobile_lens::framework::VarDesc &var_desc, char **dataP, FILE *out_file, int quantification_fold) {
     // 1. version
     uint32_t version = *reinterpret_cast<uint32_t *>(*dataP);
 
@@ -139,7 +139,7 @@ void LoadWithDumpForInt8(const paddle_mobile::framework::VarDesc &var_desc, char
     fwrite(buf.get(), sizeof(char), static_cast<size_t>(size), out_file);
     (*dataP) += (sizeof(char) * size);
 
-    const paddle_mobile::framework::TensorDesc &desc = var_desc.Tensor_desc();
+    const paddle_mobile_lens::framework::TensorDesc &desc = var_desc.Tensor_desc();
     int memory_size = 1;
     for (auto l : desc.Dims()) {
         memory_size *= l;
@@ -148,22 +148,22 @@ void LoadWithDumpForInt8(const paddle_mobile::framework::VarDesc &var_desc, char
     void *memory = nullptr;
     int type_size = 0;
     switch (desc.DataType()) {
-        case paddle_mobile::framework::VARTYPE_TYPE_FP16:
+        case paddle_mobile_lens::framework::VARTYPE_TYPE_FP16:
             type_size = 2;
             break;
-        case paddle_mobile::framework::VARTYPE_TYPE_FP32:
+        case paddle_mobile_lens::framework::VARTYPE_TYPE_FP32:
             type_size = 4;
             break;
-        case paddle_mobile::framework::VARTYPE_TYPE_FP64:
+        case paddle_mobile_lens::framework::VARTYPE_TYPE_FP64:
             type_size = 8;
             break;
-        case paddle_mobile::framework::VARTYPE_TYPE_INT32:
+        case paddle_mobile_lens::framework::VARTYPE_TYPE_INT32:
             type_size = 4;
             break;
-        case paddle_mobile::framework::VARTYPE_TYPE_INT64:
+        case paddle_mobile_lens::framework::VARTYPE_TYPE_INT64:
             type_size = 8;
             break;
-        case paddle_mobile::framework::VARTYPE_TYPE_BOOL:
+        case paddle_mobile_lens::framework::VARTYPE_TYPE_BOOL:
             type_size = 1;
             break;
         default:
@@ -251,7 +251,7 @@ void quantificate_seperated_int8(const std::string model_dir, const std::string 
     }
 }
 
-void LoadWithDumpForFloat32(const paddle_mobile::framework::VarDesc &var_desc, char **dataP, FILE *out_file, int quantification_fold) {
+void LoadWithDumpForFloat32(const paddle_mobile_lens::framework::VarDesc &var_desc, char **dataP, FILE *out_file, int quantification_fold) {
     // 1. version
     uint32_t version = *reinterpret_cast<uint32_t *>(*dataP);
 
@@ -306,7 +306,7 @@ void LoadWithDumpForFloat32(const paddle_mobile::framework::VarDesc &var_desc, c
     fwrite(buf.get(), sizeof(char), static_cast<size_t>(size), out_file);
     (*dataP) += (sizeof(char) * size);
 
-    const paddle_mobile::framework::TensorDesc &desc = var_desc.Tensor_desc();
+    const paddle_mobile_lens::framework::TensorDesc &desc = var_desc.Tensor_desc();
     int memory_size = 1;
     for (auto l : desc.Dims()) {
         memory_size *= l;
@@ -315,22 +315,22 @@ void LoadWithDumpForFloat32(const paddle_mobile::framework::VarDesc &var_desc, c
     void *memory = nullptr;
     int type_size = 0;
     switch (desc.DataType()) {
-        case paddle_mobile::framework::VARTYPE_TYPE_FP16:
+        case paddle_mobile_lens::framework::VARTYPE_TYPE_FP16:
             type_size = 2;
             break;
-        case paddle_mobile::framework::VARTYPE_TYPE_FP32:
+        case paddle_mobile_lens::framework::VARTYPE_TYPE_FP32:
             type_size = 4;
             break;
-        case paddle_mobile::framework::VARTYPE_TYPE_FP64:
+        case paddle_mobile_lens::framework::VARTYPE_TYPE_FP64:
             type_size = 8;
             break;
-        case paddle_mobile::framework::VARTYPE_TYPE_INT32:
+        case paddle_mobile_lens::framework::VARTYPE_TYPE_INT32:
             type_size = 4;
             break;
-        case paddle_mobile::framework::VARTYPE_TYPE_INT64:
+        case paddle_mobile_lens::framework::VARTYPE_TYPE_INT64:
             type_size = 8;
             break;
-        case paddle_mobile::framework::VARTYPE_TYPE_BOOL:
+        case paddle_mobile_lens::framework::VARTYPE_TYPE_BOOL:
             type_size = 1;
             break;
         default:

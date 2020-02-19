@@ -25,7 +25,7 @@ limitations under the License. */
 #include "llapi/zynqmp_api.h"
 #include "shape.hpp"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace zynqmp {
 
 enum DataType : int {
@@ -278,4 +278,4 @@ class Tensor {
 };
 
 }  // namespace zynqmp
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

@@ -16,7 +16,7 @@ limitations under the License. */
 #include "operators/flatten2_op.h"
 #include <operators/kernel/reshape_kernel.h>
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 template <typename DeviceType, typename T>
 void Flatten2Op<DeviceType, T>::InferShape() const {
@@ -37,9 +37,9 @@ void Flatten2Op<DeviceType, T>::InferShape() const {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
-namespace ops = paddle_mobile::operators;
+namespace ops = paddle_mobile_lens::operators;
 
 #ifdef PADDLE_MOBILE_CL
 REGISTER_OPERATOR_CL(flatten2, ops::Flatten2Op);

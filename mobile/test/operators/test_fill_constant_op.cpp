@@ -15,7 +15,7 @@ limitations under the License. */
 #include "../test_include.h"
 #include "operators/fill_constant_op.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 template <typename Dtype>
@@ -89,16 +89,16 @@ class TestFillConstantOp {
 
 template class TestFillConstantOp<CPU>;
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 int main() {
   DLOG << "----------**********----------";
   DLOG << "begin to run FillConstant Test";
-  paddle_mobile::framework::Loader<paddle_mobile::CPU> loader;
+  paddle_mobile_lens::framework::Loader<paddle_mobile_lens::CPU> loader;
   auto program = loader.Load(std::string(g_ocr) + "/model",
                              std::string(g_ocr) + "/params");
 
-  paddle_mobile::framework::TestFillConstantOp<paddle_mobile::CPU>
+  paddle_mobile_lens::framework::TestFillConstantOp<paddle_mobile_lens::CPU>
       testFillConstantOp(program);
 
   auto output = testFillConstantOp.predict();

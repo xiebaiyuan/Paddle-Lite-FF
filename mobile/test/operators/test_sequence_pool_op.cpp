@@ -16,7 +16,7 @@ limitations under the License. */
 #include "../test_include.h"
 #include "operators/sequence_ops/sequence_pool_op.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 
 int TestSequencePoolOp(const framework::LoDTensor &input_x,
                        const std::string pool_type,
@@ -52,9 +52,9 @@ int TestSequencePoolOp(const framework::LoDTensor &input_x,
   return 0;
 }
 
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
-// namespace framework = paddle_mobile::framework;
+// namespace framework = paddle_mobile_lens::framework;
 
 int main(int argc, char *argv[]) {
   framework::LoDTensor input_x, output;

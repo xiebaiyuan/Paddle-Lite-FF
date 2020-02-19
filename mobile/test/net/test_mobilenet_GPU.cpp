@@ -18,9 +18,9 @@ limitations under the License. */
 #include "../test_include.h"
 
 int main() {
-  paddle_mobile::PaddleMobile<paddle_mobile::GPU_CL> paddle_mobile;
+  paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::GPU_CL> paddle_mobile;
   //    paddle_mobile.SetThreadNum(4);
-  auto time1 = paddle_mobile::time();
+  auto time1 = paddle_mobile_lens::time();
 #ifdef PADDLE_MOBILE_CL
   paddle_mobile.SetCLPath("/data/local/tmp/bin");
 #endif
@@ -31,8 +31,8 @@ int main() {
 
   auto isok = paddle_mobile.Load(std::string(g_mobilenet), true);
   if (isok) {
-    auto time2 = paddle_mobile::time();
-    std::cout << "load cost :" << paddle_mobile::time_diff(time1, time2) << "ms"
+    auto time2 = paddle_mobile_lens::time();
+    std::cout << "load cost :" << paddle_mobile_lens::time_diff(time1, time2) << "ms"
               << std::endl;
 
     std::vector<float> input;
@@ -41,15 +41,15 @@ int main() {
 
     std::vector<float> vec_result = paddle_mobile.Predict(input, dims);
 
-    auto time3 = paddle_mobile::time();
+    auto time3 = paddle_mobile_lens::time();
     int max = 1;
     for (int i = 0; i < max; ++i) {
       vec_result = paddle_mobile.Predict(input, dims);
     }
-    auto time4 = paddle_mobile::time();
+    auto time4 = paddle_mobile_lens::time();
 
     std::cout << "predict cost :"
-              << paddle_mobile::time_diff(time3, time4) / max << "ms"
+              << paddle_mobile_lens::time_diff(time3, time4) / max << "ms"
               << std::endl;
     std::vector<float>::iterator biggest =
         std::max_element(std::begin(vec_result), std::end(vec_result));

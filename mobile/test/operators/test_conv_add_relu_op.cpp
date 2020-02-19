@@ -16,7 +16,7 @@ limitations under the License. */
 #include "operators/fusion_conv_add_relu_op.h"
 
 int main() {
-  paddle_mobile::framework::Loader<paddle_mobile::CPU> loader;
+  paddle_mobile_lens::framework::Loader<paddle_mobile_lens::CPU> loader;
   //  ../models/image_classification_resnet.inference.model
   auto program = loader.Load(g_googlenet, true);
 
@@ -24,17 +24,17 @@ int main() {
                         "program file read fail");
 
   Executor4Test<
-      paddle_mobile::CPU,
-      paddle_mobile::operators::FusionConvAddReluOp<paddle_mobile::CPU, float>>
+      paddle_mobile_lens::CPU,
+      paddle_mobile_lens::operators::FusionConvAddReluOp<paddle_mobile_lens::CPU, float>>
       executor(program, "fusion_conv_add_relu", true);
 
-  paddle_mobile::framework::Tensor input;
+  paddle_mobile_lens::framework::Tensor input;
   GetInput<float>(g_test_image_1x3x224x224, &input, {1, 3, 224, 224});
   //  // use SetupTensor if not has local input image .
   //  SetupTensor<float>(&input, {1, 3, 224, 224}, static_cast<float>(0),
   //                     static_cast<float>(1));
 
-  auto out_ddim = paddle_mobile::framework::make_ddim({1, 64, 112, 112});
+  auto out_ddim = paddle_mobile_lens::framework::make_ddim({1, 64, 112, 112});
   auto output = executor.Predict(input, "data", "conv2d_0.tmp_2", out_ddim);
 
   auto output_ptr = output->data<float>();

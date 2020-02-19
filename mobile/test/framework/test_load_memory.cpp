@@ -52,7 +52,7 @@ static char *Get_binary_data(std::string filename) {
 }
 
 int main() {
-  paddle_mobile::PaddleMobile<paddle_mobile::CPU> paddle_mobile;
+  paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::CPU> paddle_mobile;
   auto model_path = std::string(g_genet_combine) + "/model";
   auto params_path = std::string(g_genet_combine) + "/params";
   uint8_t *bufModel = nullptr;

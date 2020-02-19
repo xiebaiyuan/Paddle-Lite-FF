@@ -56,7 +56,7 @@ void dump(std::string filename, Tensor input_tensor) {
   std::ofstream out(filename.c_str());
   float result = 0;
   for (int i = 0; i < input_tensor.numel(); ++i) {
-    result = paddle_mobile::fpga::fp16_2_fp32(dataptr[i]);
+    result = paddle_mobile_lens::fpga::fp16_2_fp32(dataptr[i]);
     out << result << std::endl;
   }
   out.close();
@@ -76,7 +76,7 @@ void dump_stride_half(std::string filename, Tensor input_tensor,
   int stride = input_tensor.numel() / dumpnum;
   stride = stride > 0 ? stride : 1;
   for (int i = 0; i < input_tensor.numel(); i += stride) {
-    result = paddle_mobile::fpga::fp16_2_fp32(data_tmp[i]);
+    result = paddle_mobile_lens::fpga::fp16_2_fp32(data_tmp[i]);
     out << result << std::endl;
   }
   out.close();
@@ -99,8 +99,8 @@ void dump_stride_float(std::string filename, Tensor input_tensor,
 static const char *g_resnet50 = "../models/resnet50";
 const std::string g_image_src_float = "../images/image_src_float";  // NOLINT
 int main() {
-  paddle_mobile::fpga::open_device();
-  paddle_mobile::PaddleMobile<paddle_mobile::FPGA> paddle_mobile;
+  paddle_mobile_lens::fpga::open_device();
+  paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::FPGA> paddle_mobile;
   if (paddle_mobile.Load(std::string(g_resnet50), true)) {
     Tensor input_tensor;
     SetupTensor<float>(&input_tensor, {1, 3, 224, 224}, static_cast<float>(2),
@@ -112,7 +112,7 @@ int main() {
     for (int i = 0; i < 73; i++) {
       auto tensor_ptr = paddle_mobile.FetchResult(i);
       std::string saveName = "resnet50_result_" + std::to_string(i);
-      paddle_mobile::fpga::fpga_invalidate((*tensor_ptr).get_data(),
+      paddle_mobile_lens::fpga::fpga_invalidate((*tensor_ptr).get_data(),
                                            tensor_ptr->numel() * sizeof(half));
       // dump_stride_half(saveName, (*tensor_ptr), 20);
       // dump(saveName, (*tensor_ptr));

@@ -17,7 +17,7 @@ limitations under the License. */
 #include "operators/kernel/resize_kernel.h"
 #include <cmath>
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 void BiLinearResizeTensor(const float* src, const int src_height,
                           const int src_width, float* dst, const int dst_height,
@@ -119,6 +119,6 @@ void ResizeKernel<CPU, float>::Compute(const ResizeParam<CPU>& param) {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

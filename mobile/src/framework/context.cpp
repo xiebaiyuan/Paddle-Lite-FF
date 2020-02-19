@@ -51,7 +51,7 @@ limitations under the License. */
 #include <unistd.h>
 #endif
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 const int DEFAULT_L1_CACHE_SIZE = 32 * 1024;
@@ -602,4 +602,4 @@ void *CPUContext::get_work_space(int size_in_byte) {
 }
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

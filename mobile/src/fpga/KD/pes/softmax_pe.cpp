@@ -16,7 +16,7 @@ limitations under the License. */
 
 #include <vector>
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace zynqmp {
 
 #if defined(__ARM_NEON) || defined(__ARM_NEON__)
@@ -159,4 +159,4 @@ bool SoftmaxPE::dispatch() {
 
 SoftmaxParam &SoftmaxPE::param() { return param_; }
 }  // namespace zynqmp
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

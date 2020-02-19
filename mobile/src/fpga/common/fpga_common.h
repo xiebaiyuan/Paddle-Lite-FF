@@ -42,7 +42,7 @@ limitations under the License. */
 
 #endif
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace fpga {
 
 enum DataType {
@@ -328,4 +328,4 @@ inline int32_t convertmantissa(int32_t i);
 uint32_t paddle_mobile_version();
 
 }  // namespace fpga
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

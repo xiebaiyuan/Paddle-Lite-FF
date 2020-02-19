@@ -16,7 +16,7 @@
 //
 //#include "operators/kernel/dequantize_kernel.h"
 //
-// namespace paddle_mobile {
+// namespace paddle_mobile_lens {
 // namespace operators {
 //
 // template <>
@@ -91,6 +91,6 @@
 // template class DepthwiseConvKernel<GPU_CL, float>;
 //
 //}  // namespace operators
-//}  // namespace paddle_mobile
+//}  // namespace paddle_mobile_lens
 //
 //#endif

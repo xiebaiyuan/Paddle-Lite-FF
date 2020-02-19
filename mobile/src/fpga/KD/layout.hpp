@@ -18,7 +18,7 @@ limitations under the License. */
 
 #include "fpga/KD/alignment.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace zynqmp {
 
 enum LayoutType {
@@ -96,4 +96,4 @@ struct NHW : Layout {
 };
 
 }  // namespace zynqmp
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

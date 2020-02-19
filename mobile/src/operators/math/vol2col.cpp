@@ -15,11 +15,11 @@ limitations under the License. */
 #include "operators/math/vol2col.h"
 #include <vector>
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 namespace math {
 
-using Tensor = paddle_mobile::framework::Tensor;
+using Tensor = paddle_mobile_lens::framework::Tensor;
 /*
  * vol = [input_channels, input_depth, input_height, input_width]
  * col =
@@ -144,4 +144,4 @@ template class Col2VolFunctor<CPU, int8_t>;
 
 }  // namespace math
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

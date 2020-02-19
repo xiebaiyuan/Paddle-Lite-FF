@@ -19,7 +19,7 @@ limitations under the License. */
 #include <vector>
 #include "operators/kernel/kernels.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -63,6 +63,6 @@ void TopKKernel<CPU, float>::Compute(const TopKParam<CPU> &param) {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // TOP_K_OP

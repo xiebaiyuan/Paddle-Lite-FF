@@ -16,9 +16,9 @@ limitations under the License. */
 #include "operators/kernel/elementwise_add_relu_kernel.h"
 #include "fpga/KD/pes/elementwise_add_pe.hpp"
 
-using ElementwiseAddPE = paddle_mobile::zynqmp::ElementwiseAddPE;
+using ElementwiseAddPE = paddle_mobile_lens::zynqmp::ElementwiseAddPE;
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -55,6 +55,6 @@ void ElementwiseAddReluKernel<FPGA, float>::Compute(
             << std::endl;
 }
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

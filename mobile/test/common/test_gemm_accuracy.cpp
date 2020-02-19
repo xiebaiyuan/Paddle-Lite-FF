@@ -41,13 +41,13 @@ int do_sgemm(int m, int n, int k, int pr) {
   const int ldc = n;
 
   float *a =
-      static_cast<float *>(paddle_mobile::memory::Alloc(sizeof(float) * m * k));
+      static_cast<float *>(paddle_mobile_lens::memory::Alloc(sizeof(float) * m * k));
   float *b =
-      static_cast<float *>(paddle_mobile::memory::Alloc(sizeof(float) * k * n));
+      static_cast<float *>(paddle_mobile_lens::memory::Alloc(sizeof(float) * k * n));
   float *c =
-      static_cast<float *>(paddle_mobile::memory::Alloc(sizeof(float) * m * n));
+      static_cast<float *>(paddle_mobile_lens::memory::Alloc(sizeof(float) * m * n));
   float *c1 =
-      static_cast<float *>(paddle_mobile::memory::Alloc(sizeof(float) * m * n));
+      static_cast<float *>(paddle_mobile_lens::memory::Alloc(sizeof(float) * m * n));
 
   std::mt19937 rng(111);
   std::uniform_real_distribution<double> uniform_dist(0, 1);
@@ -73,7 +73,7 @@ int do_sgemm(int m, int n, int k, int pr) {
   }
 
   std::cout << "run cblas_sgemm..." << std::endl;
-  paddle_mobile::operators::math::cblas_sgemm(false, false, m, n, k, alpha, a,
+  paddle_mobile_lens::operators::math::cblas_sgemm(false, false, m, n, k, alpha, a,
                                               lda, b, ldb, 0.f, c, ldc);
 
   std::cout << "compare results..." << std::endl;
@@ -96,10 +96,10 @@ int do_sgemm(int m, int n, int k, int pr) {
     print_matrix(m, n, ldc, c1);
   }
 
-  paddle_mobile::memory::Free(a);
-  paddle_mobile::memory::Free(b);
-  paddle_mobile::memory::Free(c);
-  paddle_mobile::memory::Free(c1);
+  paddle_mobile_lens::memory::Free(a);
+  paddle_mobile_lens::memory::Free(b);
+  paddle_mobile_lens::memory::Free(c);
+  paddle_mobile_lens::memory::Free(c1);
 
   return 0;
 }

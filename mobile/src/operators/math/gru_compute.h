@@ -13,7 +13,7 @@ limitations under the License. */
 
 #include "operators/math/activation.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 namespace math {
 
@@ -36,5 +36,5 @@ struct GRUUnitFunctor {
 
 }  // namespace math
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 #endif

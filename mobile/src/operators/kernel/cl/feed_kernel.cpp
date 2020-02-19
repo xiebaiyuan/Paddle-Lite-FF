@@ -15,7 +15,7 @@ limitations under the License. */
 #include "operators/kernel/feed_kernel.h"
 #include "framework/cl/cl_tensor.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -86,4 +86,4 @@ void FeedKernel<GPU_CL, float>::Compute(const FeedParam<GPU_CL> &param) {
 template class FeedKernel<GPU_CL, float>;
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

@@ -18,7 +18,7 @@ limitations under the License. */
 #include "operators/math/slidingwindow_utils.h"
 #include "operators/math/winograd/winograd_transform.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 void InitBaseConvKernel(ConvParam<CPU> *param) {
@@ -110,4 +110,4 @@ void InitBaseConvKernel(ConvParam<CPU> *param) {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

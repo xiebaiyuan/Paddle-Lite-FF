@@ -23,7 +23,7 @@ limitations under the License. */
 #define b(i, j) b[(i)*ldb + (j)]
 #define c(i, j) c[(i)*ldc + (j)]
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 using framework::AttributeMap;
 using framework::DDim;
 using framework::Scope;
@@ -156,11 +156,11 @@ int TestFcOP() {
   delete op;
   return 0;
 }
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 int main() {
-  paddle_mobile::PaddleMobile<paddle_mobile::CPU> paddle_mobile;
+  paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::CPU> paddle_mobile;
   paddle_mobile.SetThreadNum(4);
-  paddle_mobile::TestFcOP<float, float>();
+  paddle_mobile_lens::TestFcOP<float, float>();
   return 0;
 }

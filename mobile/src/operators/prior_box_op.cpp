@@ -15,7 +15,7 @@ limitations under the License. */
 #include "operators/prior_box_op.h"
 #include <vector>
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 #ifdef PRIORBOX_OP
@@ -78,9 +78,9 @@ void DensityPriorBoxOp<Dtype, T>::InferShape() const {
 #endif  // DENSITY_PRIORBOX_OP
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
-namespace ops = paddle_mobile::operators;
+namespace ops = paddle_mobile_lens::operators;
 
 #ifdef PADDLE_MOBILE_CPU
 #ifdef PRIORBOX_OP

@@ -19,7 +19,7 @@ limitations under the License. */
 #include "framework/operator.h"
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 using namespace framework;
@@ -33,6 +33,6 @@ class ElementwiseAddReluKernel
   bool Init(ElementwiseAddReluParam<DeviceType> *param);
 };
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

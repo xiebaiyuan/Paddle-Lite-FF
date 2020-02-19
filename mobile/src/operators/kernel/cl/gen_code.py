@@ -23,7 +23,7 @@ def gen_opencl_kernels():
     #include <map>
     #include <string>
     #include <vector>
-    namespace paddle_mobile {
+    namespace paddle_mobile_lens {
         // func name => source
         extern const std::map<std::string, std::vector<unsigned char>> opencl_kernels = {
     %s
@@ -189,7 +189,7 @@ def gen_empty_opencl_kernels():
     #include <map>
     #include <string>
     #include <vector>
-    namespace paddle_mobile {
+    namespace paddle_mobile_lens {
         // func name => source
         extern const std::map<std::string, std::vector<unsigned char>> opencl_kernels = {
         };

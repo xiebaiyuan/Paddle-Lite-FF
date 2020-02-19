@@ -77,7 +77,7 @@ void dump_stride_half(std::string filename, Tensor input_tensor,
   int stride = input_tensor.numel() / dumpnum;
   stride = stride > 0 ? stride : 1;
   for (int i = 0; i < input_tensor.numel(); i += stride) {
-    result = paddle_mobile::fpga::fp16_2_fp32(data_tmp[i]);
+    result = paddle_mobile_lens::fpga::fp16_2_fp32(data_tmp[i]);
     out << result << std::endl;
   }
   out.close();
@@ -121,8 +121,8 @@ void dump_stride(std::string filename, Tensor input_tensor, const int dumpnum,
 static const char *g_rfcn_combine = "../models/rfcn";
 static const char *g_image_src_float = "../models/rfcn/data.bin";
 int main() {
-  paddle_mobile::fpga::open_device();
-  paddle_mobile::PaddleMobile<paddle_mobile::FPGA> paddle_mobile;
+  paddle_mobile_lens::fpga::open_device();
+  paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::FPGA> paddle_mobile;
 
   if (paddle_mobile.Load(std::string(g_rfcn_combine) + "/model",
                          std::string(g_rfcn_combine) + "/params", true, false,
@@ -139,7 +139,7 @@ int main() {
     for (int i = 65; i < 69; i++) {
       auto tensor_ptr = paddle_mobile.FetchResult(i);
       std::string saveName = "rfcn_" + std::to_string(i);
-      paddle_mobile::fpga::fpga_invalidate((*tensor_ptr).get_data(),
+      paddle_mobile_lens::fpga::fpga_invalidate((*tensor_ptr).get_data(),
                                            tensor_ptr->numel() * sizeof(float));
       dump_stride(saveName, (*tensor_ptr), tensor_ptr->numel(), true);
     }

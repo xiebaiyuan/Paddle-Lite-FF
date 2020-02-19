@@ -17,7 +17,7 @@ limitations under the License. */
 #include "operators/kernel/range_kernel.h"
 #include "framework/data_type.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -44,6 +44,6 @@ void RangeKernel<CPU, float>::Compute(const RangeParam<CPU>& param) {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // RANGE_OP

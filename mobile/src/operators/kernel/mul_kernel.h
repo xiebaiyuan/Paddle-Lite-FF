@@ -20,7 +20,7 @@ limitations under the License. */
 #include "operators/math/math_function.h"
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 using namespace framework;
@@ -33,6 +33,6 @@ class MulKernel
   bool Init(MulParam<DeviceType> *param);
 };
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

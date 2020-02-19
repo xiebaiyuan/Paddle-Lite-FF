@@ -21,7 +21,7 @@ limitations under the License. */
 #include "operators/kernel/quantize_kernel.h"
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <typename DeviceType, typename T>
@@ -40,6 +40,6 @@ class QuantizeOp : public framework::OperatorWithKernel<
 };
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // QUANT_OP

@@ -16,7 +16,7 @@ limitations under the License. */
 
 #include <stdio.h>
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace zynqmp {
 
 class DLEngine {
@@ -30,4 +30,4 @@ class DLEngine {
   DLEngine();
 };
 }  // namespace zynqmp
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

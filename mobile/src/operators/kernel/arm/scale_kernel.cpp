@@ -19,7 +19,7 @@ limitations under the License. */
 #include <arm_neon.h>
 #endif
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -83,6 +83,6 @@ void ScaleKernel<CPU, float>::Compute(const ScaleParam<CPU> &param) {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

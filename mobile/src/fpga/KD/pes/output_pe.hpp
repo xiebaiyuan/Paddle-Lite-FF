@@ -17,7 +17,7 @@ limitations under the License. */
 #include "../pe.hpp"
 #include "../pe_params.hpp"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace zynqmp {
 
 class OutputPE : public PE {
@@ -49,4 +49,4 @@ class OutputPE : public PE {
   OutputParam param_;
 };
 }  // namespace zynqmp
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

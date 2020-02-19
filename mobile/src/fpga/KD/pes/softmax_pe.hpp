@@ -26,7 +26,7 @@ limitations under the License. */
 #include "../pe.hpp"
 #include "../pe_params.hpp"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace zynqmp {
 
 class SoftmaxPE : public PE {
@@ -41,4 +41,4 @@ class SoftmaxPE : public PE {
 };
 
 }  // namespace zynqmp
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

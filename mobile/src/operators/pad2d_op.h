@@ -21,12 +21,12 @@ limitations under the License. */
 #include "operators/kernel/pad2d_kernel.h"
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 DECLARE_OPERATOR(Pad2D, Pad2DParam, Pad2DKernel);
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // PAD2D_OP

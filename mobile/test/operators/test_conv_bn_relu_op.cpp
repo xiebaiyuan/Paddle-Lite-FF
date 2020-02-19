@@ -16,7 +16,7 @@ limitations under the License. */
 #include "../test_include.h"
 #include "operators/fusion_conv_bn_relu_op.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 
 // Reference convolution from Caffe for checking results.
 // accumulate through explicit loops over input, output, and filters.
@@ -104,68 +104,68 @@ int TestConvBnReluOp(int in_channels, int in_height, int in_width,
   return 0;
 }
 
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 int main(int argc, char *argv[]) {
   // kernel = 3, pad = 1, stride = 2
-  paddle_mobile::TestConvBnReluOp<float, float, 3, 1, 2>(3, 48, 48, 16, 1,
+  paddle_mobile_lens::TestConvBnReluOp<float, float, 3, 1, 2>(3, 48, 48, 16, 1,
                                                          "conv_bn_relu");
   // kernel = 1, pad = 0, stride = 1
-  paddle_mobile::TestConvBnReluOp<float, float, 1, 0, 1>(16, 24, 24, 8, 1,
+  paddle_mobile_lens::TestConvBnReluOp<float, float, 1, 0, 1>(16, 24, 24, 8, 1,
                                                          "depthwise_seperable");
   // kernel = 1, pad = 0, stride = 1
-  paddle_mobile::TestConvBnReluOp<float, float, 1, 0, 1>(8, 24, 24, 24, 1,
+  paddle_mobile_lens::TestConvBnReluOp<float, float, 1, 0, 1>(8, 24, 24, 24, 1,
                                                          "MBConv_3x3_conv1");
   // kernel = 1, pad = 0, stride = 1
-  paddle_mobile::TestConvBnReluOp<float, float, 1, 0, 1>(24, 24, 24, 8, 1,
+  paddle_mobile_lens::TestConvBnReluOp<float, float, 1, 0, 1>(24, 24, 24, 8, 1,
                                                          "MBConv_3x3_pw1");
   // kernel = 1, pad = 0, stride = 1
-  paddle_mobile::TestConvBnReluOp<float, float, 1, 0, 1>(8, 24, 24, 24, 1,
+  paddle_mobile_lens::TestConvBnReluOp<float, float, 1, 0, 1>(8, 24, 24, 24, 1,
                                                          "MBConv_3x3_conv2");
   // kernel = 1, pad = 0, stride = 1
-  paddle_mobile::TestConvBnReluOp<float, float, 1, 0, 1>(24, 24, 24, 8, 1,
+  paddle_mobile_lens::TestConvBnReluOp<float, float, 1, 0, 1>(24, 24, 24, 8, 1,
                                                          "MBConv_3x3_pw2");
   // kernel = 1, pad = 0, stride = 1
-  paddle_mobile::TestConvBnReluOp<float, float, 1, 0, 1>(8, 24, 24, 24, 1,
+  paddle_mobile_lens::TestConvBnReluOp<float, float, 1, 0, 1>(8, 24, 24, 24, 1,
                                                          "MBConv_3x3_conv3");
   // kernel = 1, pad = 0, stride = 1
-  paddle_mobile::TestConvBnReluOp<float, float, 1, 0, 1>(24, 12, 12, 16, 1,
+  paddle_mobile_lens::TestConvBnReluOp<float, float, 1, 0, 1>(24, 12, 12, 16, 1,
                                                          "MBConv_3x3_pw3");
   // kernel = 1, pad = 0, stride = 1
-  paddle_mobile::TestConvBnReluOp<float, float, 1, 0, 1>(
+  paddle_mobile_lens::TestConvBnReluOp<float, float, 1, 0, 1>(
       16, 12, 12, 48, 1, "MBConv_5x5_stage1_conv1");
   // kernel = 1, pad = 0, stride = 1
-  paddle_mobile::TestConvBnReluOp<float, float, 1, 0, 1>(
+  paddle_mobile_lens::TestConvBnReluOp<float, float, 1, 0, 1>(
       48, 12, 12, 16, 1, "MBConv_5x5_stage1_pw1");
   // kernel = 1, pad = 0, stride = 1
-  paddle_mobile::TestConvBnReluOp<float, float, 1, 0, 1>(
+  paddle_mobile_lens::TestConvBnReluOp<float, float, 1, 0, 1>(
       16, 12, 12, 48, 1, "MBConv_5x5_stage1_conv2");
   // kernel = 1, pad = 0, stride = 1
-  paddle_mobile::TestConvBnReluOp<float, float, 1, 0, 1>(
+  paddle_mobile_lens::TestConvBnReluOp<float, float, 1, 0, 1>(
       48, 12, 12, 16, 1, "MBConv_5x5_stage1_pw2");
   // kernel = 1, pad = 0, stride = 1
-  paddle_mobile::TestConvBnReluOp<float, float, 1, 0, 1>(
+  paddle_mobile_lens::TestConvBnReluOp<float, float, 1, 0, 1>(
       16, 12, 12, 48, 1, "MBConv_5x5_stage1_conv3");
   // kernel = 1, pad = 0, stride = 1
-  paddle_mobile::TestConvBnReluOp<float, float, 1, 0, 1>(
+  paddle_mobile_lens::TestConvBnReluOp<float, float, 1, 0, 1>(
       48, 6, 6, 32, 1, "MBConv_5x5_stage1_pw3");
   // kernel = 1, pad = 0, stride = 1
-  paddle_mobile::TestConvBnReluOp<float, float, 1, 0, 1>(
+  paddle_mobile_lens::TestConvBnReluOp<float, float, 1, 0, 1>(
       32, 6, 6, 192, 1, "MBConv_5x5_stage2_conv1");
   // kernel = 1, pad = 0, stride = 1
-  paddle_mobile::TestConvBnReluOp<float, float, 1, 0, 1>(
+  paddle_mobile_lens::TestConvBnReluOp<float, float, 1, 0, 1>(
       192, 6, 6, 32, 1, "MBConv_5x5_stage2_pw1");
   // kernel = 1, pad = 0, stride = 1
-  paddle_mobile::TestConvBnReluOp<float, float, 1, 0, 1>(
+  paddle_mobile_lens::TestConvBnReluOp<float, float, 1, 0, 1>(
       32, 6, 6, 192, 1, "MBConv_5x5_stage2_conv2");
   // kernel = 1, pad = 0, stride = 1
-  paddle_mobile::TestConvBnReluOp<float, float, 1, 0, 1>(
+  paddle_mobile_lens::TestConvBnReluOp<float, float, 1, 0, 1>(
       192, 6, 6, 32, 1, "MBConv_5x5_stage2_pw2");
   // kernel = 1, pad = 0, stride = 1
-  paddle_mobile::TestConvBnReluOp<float, float, 1, 0, 1>(
+  paddle_mobile_lens::TestConvBnReluOp<float, float, 1, 0, 1>(
       32, 6, 6, 192, 1, "MBConv_5x5_stage2_conv3");
   // kernel = 1, pad = 0, stride = 1
-  paddle_mobile::TestConvBnReluOp<float, float, 1, 0, 1>(
+  paddle_mobile_lens::TestConvBnReluOp<float, float, 1, 0, 1>(
       192, 6, 6, 64, 1, "MBConv_5x5_stage2_pw3");
 
   return 0;

@@ -24,7 +24,7 @@ limitations under the License. */
 #endif
 #include "framework/variable.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 class Scope {
@@ -110,4 +110,4 @@ class Scope {
 #endif
 };
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

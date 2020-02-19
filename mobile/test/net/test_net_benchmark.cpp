@@ -18,30 +18,30 @@ limitations under the License. */
 
 int main() {
 #ifdef PADDLE_MOBILE_CL
-  paddle_mobile::PaddleMobileConfigInternal config;
+  paddle_mobile_lens::PaddleMobileConfigInternal config;
   config.load_when_predict = false;
-  paddle_mobile::PaddleMobile<paddle_mobile::GPU_CL> paddle_mobile(config);
+  paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::GPU_CL> paddle_mobile(config);
 #else
-  paddle_mobile::PaddleMobile<paddle_mobile::CPU> paddle_mobile;
+  paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::CPU> paddle_mobile;
 #endif
   paddle_mobile.SetThreadNum(1);
-  auto time1 = paddle_mobile::time();
+  auto time1 = paddle_mobile_lens::time();
 
   auto isok = paddle_mobile.Load(std::string(g_mobilenet_combined) + "/model",
                                  std::string(g_mobilenet_combined) + "/params",
                                  true, false, 1, false);
   if (isok) {
-    auto time2 = paddle_mobile::time();
-    std::cout << "load cost :" << paddle_mobile::time_diff(time1, time2) << "ms"
+    auto time2 = paddle_mobile_lens::time();
+    std::cout << "load cost :" << paddle_mobile_lens::time_diff(time1, time2) << "ms"
               << std::endl;
 
     std::vector<float> input;
     std::vector<int64_t> dims{1, 3, 224, 224};
     GetInput<float>(g_test_image_1x3x224x224_banana, &input, dims);
 
-    paddle_mobile::framework::DDim ddim =
-        paddle_mobile::framework::make_ddim(dims);
-    Tensor feed_tensor(input, paddle_mobile::framework::make_ddim(dims));
+    paddle_mobile_lens::framework::DDim ddim =
+        paddle_mobile_lens::framework::make_ddim(dims);
+    Tensor feed_tensor(input, paddle_mobile_lens::framework::make_ddim(dims));
 
     // 预热十次
     for (int i = 0; i < 10; ++i) {
@@ -49,15 +49,15 @@ int main() {
       paddle_mobile.Feed("data", feed_tensor);
       paddle_mobile.Predict();
     }
-    auto time3 = paddle_mobile::time();
+    auto time3 = paddle_mobile_lens::time();
     for (int i = 0; i < 100; ++i) {
       //      auto vec_result = paddle_mobile.Predict(input, dims);
       paddle_mobile.Feed("data", feed_tensor);
       paddle_mobile.Predict();
     }
-    auto time4 = paddle_mobile::time();
+    auto time4 = paddle_mobile_lens::time();
     std::cout << "predict cost :"
-              << paddle_mobile::time_diff(time3, time4) / 100 << "ms"
+              << paddle_mobile_lens::time_diff(time3, time4) / 100 << "ms"
               << std::endl;
   }
 

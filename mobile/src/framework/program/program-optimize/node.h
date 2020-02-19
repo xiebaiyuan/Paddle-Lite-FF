@@ -23,7 +23,7 @@ limitations under the License. */
 #include "common/log.h"
 #include "framework/program/op_desc.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 class Node {
@@ -78,4 +78,4 @@ class Node {
 
 Print &operator<<(Print &printer, const Node &node);
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

@@ -21,7 +21,7 @@ limitations under the License. */
 #include "framework/program/program-optimize/node.h"
 #include "framework/program/program_desc.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 
 namespace framework {
 class ProgramOptimize {
@@ -42,4 +42,4 @@ class ProgramOptimize {
                    int thread_num, std::shared_ptr<BlockDesc> new_block);
 };
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

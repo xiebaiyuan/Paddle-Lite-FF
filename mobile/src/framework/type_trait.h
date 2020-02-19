@@ -17,7 +17,7 @@ limitations under the License. */
 #include <common/types.h>
 #include <string>
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 template <typename Dtype>
@@ -41,4 +41,4 @@ struct DtypeTensorTrait<GPU_CL> {
 #endif
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

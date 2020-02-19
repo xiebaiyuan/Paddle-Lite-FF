@@ -27,7 +27,7 @@ limitations under the License. */
 #include "pes/pooling_pe.hpp"
 #include "pes/softmax_pe.hpp"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace zynqmp {
 
 class Context {
@@ -50,6 +50,6 @@ class Context {
   PE* pe_ = nullptr;
 };
 }  // namespace zynqmp
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif /* Context_hpp */

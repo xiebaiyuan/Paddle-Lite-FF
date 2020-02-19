@@ -19,7 +19,7 @@ limitations under the License. */
 
 #pragma once
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <typename DeviceType, typename T>
@@ -30,6 +30,6 @@ class ScaleKernel
   bool Init(ScaleParam<DeviceType>* param);
 };
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

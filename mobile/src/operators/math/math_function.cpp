@@ -20,7 +20,7 @@ limitations under the License. */
 #include "operators/math/gemm.h"
 #include "operators/math/gemm/cblas.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 namespace math {
 
@@ -173,4 +173,4 @@ template struct ClearTensor<CPU, float>;
 
 }  // namespace math
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

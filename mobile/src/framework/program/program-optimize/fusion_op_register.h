@@ -22,7 +22,7 @@ limitations under the License. */
 #include "framework/operator.h"
 #include "framework/program/program-optimize/node.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 class FusionOpRegister {
@@ -71,10 +71,10 @@ class FusionOpRegistrar {
 };
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #define REGISTER_FUSION_MATCHER(op_type, matcher)          \
-  static paddle_mobile::framework::FusionOpRegistrar       \
+  static paddle_mobile_lens::framework::FusionOpRegistrar       \
       __fusion_matcher_registrar_##op_type(new matcher()); \
   int TouchFusionMatcherRegistrar_##op_type() {            \
     __fusion_matcher_registrar_##op_type.Touch();          \

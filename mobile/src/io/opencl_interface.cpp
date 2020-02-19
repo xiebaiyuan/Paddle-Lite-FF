@@ -17,7 +17,7 @@ limitations under the License. */
 #include "framework/cl/cl_engine.h"
 #include "framework/cl/cl_scope.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 
 cl_context getContext() {
   return framework::CLEngine::Instance()->getContext();
@@ -31,5 +31,5 @@ bool isInitSuccess() {
   return framework::CLEngine::Instance()->isInitSuccess();
 }
 
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 #endif

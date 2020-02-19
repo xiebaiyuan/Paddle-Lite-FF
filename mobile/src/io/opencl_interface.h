@@ -16,12 +16,12 @@ limitations under the License. */
 #ifdef PADDLE_MOBILE_CL
 #include "CL/cl.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 
 cl_context getContext();
 cl_command_queue getClCommandQueue();
 bool isInitSuccess();
 
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

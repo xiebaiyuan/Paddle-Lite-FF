@@ -15,13 +15,13 @@ limitations under the License. */
 #include "../test_include.h"
 
 int main() {
-  paddle_mobile::framework::Loader<paddle_mobile::CPU> loader;
+  paddle_mobile_lens::framework::Loader<paddle_mobile_lens::CPU> loader;
   auto program = loader.Load(g_resnet);
   PADDLE_MOBILE_ENFORCE(program.originProgram != nullptr,
                         "program file read fail");
 
-  Executor4Test<paddle_mobile::CPU, paddle_mobile::operators::ElementwiseAddOp<
-                                        paddle_mobile::CPU, float>>
+  Executor4Test<paddle_mobile_lens::CPU, paddle_mobile_lens::operators::ElementwiseAddOp<
+                                        paddle_mobile_lens::CPU, float>>
       executor(program, "elementwise_add");
 
   // 1. input_tensors;
@@ -46,7 +46,7 @@ int main() {
 
   // 4. out_dims;
   vector<DDim> out_ddims;
-  auto out_ddim = paddle_mobile::framework::make_ddim({1, 3, 224, 224});
+  auto out_ddim = paddle_mobile_lens::framework::make_ddim({1, 3, 224, 224});
   out_ddims.push_back(out_ddim);
 
   auto output = executor.Predict<LoDTensor>(input_tensors, input_names,

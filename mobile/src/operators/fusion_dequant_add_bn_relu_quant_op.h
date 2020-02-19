@@ -21,7 +21,7 @@ limitations under the License. */
 #include "operators/kernel/dequant_bn_kernel.h"
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 #ifdef FUSION_DEQUANT_ADD_BN_RELU_QUANT_OP
@@ -120,4 +120,4 @@ class FusionDequantAddBNQuantOp
 #endif  // FUSION_DEQUANT_ADD_BN_QUANT_OP
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

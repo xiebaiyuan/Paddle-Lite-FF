@@ -15,7 +15,7 @@ limitations under the License. */
 #ifdef POOL_OP
 
 #include "operators/math/pooling.h"
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 namespace math {
 
@@ -77,6 +77,6 @@ template struct Pooling<AVG>;
 
 }  // namespace math
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // POOL_OP

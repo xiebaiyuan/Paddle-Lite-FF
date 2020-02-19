@@ -21,7 +21,7 @@ limitations under the License. */
 
 constexpr int64_t kNoPadding = -1;
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <typename P>
@@ -53,6 +53,6 @@ void LookupCompute(const LookupParam<CPU> &param) {
   }
 }
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

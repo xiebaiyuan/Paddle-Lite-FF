@@ -17,21 +17,21 @@ limitations under the License. */
 #include "operators/fusion_conv_add_bn_relu_op.h"
 
 int main() {
-  paddle_mobile::framework::Loader<paddle_mobile::CPU> loader;
+  paddle_mobile_lens::framework::Loader<paddle_mobile_lens::CPU> loader;
   //  ../models/image_classification_resnet.inference.model
   auto program = loader.Load(g_mobilenet, true);
 
   PADDLE_MOBILE_ENFORCE(program.originProgram != nullptr,
                         "program file read fail");
 
-  Executor4Test<paddle_mobile::CPU,
-                paddle_mobile::operators::FusionConvAddBNReluOp<
-                    paddle_mobile::CPU, float>>
+  Executor4Test<paddle_mobile_lens::CPU,
+                paddle_mobile_lens::operators::FusionConvAddBNReluOp<
+                    paddle_mobile_lens::CPU, float>>
       executor(program, "fusion_conv_add_bn_relu", true);
 
   std::cout << "executor 4 test: " << std::endl;
 
-  paddle_mobile::framework::Tensor input;
+  paddle_mobile_lens::framework::Tensor input;
   GetInput<float>(g_test_image_1x3x224x224_banana, &input, {1, 3, 224, 224});
   //  // use SetupTensor if not has local input image .
   //  SetupTensor<float>(&input, {1, 3, 224, 224}, static_cast<float>(0),
@@ -39,7 +39,7 @@ int main() {
 
   DLOG << " fuck: " << input;
 
-  auto out_ddim = paddle_mobile::framework::make_ddim({1, 32, 112, 112});
+  auto out_ddim = paddle_mobile_lens::framework::make_ddim({1, 32, 112, 112});
   std::cout << "before predict: " << std::endl;
   auto output =
       executor.Predict(input, "data", "conv2_1_dw_bn.tmp_2", out_ddim);

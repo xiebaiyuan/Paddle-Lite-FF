@@ -14,7 +14,7 @@ limitations under the License. */
 
 #pragma once
 #include <cstdint>
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace fpga {
 namespace filter {
 
@@ -47,4 +47,4 @@ void format_dwconv_filter(float** data_in, int num, int height, int width,
 
 }  // namespace filter
 }  // namespace fpga
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

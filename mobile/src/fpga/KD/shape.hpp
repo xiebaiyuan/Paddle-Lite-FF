@@ -20,7 +20,7 @@ limitations under the License. */
 #include "fpga/KD/alignment.h"
 #include "fpga/KD/layout.hpp"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace zynqmp {
 
 static struct NCHW nchw_;
@@ -109,4 +109,4 @@ class Shape {
 };
 
 }  // namespace zynqmp
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

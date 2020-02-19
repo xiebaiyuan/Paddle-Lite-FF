@@ -31,7 +31,7 @@ limitations under the License. */
 #include "common/enforce.h"
 #include "fpga/common/driver.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace fpga {
 namespace driver {
 struct FPGA_INFO g_fpgainfo;
@@ -293,4 +293,4 @@ int close_device_driver() {
 
 }  // namespace driver
 }  // namespace fpga
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

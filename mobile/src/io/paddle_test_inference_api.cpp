@@ -15,7 +15,7 @@ limitations under the License. */
 #include "io/paddle_test_inference_api.h"
 #include "io/paddle_mobile.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 
 template <typename Device, typename T>
 double PaddleTester<Device, T>::CaculatePredictTime(std::string *cl_path) {
@@ -33,4 +33,4 @@ template class PaddleTester<FPGA, float>;
 
 template class PaddleTester<GPU_CL, float>;
 
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

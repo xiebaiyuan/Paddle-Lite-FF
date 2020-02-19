@@ -14,7 +14,7 @@ limitations under the License. */
 
 #include "operators/compare_op.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 #ifdef LESS_THAN_OP
@@ -34,9 +34,9 @@ void EqualOp<Dtype, T>::InferShape() const {
 #endif  // EQUAL_OP
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
-namespace ops = paddle_mobile::operators;
+namespace ops = paddle_mobile_lens::operators;
 #ifdef LESS_THAN_OP
 REGISTER_OPERATOR_CPU(less_than, ops::LessThanOp);
 #endif  // LESS_THAN_OP

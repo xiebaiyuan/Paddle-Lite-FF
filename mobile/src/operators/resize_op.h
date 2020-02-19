@@ -22,10 +22,10 @@ limitations under the License. */
 #include "operators/kernel/resize_kernel.h"
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
-using paddle_mobile::framework::Tensor;
+using paddle_mobile_lens::framework::Tensor;
 
 template <typename DeviceType, typename T>
 class ResizeOp : public framework::OperatorWithKernel<
@@ -43,6 +43,6 @@ class ResizeOp : public framework::OperatorWithKernel<
  protected:
 };
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

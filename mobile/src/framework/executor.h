@@ -29,14 +29,14 @@ limitations under the License. */
 #include "framework/type_trait.h"
 #include "pass/memory_optimize.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 template <typename Device, typename T = float>
 class Executor {
  public:
   Executor(const Program<Device> &program,
-           paddle_mobile::PaddleMobileConfigInternal config, int batch_size = 1,
+           paddle_mobile_lens::PaddleMobileConfigInternal config, int batch_size = 1,
            const bool use_optimize = true, const bool lod_mode = false);
 
   void SetThreadNum(int thread_num,
@@ -123,4 +123,4 @@ class Executor {
 };
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

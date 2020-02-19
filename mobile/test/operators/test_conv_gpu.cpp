@@ -22,7 +22,7 @@ limitations under the License. */
 #include "operators/conv_op.h"
 #include "operators/kernel/cl/cl-kernel-func/conv_func.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 
 template <typename Itype, typename Otype, int Kernel, int Pad, int Stride>
 int TestConvOp(int in_channels, int in_height, int in_width, int out_channels,
@@ -112,7 +112,7 @@ int TestConvOp(int in_channels, int in_height, int in_width, int out_channels,
   return 0;
 }
 
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 int TestAll(const int in_channels, const int in_height, const int in_width,
             const int out_channels, const int groups) {
@@ -120,7 +120,7 @@ int TestAll(const int in_channels, const int in_height, const int in_width,
             << ", in_width=" << in_width << ", out_channels=" << out_channels
             << ", groups=" << groups << std::endl;
   std::cerr << "float, kernel=3, pad=1, stride=1" << std::endl;
-  paddle_mobile::TestConvOp<float, float, 3, 1, 1>(
+  paddle_mobile_lens::TestConvOp<float, float, 3, 1, 1>(
       in_channels, in_height, in_width, out_channels, groups);
 
   return 0;

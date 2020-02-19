@@ -18,7 +18,7 @@ limitations under the License. */
 #include <string>
 #include "common/variant.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 class Variable {
@@ -93,4 +93,4 @@ class Variable {
 };
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

@@ -25,7 +25,7 @@ limitations under the License. */
 #include <arm_neon.h>
 #endif  // __ARM_NEON__
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <PoolingType P = MAX, typename T = float>
@@ -210,6 +210,6 @@ class SequencePoolKernel<CPU, T>
 template class SequencePoolKernel<CPU, float>;
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // SEQUENCE_POOL_OP

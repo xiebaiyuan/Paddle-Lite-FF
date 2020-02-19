@@ -18,14 +18,14 @@ limitations under the License. */
 #include "framework/operator.h"
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
 bool DeconvAddReluKernel<FPGA, float>::Init(
     FusionDeconvAddReluParam<FPGA> *param) {
-  paddle_mobile::fpga::ActivationType activation_enable =
-      paddle_mobile::fpga::LEAKYRELU;
+  paddle_mobile_lens::fpga::ActivationType activation_enable =
+      paddle_mobile_lens::fpga::LEAKYRELU;
   int16_t leaky_relu_negative_slope = 0;
   auto input = const_cast<LoDTensor *>(param->Input());
   const Tensor *bias = param->Bias();
@@ -88,6 +88,6 @@ void DeconvAddReluKernel<FPGA, float>::Compute(
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

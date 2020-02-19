@@ -20,7 +20,7 @@ limitations under the License. */
 #include "operators/math/elementwise_op_function.h"
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <typename T>
@@ -60,6 +60,6 @@ void ElementwiseSubCompute(const ElementwiseSubParam<CPU>& param) {
 template class ElementwiseSubKernel<CPU, float>;
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

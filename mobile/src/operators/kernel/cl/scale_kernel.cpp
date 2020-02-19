@@ -16,7 +16,7 @@ limitations under the License. */
 
 #include "operators/kernel/scale_kernel.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -57,6 +57,6 @@ void ScaleKernel<GPU_CL, float>::Compute(const ScaleParam<GPU_CL>& param) {
 template class ScaleKernel<GPU_CL, float>;
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

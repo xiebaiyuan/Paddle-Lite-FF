@@ -17,8 +17,8 @@ limitations under the License. */
 #include "../test_include.h"
 #include "fpga/api.h"
 
-namespace frame = paddle_mobile::framework;
-namespace fpga = paddle_mobile::fpga;
+namespace frame = paddle_mobile_lens::framework;
+namespace fpga = paddle_mobile_lens::fpga;
 using std::cout;
 using std::endl;
 

@@ -19,7 +19,7 @@ limitations under the License. */
 #include "operators/kernel/feed_kernel.h"
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 using std::string;
@@ -42,4 +42,4 @@ class FeedOp
 };
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

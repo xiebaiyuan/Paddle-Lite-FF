@@ -20,7 +20,7 @@ limitations under the License. */
 // #include "filter.h"
 #include "fpga/V2/api.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace fpga {
 namespace deconv_filter {
 
@@ -133,18 +133,18 @@ void deconv_get_sub_filter(T** data_in, int height, int width, int sub_conv_n,
 void deconv_NC_convert(float** filter_in, int kernel_num, int channels,
                        int hw) {
   float* tmp = *filter_in;
-  float* ptr_filter = reinterpret_cast<float*>(paddle_mobile::fpga::fpga_malloc(
+  float* ptr_filter = reinterpret_cast<float*>(paddle_mobile_lens::fpga::fpga_malloc(
       hw * kernel_num * channels * sizeof(float)));
 
   for (int c = 0; c < channels; ++c) {
     for (int n = 0; n < kernel_num; ++n) {
-      paddle_mobile::fpga::fpga_copy(ptr_filter + n * hw + kernel_num * hw * c,
+      paddle_mobile_lens::fpga::fpga_copy(ptr_filter + n * hw + kernel_num * hw * c,
                                      tmp + n * channels * hw + c * hw,
                                      hw * sizeof(float));
     }
   }
   *filter_in = ptr_filter;
-  paddle_mobile::fpga::fpga_free(tmp);
+  paddle_mobile_lens::fpga::fpga_free(tmp);
 }
 
 void deconv_format_filter(float** data_in, int num, int channel, int height,
@@ -277,4 +277,4 @@ void DWDconv_format_filter(float** data_in, int num, int channel, int height,
 
 }  // namespace deconv_filter
 }  // namespace fpga
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

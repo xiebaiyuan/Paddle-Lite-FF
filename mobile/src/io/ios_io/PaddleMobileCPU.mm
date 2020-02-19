@@ -63,7 +63,7 @@
 
 @interface  PaddleMobileCPU()
 {
-  paddle_mobile::PaddleMobile<paddle_mobile::CPU, float> *pam_;
+  paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::CPU, float> *pam_;
   BOOL loaded_;
 }
 
@@ -77,9 +77,9 @@ static std::mutex shared_mutex;
 
 - (instancetype)initWithConfig:(PaddleMobileCPUConfig *)config {
   if (self = [super init]) {
-    paddle_mobile::PaddleMobileConfigInternal configInternal;
+    paddle_mobile_lens::PaddleMobileConfigInternal configInternal;
     configInternal.load_when_predict = config.loadWhenPredict;
-    pam_ = new paddle_mobile::PaddleMobile<paddle_mobile::CPU, float>();
+    pam_ = new paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::CPU, float>();
     _config = config;
   }
   return self;
@@ -88,7 +88,7 @@ static std::mutex shared_mutex;
 -(instancetype)init {
   if (self = [super init]) {
     _config = [[PaddleMobileCPUConfig alloc] init];
-    pam_ = new paddle_mobile::PaddleMobile<paddle_mobile::CPU, float>();
+    pam_ = new paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::CPU, float>();
   }
   return self;
 }
@@ -239,14 +239,14 @@ static std::mutex shared_mutex;
     dim_vec.push_back(d);
   }
 
-  paddle_mobile::framework::Tensor input_tensor;
-  paddle_mobile::framework::DDim dims = paddle_mobile::framework::make_ddim(dim_vec);
+  paddle_mobile_lens::framework::Tensor input_tensor;
+  paddle_mobile_lens::framework::DDim dims = paddle_mobile_lens::framework::make_ddim(dim_vec);
   float *input_ptr = input_tensor.mutable_data<float>(dims);
   memcpy(input_ptr, input,
          numel * sizeof(float));
 
   pam_->Predict(input_tensor);
-  std::shared_ptr<paddle_mobile::framework::Tensor> output = pam_->Fetch();
+  std::shared_ptr<paddle_mobile_lens::framework::Tensor> output = pam_->Fetch();
 
   auto output_dims = output->dims();
   std::vector<int64_t> output_dim_vec = vectorize(output_dims);
@@ -308,14 +308,14 @@ static std::mutex shared_mutex;
     return nil;
   }
 
-  paddle_mobile::framework::Tensor input_tensor;
-  paddle_mobile::framework::DDim dims = paddle_mobile::framework::make_ddim(dim_vec);
+  paddle_mobile_lens::framework::Tensor input_tensor;
+  paddle_mobile_lens::framework::DDim dims = paddle_mobile_lens::framework::make_ddim(dim_vec);
   float *input_ptr = input_tensor.mutable_data<float>(dims);
   memcpy(input_ptr, dataPointer,
          numel * sizeof(float));
 
   pam_->Predict(input_tensor);
-  std::shared_ptr<paddle_mobile::framework::Tensor> output_tensor = pam_->Fetch();
+  std::shared_ptr<paddle_mobile_lens::framework::Tensor> output_tensor = pam_->Fetch();
 
   auto output_dims = output_tensor->dims();
   std::vector<int64_t> output_dim_vec = vectorize(output_dims);

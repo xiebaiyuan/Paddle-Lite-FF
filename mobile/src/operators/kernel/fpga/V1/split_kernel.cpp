@@ -16,7 +16,7 @@ limitations under the License. */
 
 #include "operators/kernel/split_kernel.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 template <>
 bool SplitKernel<FPGA, float>::Init(SplitParam<FPGA> *param) {
@@ -70,5 +70,5 @@ void SplitKernel<FPGA, float>::Compute(const SplitParam<FPGA> &param) {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 #endif

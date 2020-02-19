@@ -39,7 +39,7 @@ limitations under the License. */
 #include "framework/cl/cl_scope.h"
 #endif
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 template <typename T>
@@ -201,11 +201,11 @@ class FusionOpMatcher {
   };
 
 #define DEFINE_OP_CONSTRUCTOR(cls, parent_cls)                                 \
-  cls(const std::string &type, const ::paddle_mobile::VariableNameMap &inputs, \
-      const ::paddle_mobile::VariableNameMap &outputs,                         \
-      const ::paddle_mobile::framework::AttributeMap &attrs,                   \
-      ::paddle_mobile::framework::Scope *scope)                                \
+  cls(const std::string &type, const ::paddle_mobile_lens::VariableNameMap &inputs, \
+      const ::paddle_mobile_lens::VariableNameMap &outputs,                         \
+      const ::paddle_mobile_lens::framework::AttributeMap &attrs,                   \
+      ::paddle_mobile_lens::framework::Scope *scope)                                \
       : parent_cls<Dtype, T>(type, inputs, outputs, attrs, scope) {}
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

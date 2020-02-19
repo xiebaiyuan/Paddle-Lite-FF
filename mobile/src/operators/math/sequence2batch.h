@@ -18,7 +18,7 @@ limitations under the License. */
 #include "framework/lod_tensor.h"
 #include "framework/tensor.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 namespace math {
 template <typename DeviceType, typename T>
@@ -166,4 +166,4 @@ class Batch2LoDTensorFunctor {
 };
 }  // namespace math
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

@@ -25,7 +25,7 @@ limitations under the License. */
 #include <android/log.h>
 #endif
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 
 #ifdef PADDLE_MOBILE_DEBUG
 
@@ -130,9 +130,9 @@ struct ToLog {
 };
 
 #define LOG(level)                                                           \
-  if (level > paddle_mobile::log_level) {                                    \
+  if (level > paddle_mobile_lens::log_level) {                                    \
   } else                                                                     \
-    paddle_mobile::ToLog(                                                    \
+    paddle_mobile_lens::ToLog(                                                    \
         level, static_cast<const std::stringstream &>(                       \
                    std::stringstream()                                       \
                    << "[file: "                                              \
@@ -142,10 +142,10 @@ struct ToLog {
                    .str())
 
 #define DLOG                                                          \
-  if (paddle_mobile::kLOG_DEBUG > paddle_mobile::log_level) {         \
+  if (paddle_mobile_lens::kLOG_DEBUG > paddle_mobile_lens::log_level) {         \
   } else                                                              \
-    paddle_mobile::ToLog(                                             \
-        paddle_mobile::kLOG_DEBUG,                                    \
+    paddle_mobile_lens::ToLog(                                             \
+        paddle_mobile_lens::kLOG_DEBUG,                                    \
         static_cast<const std::stringstream &>(                       \
             std::stringstream()                                       \
             << "[file: "                                              \
@@ -155,12 +155,12 @@ struct ToLog {
             .str())
 
 #define LOGF(level, format, ...)          \
-  if (level > paddle_mobile::log_level) { \
+  if (level > paddle_mobile_lens::log_level) { \
   } else                                  \
     printf(format, ##__VA_ARGS__)
 
 #define DLOGF(format, ...)                                    \
-  if (paddle_mobile::kLOG_DEBUG > paddle_mobile::log_level) { \
+  if (paddle_mobile_lens::kLOG_DEBUG > paddle_mobile_lens::log_level) { \
   } else                                                      \
     printf(format, ##__VA_ARGS__)
 
@@ -204,12 +204,12 @@ struct ToLog {
 #define LOG(level) \
   if (true) {      \
   } else           \
-    paddle_mobile::ToLog(level)
+    paddle_mobile_lens::ToLog(level)
 
 #define DLOG  \
   if (true) { \
   } else      \
-    paddle_mobile::ToLog(paddle_mobile::kLOG_DEBUG)
+    paddle_mobile_lens::ToLog(paddle_mobile_lens::kLOG_DEBUG)
 
 #define LOGF(level, format, ...)
 
@@ -232,4 +232,4 @@ Print &operator<<(Print &printer, const std::vector<T> &v) {
   return printer;
 }
 
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

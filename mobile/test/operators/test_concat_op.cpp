@@ -19,7 +19,7 @@ limitations under the License. */
 #include "../test_include.h"
 #include "operators/concat_op.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 using framework::AttributeMap;
 using framework::DDim;
 using framework::LoDTensor;
@@ -125,12 +125,12 @@ int TestConcatOP() {
   delete op;
   return 0;
 }
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 int main() {
-  paddle_mobile::PaddleMobile<paddle_mobile::CPU> paddle_mobile;
+  paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::CPU> paddle_mobile;
   paddle_mobile.SetThreadNum(4);
-  paddle_mobile::TestConcatOP<float>();
-  paddle_mobile::TestConcatOP<int8_t>();
+  paddle_mobile_lens::TestConcatOP<float>();
+  paddle_mobile_lens::TestConcatOP<int8_t>();
   return 0;
 }

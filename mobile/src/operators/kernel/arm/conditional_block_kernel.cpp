@@ -20,7 +20,7 @@ limitations under the License. */
 #include <algorithm>
 #include "framework/data_type.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 class StepExecutor {
@@ -95,6 +95,6 @@ void ConditionalBlockKernel<CPU, float>::Compute(
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // CONDITIONAL_BLOCK_OP

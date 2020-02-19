@@ -17,7 +17,7 @@ limitations under the License. */
 #include "operators/kernel/flatten_kernel.h"
 #include "operators/kernel/central-arm-func/flatten_arm_func.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -31,6 +31,6 @@ void FlattenKernel<CPU, float>::Compute(const FlattenParam<CPU> &param) {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

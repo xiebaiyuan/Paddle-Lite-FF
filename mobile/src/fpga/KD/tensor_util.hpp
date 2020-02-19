@@ -18,8 +18,8 @@ limitations under the License. */
 
 #include "tensor.hpp"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace zynqmp {
 float find_max(const Tensor& tensor);
 }  // namespace zynqmp
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

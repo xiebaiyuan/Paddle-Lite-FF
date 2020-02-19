@@ -17,7 +17,7 @@ limitations under the License. */
 
 #include "framework/program/op_desc.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 OpDesc::OpDesc(PaddleMobile__Framework__Proto__OpDesc *desc) {
@@ -97,4 +97,4 @@ Print &operator<<(Print &printer, const OpDesc &op_desc) {
 }
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

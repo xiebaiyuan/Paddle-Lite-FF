@@ -22,10 +22,10 @@ limitations under the License. */
 #include "operators/kernel/polygon_box_transform_kernel.h"
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
-using paddle_mobile::framework::Tensor;
+using paddle_mobile_lens::framework::Tensor;
 
 template <typename DeviceType, typename T>
 class PolygonBoxTransformOp
@@ -51,6 +51,6 @@ class PolygonBoxTransformOp
 };
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

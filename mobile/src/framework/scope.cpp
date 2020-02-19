@@ -19,7 +19,7 @@ limitations under the License. */
 #include <string>
 #include <vector>
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 Scope &Scope::NewScope() const {
@@ -152,4 +152,4 @@ void Scope::print_vars() {
 #endif
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

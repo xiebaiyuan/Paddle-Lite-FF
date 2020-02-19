@@ -25,7 +25,7 @@ limitations under the License. */
 #include "framework/cl/cl_image.h"
 #include "framework/cl/cl_scope.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 class CLHelper {
@@ -91,4 +91,4 @@ class CLHelper {
 };
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

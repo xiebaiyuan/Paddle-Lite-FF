@@ -16,7 +16,7 @@ limitations under the License. */
 
 #include "operators/kernel/concat_kernel.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -64,6 +64,6 @@ void ConcatKernel<FPGA, float>::Compute(const ConcatParam<FPGA> &param) {
 template class ConcatKernel<FPGA, float>;
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

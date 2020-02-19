@@ -14,7 +14,7 @@ limitations under the License. */
 
 #include "pass/model_obfuscate.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace pass {
 
 ModelObfuscatePass::ModelObfuscatePass(std::string key) {
@@ -33,4 +33,4 @@ void ModelObfuscatePass::convert_data(char *data, int len) {
 }
 
 }  // namespace pass
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

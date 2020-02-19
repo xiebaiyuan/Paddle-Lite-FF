@@ -17,7 +17,7 @@ limitations under the License. */
 #include "../test_include.h"
 #include "operators/top_k_op.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 
 void TopK(const framework::Tensor *X, framework::Tensor *Y,
           framework::Tensor *Indices, const int K) {
@@ -129,7 +129,7 @@ int TestTopKOp(const std::vector<int> input_shape, const int K) {
   return 0;
 }
 
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 int main(int argc, char *argv[]) {
   TestTopKOp({1, 100}, 1);

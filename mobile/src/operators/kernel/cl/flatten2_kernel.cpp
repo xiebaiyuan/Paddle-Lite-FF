@@ -16,19 +16,19 @@ limitations under the License. */
 
 #include "operators/kernel/flatten2_kernel.h"
 #include <operators/kernel/reshape_kernel.h>
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
 bool Flatten2Kernel<GPU_CL, float>::Init(
-    paddle_mobile::operators::FlattenParam<paddle_mobile::GPU_CL> *param) {
+    paddle_mobile_lens::operators::FlattenParam<paddle_mobile_lens::GPU_CL> *param) {
   this->cl_helper_.AddKernel("flatten2", "flatten2_kernel.cl");
   return true;
 }
 
 template <>
 void Flatten2Kernel<GPU_CL, float>::Compute(
-    const paddle_mobile::operators::FlattenParam<paddle_mobile::GPU_CL>
+    const paddle_mobile_lens::operators::FlattenParam<paddle_mobile_lens::GPU_CL>
         &param) {
   auto kernel = this->cl_helper_.KernelAt(0);
   const auto *input = param.InputX();
@@ -74,6 +74,6 @@ void Flatten2Kernel<GPU_CL, float>::Compute(
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

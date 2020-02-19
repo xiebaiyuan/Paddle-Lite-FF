@@ -15,7 +15,7 @@ limitations under the License. */
 #include "operators/fusion_dequant_add_bn_relu_quant_op.h"
 
 #ifdef FUSION_DEQUANT_ADD_BN_RELU_QUANT_OP
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <typename Dtype, typename T>
@@ -25,9 +25,9 @@ void FusionDequantAddBNReluQuantOp<Dtype, T>::InferShape() const {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
-namespace ops = paddle_mobile::operators;
+namespace ops = paddle_mobile_lens::operators;
 REGISTER_FUSION_MATCHER(fusion_dequant_add_bn_relu_quant,
                         ops::FusionDequantAddBNReluQuantMatcher);
 
@@ -38,7 +38,7 @@ REGISTER_OPERATOR_CPU(fusion_dequant_add_bn_relu_quant,
 #endif  // FUSION_DEQUANT_ADD_BN_RELU_QUANT_OP
 
 #ifdef FUSION_DEQUANT_ADD_BN_QUANT_OP
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <typename Dtype, typename T>
@@ -48,9 +48,9 @@ void FusionDequantAddBNQuantOp<Dtype, T>::InferShape() const {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
-namespace ops = paddle_mobile::operators;
+namespace ops = paddle_mobile_lens::operators;
 REGISTER_FUSION_MATCHER(fusion_dequant_add_bn_quant,
                         ops::FusionDequantAddBNQuantMatcher);
 

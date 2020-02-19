@@ -17,7 +17,7 @@ limitations under the License. */
 #include <cstdlib>
 #include <string>
 #include "common/enforce.h"
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 // Statically sized, statically indexed dimension
@@ -332,4 +332,4 @@ Dim<sizeof...(Args)> make_dim(Args... idxes) {
 }
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

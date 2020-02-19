@@ -14,7 +14,7 @@ limitations under the License. */
 
 #include "framework/cl/cl_tool.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 const char *opencl_error_to_str(cl_int error) {
@@ -81,4 +81,4 @@ const char *opencl_error_to_str(cl_int error) {
 }
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

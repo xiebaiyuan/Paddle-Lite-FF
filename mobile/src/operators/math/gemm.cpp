@@ -23,7 +23,7 @@ limitations under the License. */
 #include <omp.h>
 #endif
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 namespace math {
 
@@ -3250,11 +3250,11 @@ void Gemm::Sgemm(int m, int n, int k, float alpha, const float *A, int lda,
   //  DLOG << "nblock_num = " << nblock_num << ", NC = " << NC << "\n";
 
   packedA = static_cast<float *>(
-      paddle_mobile::memory::Alloc(sizeof(float) * MC * KC));
+      paddle_mobile_lens::memory::Alloc(sizeof(float) * MC * KC));
   packedB = static_cast<float *>(
-      paddle_mobile::memory::Alloc(sizeof(float) * KC * NC));
+      paddle_mobile_lens::memory::Alloc(sizeof(float) * KC * NC));
   packedC = static_cast<float *>(
-      paddle_mobile::memory::Alloc(sizeof(float) * MC * NC));
+      paddle_mobile_lens::memory::Alloc(sizeof(float) * MC * NC));
 
   int mc, nc;
   for (int j = 0; j < n; j += NC) {
@@ -3283,9 +3283,9 @@ void Gemm::Sgemm(int m, int n, int k, float alpha, const float *A, int lda,
     }
   }
 
-  paddle_mobile::memory::Free(packedA);
-  paddle_mobile::memory::Free(packedB);
-  paddle_mobile::memory::Free(packedC);
+  paddle_mobile_lens::memory::Free(packedA);
+  paddle_mobile_lens::memory::Free(packedB);
+  paddle_mobile_lens::memory::Free(packedC);
 }
 
 void Gemm::SgemmWithBn(int m, int n, int k, float alpha, const float *A,
@@ -3320,11 +3320,11 @@ void Gemm::SgemmWithBn(int m, int n, int k, float alpha, const float *A,
   //  DLOG << "nblock_num = " << nblock_num << ", NC = " << NC << "\n";
 
   packedA = static_cast<float *>(
-      paddle_mobile::memory::Alloc(sizeof(float) * MC * KC));
+      paddle_mobile_lens::memory::Alloc(sizeof(float) * MC * KC));
   packedB = static_cast<float *>(
-      paddle_mobile::memory::Alloc(sizeof(float) * KC * NC));
+      paddle_mobile_lens::memory::Alloc(sizeof(float) * KC * NC));
   packedC = static_cast<float *>(
-      paddle_mobile::memory::Alloc(sizeof(float) * MC * NC));
+      paddle_mobile_lens::memory::Alloc(sizeof(float) * MC * NC));
 
   int mc, nc;
   for (int j = 0; j < n; j += NC) {
@@ -3354,9 +3354,9 @@ void Gemm::SgemmWithBn(int m, int n, int k, float alpha, const float *A,
     }
   }
 
-  paddle_mobile::memory::Free(packedA);
-  paddle_mobile::memory::Free(packedB);
-  paddle_mobile::memory::Free(packedC);
+  paddle_mobile_lens::memory::Free(packedA);
+  paddle_mobile_lens::memory::Free(packedB);
+  paddle_mobile_lens::memory::Free(packedC);
 }
 
 void Gemm::SgemmWithPRelu(int m, int n, int k, const float *A, int lda,
@@ -3390,11 +3390,11 @@ void Gemm::SgemmWithPRelu(int m, int n, int k, const float *A, int lda,
   //  DLOG << "nblock_num = " << nblock_num << ", NC = " << NC << "\n";
 
   packedA = static_cast<float *>(
-      paddle_mobile::memory::Alloc(sizeof(float) * MC * KC));
+      paddle_mobile_lens::memory::Alloc(sizeof(float) * MC * KC));
   packedB = static_cast<float *>(
-      paddle_mobile::memory::Alloc(sizeof(float) * KC * NC));
+      paddle_mobile_lens::memory::Alloc(sizeof(float) * KC * NC));
   packedC = static_cast<float *>(
-      paddle_mobile::memory::Alloc(sizeof(float) * MC * NC));
+      paddle_mobile_lens::memory::Alloc(sizeof(float) * MC * NC));
 
   int mc, nc;
   for (int j = 0; j < n; j += NC) {
@@ -3423,9 +3423,9 @@ void Gemm::SgemmWithPRelu(int m, int n, int k, const float *A, int lda,
     }
   }
 
-  paddle_mobile::memory::Free(packedA);
-  paddle_mobile::memory::Free(packedB);
-  paddle_mobile::memory::Free(packedC);
+  paddle_mobile_lens::memory::Free(packedA);
+  paddle_mobile_lens::memory::Free(packedB);
+  paddle_mobile_lens::memory::Free(packedC);
 }
 
 // 32位 float 矩阵乘法
@@ -3471,10 +3471,10 @@ void Gemm::Sgemm_omp(int m, int n, int k, float alpha, const float *A, int lda,
 #endif
 
     packedB = static_cast<float *>(
-        paddle_mobile::memory::Alloc(sizeof(float) * KC * NC));
+        paddle_mobile_lens::memory::Alloc(sizeof(float) * KC * NC));
     (*this.*procPackB)(KC, n, n % NR, B, ldb, packedB, true);
     packedA = static_cast<float *>(
-        paddle_mobile::memory::Alloc(sizeof(float) * MC * KC * max_threads));
+        paddle_mobile_lens::memory::Alloc(sizeof(float) * MC * KC * max_threads));
   } else {
     // 对 B 分块
     NC = L1 / (KC * sizeof(float));
@@ -3500,13 +3500,13 @@ void Gemm::Sgemm_omp(int m, int n, int k, float alpha, const float *A, int lda,
 #endif
 
     packedA = static_cast<float *>(
-        paddle_mobile::memory::Alloc(sizeof(float) * MC * KC));
+        paddle_mobile_lens::memory::Alloc(sizeof(float) * MC * KC));
     (*this.*procPackA)(m, KC, m % MR, A, lda, packedA, true);
     packedB = static_cast<float *>(
-        paddle_mobile::memory::Alloc(sizeof(float) * KC * NC * max_threads));
+        paddle_mobile_lens::memory::Alloc(sizeof(float) * KC * NC * max_threads));
   }
   packedC = static_cast<float *>(
-      paddle_mobile::memory::Alloc(sizeof(float) * MC * NC * max_threads));
+      paddle_mobile_lens::memory::Alloc(sizeof(float) * MC * NC * max_threads));
 
   if (m > n) {
 #pragma omp parallel for
@@ -3549,9 +3549,9 @@ void Gemm::Sgemm_omp(int m, int n, int k, float alpha, const float *A, int lda,
     }
   }
 
-  paddle_mobile::memory::Free(packedA);
-  paddle_mobile::memory::Free(packedB);
-  paddle_mobile::memory::Free(packedC);
+  paddle_mobile_lens::memory::Free(packedA);
+  paddle_mobile_lens::memory::Free(packedB);
+  paddle_mobile_lens::memory::Free(packedC);
 }
 
 void Gemm::SgemmWithBn_omp(int m, int n, int k, float alpha, const float *A,
@@ -3590,10 +3590,10 @@ void Gemm::SgemmWithBn_omp(int m, int n, int k, float alpha, const float *A,
 #endif
 
     packedB = static_cast<float *>(
-        paddle_mobile::memory::Alloc(sizeof(float) * KC * NC));
+        paddle_mobile_lens::memory::Alloc(sizeof(float) * KC * NC));
     (*this.*procPackB)(KC, n, n % NR, B, ldb, packedB, true);
     packedA = static_cast<float *>(
-        paddle_mobile::memory::Alloc(sizeof(float) * MC * KC * max_threads));
+        paddle_mobile_lens::memory::Alloc(sizeof(float) * MC * KC * max_threads));
   } else {
     // 对 B 分块
     NC = L1 / (KC * sizeof(float));
@@ -3618,13 +3618,13 @@ void Gemm::SgemmWithBn_omp(int m, int n, int k, float alpha, const float *A,
 #endif
 
     packedA = static_cast<float *>(
-        paddle_mobile::memory::Alloc(sizeof(float) * MC * KC));
+        paddle_mobile_lens::memory::Alloc(sizeof(float) * MC * KC));
     (*this.*procPackA)(m, KC, m % MR, A, lda, packedA, true);
     packedB = static_cast<float *>(
-        paddle_mobile::memory::Alloc(sizeof(float) * KC * NC * max_threads));
+        paddle_mobile_lens::memory::Alloc(sizeof(float) * KC * NC * max_threads));
   }
   packedC = static_cast<float *>(
-      paddle_mobile::memory::Alloc(sizeof(float) * MC * NC * max_threads));
+      paddle_mobile_lens::memory::Alloc(sizeof(float) * MC * NC * max_threads));
 
   if (m > n) {
 #pragma omp parallel for
@@ -3674,9 +3674,9 @@ void Gemm::SgemmWithBn_omp(int m, int n, int k, float alpha, const float *A,
     }
   }
 
-  paddle_mobile::memory::Free(packedA);
-  paddle_mobile::memory::Free(packedB);
-  paddle_mobile::memory::Free(packedC);
+  paddle_mobile_lens::memory::Free(packedA);
+  paddle_mobile_lens::memory::Free(packedB);
+  paddle_mobile_lens::memory::Free(packedC);
 }
 
 void Gemm::SgemmWithPRelu_omp(int m, int n, int k, const float *A, int lda,
@@ -3715,10 +3715,10 @@ void Gemm::SgemmWithPRelu_omp(int m, int n, int k, const float *A, int lda,
 #endif
 
     packedB = static_cast<float *>(
-        paddle_mobile::memory::Alloc(sizeof(float) * KC * NC));
+        paddle_mobile_lens::memory::Alloc(sizeof(float) * KC * NC));
     (*this.*procPackB)(KC, n, n % NR, B, ldb, packedB, true);
     packedA = static_cast<float *>(
-        paddle_mobile::memory::Alloc(sizeof(float) * MC * KC * max_threads));
+        paddle_mobile_lens::memory::Alloc(sizeof(float) * MC * KC * max_threads));
   } else {
     // 对 B 分块
     NC = L1 / (KC * sizeof(float));
@@ -3743,13 +3743,13 @@ void Gemm::SgemmWithPRelu_omp(int m, int n, int k, const float *A, int lda,
 #endif
 
     packedA = static_cast<float *>(
-        paddle_mobile::memory::Alloc(sizeof(float) * MC * KC));
+        paddle_mobile_lens::memory::Alloc(sizeof(float) * MC * KC));
     (*this.*procPackA)(m, KC, m % MR, A, lda, packedA, true);
     packedB = static_cast<float *>(
-        paddle_mobile::memory::Alloc(sizeof(float) * KC * NC * max_threads));
+        paddle_mobile_lens::memory::Alloc(sizeof(float) * KC * NC * max_threads));
   }
   packedC = static_cast<float *>(
-      paddle_mobile::memory::Alloc(sizeof(float) * MC * NC * max_threads));
+      paddle_mobile_lens::memory::Alloc(sizeof(float) * MC * NC * max_threads));
 
   if (m > n) {
 #pragma omp parallel for
@@ -3797,11 +3797,11 @@ void Gemm::SgemmWithPRelu_omp(int m, int n, int k, const float *A, int lda,
     }
   }
 
-  paddle_mobile::memory::Free(packedA);
-  paddle_mobile::memory::Free(packedB);
-  paddle_mobile::memory::Free(packedC);
+  paddle_mobile_lens::memory::Free(packedA);
+  paddle_mobile_lens::memory::Free(packedB);
+  paddle_mobile_lens::memory::Free(packedC);
 }
 
 }  // namespace math
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

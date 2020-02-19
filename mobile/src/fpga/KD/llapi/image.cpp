@@ -18,7 +18,7 @@ limitations under the License. */
 #include "fpga/KD/llapi/image.h"
 #include "fpga/KD/llapi/zynqmp_api.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace zynqmp {
 namespace image {
 
@@ -146,4 +146,4 @@ void split_image(int16_t *image_in, const float *scale_in, void **images_out,
 
 }  // namespace image
 }  // namespace zynqmp
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

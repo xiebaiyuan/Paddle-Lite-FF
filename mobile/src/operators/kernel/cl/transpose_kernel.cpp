@@ -15,7 +15,7 @@ limitations under the License. */
 
 #include "operators/kernel/transpose_kernel.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -129,6 +129,6 @@ void TransposeKernel<GPU_CL, float>::Compute(
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

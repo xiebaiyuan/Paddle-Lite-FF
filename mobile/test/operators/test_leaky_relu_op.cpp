@@ -17,7 +17,7 @@ limitations under the License. */
 #include "../test_include.h"
 #include "operators/activation_op.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 
 void LeakyRelu(const framework::Tensor *X, framework::Tensor *Y, float alpha) {
   const float *x = X->data<float>();
@@ -69,12 +69,12 @@ int TestLeakyReluOp(const std::vector<int> input_shape, float alpha) {
   return 0;
 }
 
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 int main() {
-  paddle_mobile::TestLeakyReluOp({1, 1, 2, 3}, 0.2f);
-  paddle_mobile::TestLeakyReluOp({1, 3, 11, 22}, 0.3f);
-  paddle_mobile::TestLeakyReluOp({1, 32, 112, 112}, 0.4f);
+  paddle_mobile_lens::TestLeakyReluOp({1, 1, 2, 3}, 0.2f);
+  paddle_mobile_lens::TestLeakyReluOp({1, 3, 11, 22}, 0.3f);
+  paddle_mobile_lens::TestLeakyReluOp({1, 32, 112, 112}, 0.4f);
   std::cout << "test leaky_relu op pass." << std::endl;
   return 0;
 }

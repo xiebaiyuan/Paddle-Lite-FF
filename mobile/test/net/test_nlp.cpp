@@ -17,7 +17,7 @@ limitations under the License. */
 #include "../test_include.h"
 
 int main() {
-  paddle_mobile::PaddleMobile<paddle_mobile::CPU> paddle_mobile;
+  paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::CPU> paddle_mobile;
   paddle_mobile.SetThreadNum(4);
   auto time1 = time();
   //  auto isok = paddle_mobile.Load(std::string(g_mobilenet_detect) + "/model",
@@ -34,9 +34,9 @@ int main() {
 
     std::vector<int64_t> ids{1918, 117, 55, 97, 1352, 4272, 1656, 903};
 
-    paddle_mobile::framework::LoDTensor words;
+    paddle_mobile_lens::framework::LoDTensor words;
     auto size = static_cast<int>(ids.size());
-    paddle_mobile::framework::LoD lod{{0, ids.size()}};
+    paddle_mobile_lens::framework::LoD lod{{0, ids.size()}};
     DDim dims{size, 1};
     words.Resize(dims);
     words.set_lod(lod);
@@ -70,9 +70,9 @@ int main() {
       4493, 2403, 723,  932,  2084, 635,  1352, 932,  444,  2047, 1159, 1893,
       1579, 59,   330,  98,   1296, 1159, 3430, 738,  3186, 1071, 2174, 3933};
 
-  paddle_mobile::framework::LoDTensor words;
+  paddle_mobile_lens::framework::LoDTensor words;
   auto size = static_cast<int>(ids.size());
-  paddle_mobile::framework::LoD lod{{0, ids.size()}};
+  paddle_mobile_lens::framework::LoD lod{{0, ids.size()}};
   DDim dims{size, 1};
   words.Resize(dims);
   words.set_lod(lod);

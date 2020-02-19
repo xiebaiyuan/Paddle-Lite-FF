@@ -19,7 +19,7 @@ limitations under the License. */
 #include "../pe_params.hpp"
 #include "conv_process.hpp"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace zynqmp {
 
 class DepthwiseConvPE : public PE {
@@ -95,4 +95,4 @@ class DepthwiseConvPE : public PE {
 };
 
 }  // namespace zynqmp
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

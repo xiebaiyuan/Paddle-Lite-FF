@@ -17,7 +17,7 @@ limitations under the License. */
 #include "operators/kernel/dropout_kernel.h"
 #include <operators/math/transform.h>
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -46,6 +46,6 @@ void DropoutKernel<CPU, float>::Compute(const DropoutParam<CPU> &param) {
   trans(input_x_ptr, input_x_ptr + input_x->numel(), out_ptr, func_);
 }
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

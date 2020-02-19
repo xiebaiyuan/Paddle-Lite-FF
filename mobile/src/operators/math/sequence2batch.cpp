@@ -16,7 +16,7 @@ limitations under the License. */
 #include <cstring>
 #include "common/types.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 namespace math {
 
@@ -57,4 +57,4 @@ template class Batch2LoDTensorFunctor<CPU, float>;
 
 }  // namespace math
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

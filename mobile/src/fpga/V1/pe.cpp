@@ -27,7 +27,7 @@ limitations under the License. */
 #include <iostream>
 #endif
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace fpga {
 
 using namespace driver;  // NOLINT
@@ -752,7 +752,7 @@ void deconv_post_process(const struct DeconvArgs &args) {
   int align_deconv_row_len = align_to_x(deconv_row_len, 16);
 
   for (int idx = 0; idx < sub_conv_n; ++idx) {
-    paddle_mobile::fpga::fpga_invalidate(
+    paddle_mobile_lens::fpga::fpga_invalidate(
         args.split_conv_args[idx]->output.address,
         align_origin_w * origin_h * sizeof(int16_t));
   }
@@ -792,7 +792,7 @@ void DWDeconv_post_process(const struct DWDeconvArgs &args) {
   int align_deconv_row_len = align_to_x(deconv_row_len, IMAGE_ALIGNMENT);
 
   for (int idx = 0; idx < sub_conv_n; ++idx) {
-    paddle_mobile::fpga::fpga_invalidate(
+    paddle_mobile_lens::fpga::fpga_invalidate(
         args.dw_conv_args[idx]->output.address,
         align_origin_w * origin_h * sizeof(int16_t));
   }
@@ -858,7 +858,7 @@ int ComputeFpgaDeconv(const struct DeconvArgs &args) {
     gettimeofday(&start, NULL);
 #endif
     for (int i = 0; i < sub_conv_num; i++) {
-      paddle_mobile::fpga::fpga_invalidate(
+      paddle_mobile_lens::fpga::fpga_invalidate(
           args.split_conv_args[i]->output.scale_address, 2 * sizeof(float));
       float ptr_scale = (args.split_conv_args[i]->output.scale_address)[0];
       if (ptr_scale > max_scale) {
@@ -1141,7 +1141,7 @@ int ComputeDWDeconv(const struct DWDeconvArgs &args) {
     gettimeofday(&start, NULL);
 #endif
     for (int i = 0; i < sub_conv_num; i++) {
-      paddle_mobile::fpga::fpga_invalidate(
+      paddle_mobile_lens::fpga::fpga_invalidate(
           args.dw_conv_args[i]->output.scale_address, 2 * sizeof(float));
       float ptr_scale = (args.dw_conv_args[i]->output.scale_address)[0];
       if (ptr_scale > max_scale) {
@@ -1177,4 +1177,4 @@ int ComputeDWDeconv(const struct DWDeconvArgs &args) {
 }  // ComputeFpgaDeconv
 
 }  // namespace fpga
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

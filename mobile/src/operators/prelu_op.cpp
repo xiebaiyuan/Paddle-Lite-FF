@@ -15,7 +15,7 @@ limitations under the License. */
 #ifdef PRELU_OP
 
 #include "operators/prelu_op.h"
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <typename Dtype, typename T>
@@ -25,14 +25,14 @@ void PReluOp<Dtype, T>::InferShape() const {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 /*
  * @b 每一个 op 都需要注册一下的,
  *    USE_OP的参数 和 REGISTER_OPERATOR的第一个参数
  * 都是需要和model中类型对应起来的
  * */
-namespace ops = paddle_mobile::operators;
+namespace ops = paddle_mobile_lens::operators;
 #ifdef PADDLE_MOBILE_CPU
 REGISTER_OPERATOR_CPU(prelu, ops::PReluOp);
 #endif

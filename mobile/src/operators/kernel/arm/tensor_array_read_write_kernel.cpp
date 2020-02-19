@@ -14,7 +14,7 @@ limitations under the License. */
 
 #include "operators/kernel/tensor_array_read_write_kernel.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 #ifdef WRITE_TO_ARRAY_OP
@@ -63,4 +63,4 @@ void ReadFromArrayKernel<CPU, float>::Compute(
 #endif  // READ_FROM_ARRAY_OP
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

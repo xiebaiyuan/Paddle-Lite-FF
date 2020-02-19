@@ -15,10 +15,10 @@ limitations under the License. */
 #include "operators/kernel/feed_kernel.h"
 #include "fpga/KD/pes/input_pe.hpp"
 
-using InputParam = paddle_mobile::zynqmp::InputParam;
-using InputPE = paddle_mobile::zynqmp::InputPE;
+using InputParam = paddle_mobile_lens::zynqmp::InputParam;
+using InputPE = paddle_mobile_lens::zynqmp::InputPE;
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -62,4 +62,4 @@ void FeedKernel<FPGA, float>::Compute(const FeedParam<FPGA>& param) {
 template class FeedKernel<FPGA, float>;
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

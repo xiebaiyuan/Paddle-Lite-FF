@@ -14,7 +14,7 @@ limitations under the License. */
 
 #pragma once
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace fpga {
 namespace deconv_filter {
 
@@ -36,4 +36,4 @@ void DWDconv_format_filter(float** data_in, int num, int channel, int height,
 
 }  // namespace deconv_filter
 }  // namespace fpga
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

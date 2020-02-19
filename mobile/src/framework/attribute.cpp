@@ -14,7 +14,7 @@ limitations under the License. */
 
 #include "attribute.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 struct PrintVistor : Vistor<Print &> {
@@ -37,4 +37,4 @@ Print &operator<<(Print &printer, const Attribute &attr) {
 }
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

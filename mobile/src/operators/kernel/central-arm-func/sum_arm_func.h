@@ -18,7 +18,7 @@ limitations under the License. */
 #include <vector>
 #include "operators/math/selected_rows_functor.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 using LoDTensorArray = std::vector<LoDTensor>;
@@ -148,6 +148,6 @@ void SumCompute(const SumParam<CPU> &param) {
   }
 }
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

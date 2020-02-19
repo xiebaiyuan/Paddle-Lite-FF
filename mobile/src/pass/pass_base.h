@@ -14,7 +14,7 @@ limitations under the License. */
 
 #pragma once
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace pass {
 
 class PassBase {
@@ -24,4 +24,4 @@ class PassBase {
 };
 
 }  // namespace pass
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

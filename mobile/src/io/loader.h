@@ -19,7 +19,7 @@ limitations under the License. */
 #include "common/types.h"
 #include "framework/program/program.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 
 template <typename Dtype = CPU, Precision P = Precision::FP32>
 class Loader {
@@ -46,4 +46,4 @@ class Loader {
                                                  bool can_add_split = false);
 };
 
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

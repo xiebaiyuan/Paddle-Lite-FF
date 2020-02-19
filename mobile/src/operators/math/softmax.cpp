@@ -21,7 +21,7 @@ limitations under the License. */
 #include "common/types.h"
 #include "operators/math/math.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 namespace math {
 
@@ -152,6 +152,6 @@ void SequenceSoftmaxFuntor<CPU, float>::operator()(
 
 }  // namespace math
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // SOFTMAX_OP

@@ -15,14 +15,14 @@ limitations under the License. */
 
 #include "operators/kernel/fusion_fc_kernel.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
 bool FusionFcKernel<FPGA, float>::Init(FusionFcParam<FPGA> *param) {
   bool relu_enabled = false;
-  paddle_mobile::fpga::ActivationType activation_enable =
-      paddle_mobile::fpga::NONE;
+  paddle_mobile_lens::fpga::ActivationType activation_enable =
+      paddle_mobile_lens::fpga::NONE;
   int16_t leaky_relu_negative_slope = 0;
   auto input_x = const_cast<LoDTensor *>(param->InputX());
   auto filter = const_cast<LoDTensor *>(param->InputY());
@@ -70,6 +70,6 @@ void FusionFcKernel<FPGA, float>::Compute(const FusionFcParam<FPGA> &param) {
   fpga::ComputeFpgaConv(param.FpgaArgs());
 }
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

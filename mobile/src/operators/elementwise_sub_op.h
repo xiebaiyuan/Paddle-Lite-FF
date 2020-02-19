@@ -21,7 +21,7 @@ limitations under the License. */
 #include "kernel/elementwise_sub_kernel.h"
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 using std::string;
 template <typename DeviceType, typename T>
@@ -46,6 +46,6 @@ class ElementwiseSubOp : public framework::OperatorWithKernel<
  protected:
 };
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

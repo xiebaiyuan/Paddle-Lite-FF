@@ -40,17 +40,17 @@ int main(int argc, char *argv[]) {
     optimize = atoi(argv[5]);
   }
 #ifdef PADDLE_MOBILE_FPGA
-  paddle_mobile::PaddleMobile<paddle_mobile::FPGA> paddle_mobile;
+  paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::FPGA> paddle_mobile;
 #endif
 #ifdef PADDLE_MOBILE_CPU
-  paddle_mobile::PaddleMobile<paddle_mobile::CPU> paddle_mobile;
+  paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::CPU> paddle_mobile;
 #endif
   paddle_mobile.SetThreadNum(thread_num);
   auto time1 = time();
   std::vector<float> output;
   if (paddle_mobile.Load(fluid_model, optimize, false, 1, true)) {
-    auto time2 = paddle_mobile::time();
-    std::cout << "load cost :" << paddle_mobile::time_diff(time1, time2) << "ms"
+    auto time2 = paddle_mobile_lens::time();
+    std::cout << "load cost :" << paddle_mobile_lens::time_diff(time1, time2) << "ms"
               << std::endl;
     std::vector<float> input;
     std::vector<int64_t> dims{1, 3, 224, 224};

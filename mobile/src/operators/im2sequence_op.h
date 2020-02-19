@@ -21,7 +21,7 @@ limitations under the License. */
 #include "operators/kernel/im2sequence_kernel.h"
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <typename DeviceType, typename T>
@@ -43,6 +43,6 @@ class Im2SequenceOp : public framework::OperatorWithKernel<
 };
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

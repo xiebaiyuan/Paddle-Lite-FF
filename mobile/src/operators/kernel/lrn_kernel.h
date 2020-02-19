@@ -27,7 +27,7 @@ limitations under the License. */
 #include "framework/operator.h"
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <typename T>
@@ -176,6 +176,6 @@ class LrnKernel
   bool Init(LrnParam<DeviceType> *param);
 };
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

@@ -20,7 +20,7 @@ limitations under the License. */
 #include "framework/op_registry.h"
 #include "framework/operator.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 class WhileStepExecutor {
@@ -123,6 +123,6 @@ void WhileKernel<CPU, float>::Compute(const WhileParam<CPU> &param) {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // WHILE_OP

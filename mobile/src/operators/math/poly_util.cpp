@@ -16,7 +16,7 @@ limitations under the License. */
 
 #include "operators/math/poly_util.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 namespace math {
 
@@ -115,6 +115,6 @@ template float PolyOverlapArea(const float* box1, const float* box2,
 
 }  // namespace math
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

@@ -17,7 +17,7 @@ limitations under the License. */
 #include "../test_include.h"
 #include "operators/activation_op.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 
 void Tanh(const framework::Tensor *X, framework::Tensor *Y) {
   const float *x = X->data<float>();
@@ -70,12 +70,12 @@ int TestTanhOp(const std::vector<int> input_shape) {
   return 0;
 }
 
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 int main() {
-  paddle_mobile::TestTanhOp({1, 1, 2, 3});
-  paddle_mobile::TestTanhOp({1, 3, 11, 22});
-  paddle_mobile::TestTanhOp({1, 32, 112, 112});
+  paddle_mobile_lens::TestTanhOp({1, 1, 2, 3});
+  paddle_mobile_lens::TestTanhOp({1, 3, 11, 22});
+  paddle_mobile_lens::TestTanhOp({1, 32, 112, 112});
   std::cout << "test sigmoid op pass." << std::endl;
   return 0;
 }

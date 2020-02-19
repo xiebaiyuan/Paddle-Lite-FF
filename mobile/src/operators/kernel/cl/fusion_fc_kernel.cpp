@@ -17,7 +17,7 @@ limitations under the License. */
 #include "operators/kernel/fusion_fc_kernel.h"
 #include "operators/math/math_function.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -118,6 +118,6 @@ void FusionFcKernel<GPU_CL, float>::Compute(
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

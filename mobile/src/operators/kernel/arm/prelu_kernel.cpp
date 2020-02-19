@@ -20,7 +20,7 @@ limitations under the License. */
 #include <arm_neon.h>
 #endif
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <typename T>
@@ -117,6 +117,6 @@ void PReluKernel<CPU, float>::Compute(const PReluParam<CPU> &param) {
 #endif
 }
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

@@ -18,7 +18,7 @@ limitations under the License. */
 #include <cmath>
 #include <numeric>
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <typename Device, typename T>
@@ -257,6 +257,6 @@ void BeamSearchKernel<CPU, float>::Compute(const BeamSearchParam<CPU> &param) {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

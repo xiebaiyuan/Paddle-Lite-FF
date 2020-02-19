@@ -24,7 +24,7 @@ limitations under the License. */
 #include "common/types.h"
 #include "string"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 
 template <typename Device, typename T = float>
 class PaddleTester {
@@ -32,4 +32,4 @@ class PaddleTester {
   double CaculatePredictTime(std::string *cl_path = nullptr);
 };
 
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

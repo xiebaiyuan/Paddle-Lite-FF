@@ -15,7 +15,7 @@ limitations under the License. */
 #include "../test_include.h"
 #include "operators/cast_op.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 
 template <typename Itype, typename Otype>
 void Cast(const framework::Tensor *X, framework::Tensor *Y) {
@@ -108,7 +108,7 @@ int TestCastOp(const std::vector<int> input_shape) {
   return 0;
 }
 
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 int main(int argc, char *argv[]) {
   TestCastOp<float, int>({1, 100});

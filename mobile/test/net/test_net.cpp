@@ -35,7 +35,7 @@ void test(int argc, char *argv[]) {
   arg_index++;
   int quantification_fold = std::stoi(argv[arg_index]);
   arg_index++;
-  paddle_mobile::PaddleMobileConfigInternal config;
+  paddle_mobile_lens::PaddleMobileConfigInternal config;
   config.memory_optimization_level = enable_memory_optimization
                                          ? MemoryOptimizationWithoutFeeds
                                          : NoMemoryOptimization;
@@ -50,11 +50,11 @@ void test(int argc, char *argv[]) {
 
 #ifdef PADDLE_MOBILE_CL
   //  config.load_when_predict = true;
-  paddle_mobile::PaddleMobile<paddle_mobile::GPU_CL> paddle_mobile(config);
+  paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::GPU_CL> paddle_mobile(config);
   paddle_mobile.SetCLPath("/data/local/tmp/bin");
   std::cout << "testing opencl yyz " << std::endl;
 #else
-  paddle_mobile::PaddleMobile<paddle_mobile::CPU> paddle_mobile(config);
+  paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::CPU> paddle_mobile(config);
   paddle_mobile.SetThreadNum(1);
   std::cout << "testing cpu yyz " << std::endl;
 #endif
@@ -72,7 +72,7 @@ void test(int argc, char *argv[]) {
 
   bool is_lod = std::stoi(argv[arg_index]) == 1;
   arg_index++;
-  paddle_mobile::framework::LoD lod{{}};
+  paddle_mobile_lens::framework::LoD lod{{}};
   if (is_lod) {
     int lod_count = std::stoi(argv[arg_index]);
     arg_index++;
@@ -124,18 +124,18 @@ void test(int argc, char *argv[]) {
     //   float num = input_data_array[i];
     //   input_data.push_back(num);
     // }
-    // paddle_mobile::framework::Tensor input_tensor(input_data,
-    // paddle_mobile::framework::make_ddim(dims));
-    paddle_mobile::framework::Tensor input_tensor(
-        input_data_array, paddle_mobile::framework::make_ddim(dims));
+    // paddle_mobile_lens::framework::Tensor input_tensor(input_data,
+    // paddle_mobile_lens::framework::make_ddim(dims));
+    paddle_mobile_lens::framework::Tensor input_tensor(
+        input_data_array, paddle_mobile_lens::framework::make_ddim(dims));
     auto time4 = time();
     std::cout << "auto-test"
               << " preprocess-time-cost :" << time_diff(time3, time4) << "ms"
               << std::endl;
 
-    paddle_mobile::framework::LoDTensor input_lod_tensor;
+    paddle_mobile_lens::framework::LoDTensor input_lod_tensor;
     if (is_lod) {
-      input_lod_tensor.Resize(paddle_mobile::framework::make_ddim(dims));
+      input_lod_tensor.Resize(paddle_mobile_lens::framework::make_ddim(dims));
       input_lod_tensor.set_lod(lod);
       auto *tensor_data = input_lod_tensor.mutable_data<float>();
       for (int i = 0; i < size; i++) {
@@ -188,8 +188,8 @@ void test(int argc, char *argv[]) {
       }
       size_t width = cl_image->ImageDims()[0];
       size_t height = cl_image->ImageDims()[1];
-      paddle_mobile::framework::half_t *image_data =
-          new paddle_mobile::framework::half_t[height * width * 4];
+      paddle_mobile_lens::framework::half_t *image_data =
+          new paddle_mobile_lens::framework::half_t[height * width * 4];
       cl_int err;
       cl_mem image = cl_image->GetCLImage();
       size_t origin[3] = {0, 0, 0};

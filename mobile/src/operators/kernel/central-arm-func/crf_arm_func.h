@@ -19,7 +19,7 @@ limitations under the License. */
 #include <vector>
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 template <typename P>
 void Decode(const Tensor& emission_weights, const Tensor& transition_weights,
@@ -113,6 +113,6 @@ void CrfCompute(const CrfParam<CPU>& param) {
 }
 }  // namespace operators
 
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

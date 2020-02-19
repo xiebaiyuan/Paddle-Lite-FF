@@ -16,7 +16,7 @@ limitations under the License. */
 
 #include "operators/kernel/dropout_kernel.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -29,6 +29,6 @@ template <>
 void DropoutKernel<FPGA, float>::Compute(const DropoutParam<FPGA> &param) {}
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

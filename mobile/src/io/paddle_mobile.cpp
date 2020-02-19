@@ -26,7 +26,7 @@ limitations under the License. */
 #endif
 #include "operators/math/gemm.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 
 template <typename Device, typename T>
 void PaddleMobile<Device, T>::SetThreadNum(int thread_num,
@@ -211,11 +211,11 @@ double PaddleMobile<CPU, float>::GetPredictTime() {
   int ldb = n;
   int ldc = n;
   float *a =
-      static_cast<float *>(paddle_mobile::memory::Alloc(sizeof(float) * m * k));
+      static_cast<float *>(paddle_mobile_lens::memory::Alloc(sizeof(float) * m * k));
   float *b =
-      static_cast<float *>(paddle_mobile::memory::Alloc(sizeof(float) * k * n));
+      static_cast<float *>(paddle_mobile_lens::memory::Alloc(sizeof(float) * k * n));
   float *c =
-      static_cast<float *>(paddle_mobile::memory::Alloc(sizeof(float) * m * n));
+      static_cast<float *>(paddle_mobile_lens::memory::Alloc(sizeof(float) * m * n));
   int t1 = 1;
   int t2 = 1;
   for (int i = 0; i < m * k; ++i) {
@@ -226,7 +226,7 @@ double PaddleMobile<CPU, float>::GetPredictTime() {
   }
 
   operators::math::Gemm gemm;
-  auto time1 = paddle_mobile::time();
+  auto time1 = paddle_mobile_lens::time();
   int times = 4;
   for (int j = 0; j < times; ++j) {
     gemm.Sgemm(m, n, k, static_cast<float>(1), a, lda, b, ldb,
@@ -234,11 +234,11 @@ double PaddleMobile<CPU, float>::GetPredictTime() {
                static_cast<float *>(nullptr));
   }
 
-  auto time2 = paddle_mobile::time();
-  double cost = paddle_mobile::time_diff(time1, time2) / times;
-  paddle_mobile::memory::Free(a);
-  paddle_mobile::memory::Free(b);
-  paddle_mobile::memory::Free(c);
+  auto time2 = paddle_mobile_lens::time();
+  double cost = paddle_mobile_lens::time_diff(time1, time2) / times;
+  paddle_mobile_lens::memory::Free(a);
+  paddle_mobile_lens::memory::Free(b);
+  paddle_mobile_lens::memory::Free(c);
   return cost;
 }
 #endif
@@ -327,9 +327,9 @@ double PaddleMobile<GPU_CL, float>::GetPredictTime() {
   int h = 224;
   int w = 224;
   float *input = static_cast<float *>(
-      paddle_mobile::memory::Alloc(sizeof(float) * 3 * 224 * 224));
+      paddle_mobile_lens::memory::Alloc(sizeof(float) * 3 * 224 * 224));
   float *filter = static_cast<float *>(
-      paddle_mobile::memory::Alloc(sizeof(float) * 32 * 27));
+      paddle_mobile_lens::memory::Alloc(sizeof(float) * 32 * 27));
   int input_w = w * (c + 3) / 4;
   int input_h = n * h;
   int filter_w = 3 * (3 + 3) / 4;
@@ -494,7 +494,7 @@ double PaddleMobile<GPU_CL, float>::GetPredictTime() {
   //  cl_event out_event = param.Output()->GetClEvent();
   //  cl_event wait_event = param.Input()->GetClEvent();
   size_t global_work_size2[3] = {8, 224, 224};
-  auto time1 = paddle_mobile::time();
+  auto time1 = paddle_mobile_lens::time();
   int times = 10;
   for (int i = 0; i < times; ++i) {
     status = clEnqueueNDRangeKernel(queue, kernel, 3, NULL, global_work_size2,
@@ -502,11 +502,11 @@ double PaddleMobile<GPU_CL, float>::GetPredictTime() {
   }
   CL_CHECK_ERRORS(status);
   clFinish(queue);
-  auto time2 = paddle_mobile::time();
-  paddle_mobile::memory::Free(input);
-  paddle_mobile::memory::Free(filter);
+  auto time2 = paddle_mobile_lens::time();
+  paddle_mobile_lens::memory::Free(input);
+  paddle_mobile_lens::memory::Free(filter);
   if (status == CL_SUCCESS) {
-    return paddle_mobile::time_diff(time1, time2) / times;
+    return paddle_mobile_lens::time_diff(time1, time2) / times;
   } else {
     return -1;
   }
@@ -547,4 +547,4 @@ template class PaddleMobile<CPU, float>;
 template class PaddleMobile<FPGA, float>;
 template class PaddleMobile<GPU_CL, float>;
 
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

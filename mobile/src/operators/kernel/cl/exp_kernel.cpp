@@ -16,19 +16,19 @@ limitations under the License. */
 
 #include <framework/cl/cl_tensor.h>
 #include <operators/kernel/exp_kernel.h>
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
 bool EXPKernel<GPU_CL, float>::Init(
-    paddle_mobile::operators::EXPParam<paddle_mobile::GPU_CL>* param) {
+    paddle_mobile_lens::operators::EXPParam<paddle_mobile_lens::GPU_CL>* param) {
   this->cl_helper_.AddKernel("exp_impl", "exp_kernel.cl");
   return true;
 }
 
 template <>
 void EXPKernel<GPU_CL, float>::Compute(
-    const paddle_mobile::operators::EXPParam<paddle_mobile::GPU_CL>& param) {
+    const paddle_mobile_lens::operators::EXPParam<paddle_mobile_lens::GPU_CL>& param) {
   auto kernel = this->cl_helper_.KernelAt(0);
   const auto* input = param.InputX();
   auto* output = param.Out();
@@ -48,5 +48,5 @@ void EXPKernel<GPU_CL, float>::Compute(
 
 template class EXPKernel<GPU_CL, float>;
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 #endif

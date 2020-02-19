@@ -17,7 +17,7 @@ limitations under the License. */
 #include "framework/operator.h"
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 #ifdef LESS_THAN_OP
@@ -29,4 +29,4 @@ DECLARE_KERNEL(Equal, CompareParam);
 #endif  // EQUAL_OP
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

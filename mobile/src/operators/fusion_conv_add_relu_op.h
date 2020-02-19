@@ -23,7 +23,7 @@ limitations under the License. */
 #include "operators/kernel/conv_add_relu_kernel.h"
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 class FusionConvAddReluOpMatcher : public framework::FusionOpMatcher {
@@ -63,6 +63,6 @@ class FusionConvAddReluOp : public framework::OperatorWithKernel<
 };
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

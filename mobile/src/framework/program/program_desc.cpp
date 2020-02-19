@@ -19,7 +19,7 @@ limitations under the License. */
 #include "framework/program/program_desc.h"
 #include "framework/program/tensor_desc.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 ProgramDesc::ProgramDesc(PaddleMobile__Framework__Proto__ProgramDesc *desc) {
@@ -115,4 +115,4 @@ std::shared_ptr<BlockDesc> ProgramDesc::Block(size_t idx) {
 }
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

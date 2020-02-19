@@ -52,12 +52,12 @@ static char *Get_binary_data(std::string filename) {
   return data;
 }
 
-paddle_mobile::PaddleMobileConfig GetConfig() {
-  paddle_mobile::PaddleMobileConfig config;
-  config.precision = paddle_mobile::PaddleMobileConfig::FP32;
-  config.device = paddle_mobile::PaddleMobileConfig::kGPU_CL;
-  const std::shared_ptr<paddle_mobile::PaddleModelMemoryPack> &memory_pack =
-      std::make_shared<paddle_mobile::PaddleModelMemoryPack>();
+paddle_mobile_lens::PaddleMobileConfig GetConfig() {
+  paddle_mobile_lens::PaddleMobileConfig config;
+  config.precision = paddle_mobile_lens::PaddleMobileConfig::FP32;
+  config.device = paddle_mobile_lens::PaddleMobileConfig::kGPU_CL;
+  const std::shared_ptr<paddle_mobile_lens::PaddleModelMemoryPack> &memory_pack =
+      std::make_shared<paddle_mobile_lens::PaddleModelMemoryPack>();
   auto model_path = std::string(g_mobilenet_combined) + "/model";
   auto params_path = std::string(g_mobilenet_combined) + "/params";
   memory_pack->model_size =
@@ -72,9 +72,9 @@ paddle_mobile::PaddleMobileConfig GetConfig() {
   return config;
 }
 int main() {
-  paddle_mobile::PaddleMobileConfig config = GetConfig();
-  auto predictor = paddle_mobile::CreatePaddlePredictor<
-      paddle_mobile::PaddleMobileConfig,
-      paddle_mobile::PaddleEngineKind::kPaddleMobile>(config);
+  paddle_mobile_lens::PaddleMobileConfig config = GetConfig();
+  auto predictor = paddle_mobile_lens::CreatePaddlePredictor<
+      paddle_mobile_lens::PaddleMobileConfig,
+      paddle_mobile_lens::PaddleEngineKind::kPaddleMobile>(config);
   return 0;
 }

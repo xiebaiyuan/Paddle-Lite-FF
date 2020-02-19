@@ -24,7 +24,7 @@ limitations under the License. */
 #include "common/variant.h"
 #include "framework/dim.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 /**
@@ -189,4 +189,4 @@ DDim stride_numel(const DDim &ddim);
 Print &operator<<(Print &printer, const DDim &ddim);
 #endif
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

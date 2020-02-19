@@ -23,7 +23,7 @@ limitations under the License. */
 #include <omp.h>
 #endif
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 namespace math {
 template <>
@@ -5665,4 +5665,4 @@ void SlidingwindowConv3x3s2Faster<float, float>(
 
 }  // namespace math
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

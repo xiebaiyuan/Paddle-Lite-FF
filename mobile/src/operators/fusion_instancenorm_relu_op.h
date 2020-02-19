@@ -24,7 +24,7 @@ limitations under the License. */
 #include "operators/kernel/instancenorm_relu_kernel.h"
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 class FusionInstanceNormReluMatcher : public framework::FusionOpMatcher {
@@ -63,6 +63,6 @@ class FusionInstanceNormReluOp
 };
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

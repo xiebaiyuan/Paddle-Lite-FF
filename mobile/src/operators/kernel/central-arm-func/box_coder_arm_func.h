@@ -19,7 +19,7 @@ limitations under the License. */
 #include "framework/tensor.h"
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <typename T>
@@ -137,6 +137,6 @@ void BoxCoderCompute(const BoxCoderParam<CPU>& param) {
   }
 }
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

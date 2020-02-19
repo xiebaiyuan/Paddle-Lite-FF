@@ -22,7 +22,7 @@ limitations under the License. */
 #include "operators/math/math_function.h"
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <typename P>
@@ -67,6 +67,6 @@ void GruUnitCompute(const GruUnitParam<CPU>& param) {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

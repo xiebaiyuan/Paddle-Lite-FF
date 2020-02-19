@@ -16,7 +16,7 @@ limitations under the License. */
 
 #include <cstdint>
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace zynqmp {
 namespace image {
 
@@ -35,4 +35,4 @@ void split_image(int16_t* image_in, const float* scale_in, void** images_out,
                  const uint32_t* channel_nums, int height, int width);
 }  // namespace image
 }  // namespace zynqmp
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

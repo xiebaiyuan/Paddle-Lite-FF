@@ -14,7 +14,7 @@ limitations under the License. */
 
 #include "fpga/V2/image.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace fpga {
 namespace image {
 
@@ -142,4 +142,4 @@ void split_image(int8_t *image_in, void **images_out, int image_num,
 
 }  // namespace image
 }  // namespace fpga
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

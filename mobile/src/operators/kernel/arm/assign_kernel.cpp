@@ -17,7 +17,7 @@ limitations under the License. */
 #include "operators/kernel/assign_kernel.h"
 #include "framework/data_type.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -34,6 +34,6 @@ void AssignKernel<CPU, float>::Compute(const AssignParam<CPU>& param) {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // ASSIGN_OP

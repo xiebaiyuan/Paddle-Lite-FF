@@ -19,7 +19,7 @@ limitations under the License. */
 #include "framework/operator.h"
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 #ifdef LOGICAL_AND_OP
@@ -39,4 +39,4 @@ DECLARE_KERNEL(LogicalXor, LogicalBinaryParam);
 #endif
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

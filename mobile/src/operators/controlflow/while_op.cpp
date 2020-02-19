@@ -14,7 +14,7 @@ limitations under the License. */
 
 #include "operators/controlflow/while_op.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 #ifdef WHILE_OP
@@ -25,9 +25,9 @@ void WhileOp<Dtype, T>::InferShape() const {
 #endif  // WHILE_OP
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
-namespace ops = paddle_mobile::operators;
+namespace ops = paddle_mobile_lens::operators;
 
 #ifdef PADDLE_MOBILE_CPU
 #ifdef WHILE_OP

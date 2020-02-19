@@ -19,10 +19,10 @@ limitations under the License. */
 #ifdef FLATTEN2_OP
 #include <operators/op_param.h>
 #include "framework/operator.h"
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 DECLARE_KERNEL(Flatten2, FlattenParam)
 }
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // FLATTEN2_KERNEL

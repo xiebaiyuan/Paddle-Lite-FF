@@ -17,7 +17,7 @@ limitations under the License. */
 #include <algorithm>
 #include "fpga/common/fpga_common.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace fpga {
 namespace filter {
 
@@ -359,4 +359,4 @@ void format_DWDeconv_filter(float **data_in, int num, int height, int width,
 }
 }  // namespace filter
 }  // namespace fpga
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

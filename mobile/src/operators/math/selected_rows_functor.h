@@ -19,7 +19,7 @@ limitations under the License. */
   for (int64_t i = 0; i < sizei; i++) \
     for (int64_t j = 0; j < sizej; j++)
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 namespace math {
 
@@ -171,4 +171,4 @@ struct UpdateToTensor {
 // namespace scatter
 }  // namespace math
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

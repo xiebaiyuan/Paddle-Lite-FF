@@ -16,7 +16,7 @@ limitations under the License. */
 
 #include "operators/kernel/dropout_kernel.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -54,6 +54,6 @@ void DropoutKernel<GPU_CL, float>::Compute(const DropoutParam<GPU_CL> &param) {
   CL_CHECK_ERRORS(status);
 }
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

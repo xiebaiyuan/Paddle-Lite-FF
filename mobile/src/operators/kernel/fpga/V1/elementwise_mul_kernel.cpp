@@ -17,7 +17,7 @@ limitations under the License. */
 #include "operators/kernel/elementwise_mul_kernel.h"
 #include "operators/math/elementwise_op_function.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <typename T>
@@ -88,6 +88,6 @@ void ElementwiseMulKernel<FPGA, float>::Compute(
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

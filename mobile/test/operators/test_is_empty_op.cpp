@@ -15,7 +15,7 @@ limitations under the License. */
 #include "../test_include.h"
 #include "operators/is_empty_op.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 
 void IsEmpty(const framework::Tensor *input, framework::Tensor *out) {
   out->data<bool>()[0] = input->numel() == 0;
@@ -59,11 +59,11 @@ int TestIsEmptyOp(const std::vector<int> input_shape) {
     }
   }
 }
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 int main() {
-  paddle_mobile::TestIsEmptyOp({1, 3, 100, 100});
-  paddle_mobile::TestIsEmptyOp({0});
+  paddle_mobile_lens::TestIsEmptyOp({1, 3, 100, 100});
+  paddle_mobile_lens::TestIsEmptyOp({0});
   DLOG << "test is_empty op pass.";
   return 0;
 }

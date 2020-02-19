@@ -14,7 +14,7 @@ limitations under the License. */
 
 #include "framework/selected_rows.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 struct ReAllocateVisitor {
@@ -124,4 +124,4 @@ bool SelectedRows::HasKey(int64_t key) const {
 //}
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

@@ -15,7 +15,7 @@ limitations under the License. */
 #include <iostream>
 #include "io/paddle_inference_api.h"
 
-using namespace paddle_mobile;
+using namespace paddle_mobile_lens;
 
 PaddleMobileConfig GetConfig() {
   PaddleMobileConfig config;

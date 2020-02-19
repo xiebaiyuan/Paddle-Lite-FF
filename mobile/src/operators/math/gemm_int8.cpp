@@ -38,7 +38,7 @@ limitations under the License. */
 #include <omp.h>
 #endif
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 namespace math {
 void Gemm::AddDot4x8(int32_t k, const int8_t *a, const int8_t *b, int32_t *c,
@@ -2074,4 +2074,4 @@ void Gemm::WriteWithAddReluScale(int32_t mc, int32_t nc, int32_t *c, int8_t *C,
 
 }  // namespace math
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

@@ -23,7 +23,7 @@ limitations under the License. */
 
 #include "common/log.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace fpga {
 namespace driver {
 
@@ -138,4 +138,4 @@ int fpga_regpoll(uint64_t reg, uint64_t val, int time);
 
 }  // namespace driver
 }  // namespace fpga
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

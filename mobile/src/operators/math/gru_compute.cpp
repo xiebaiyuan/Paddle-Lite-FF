@@ -20,7 +20,7 @@ limitations under the License. */
 #include "operators/math/gemm/cblas.h"
 #include "operators/math/gru_cpu_kernel.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 namespace math {
 
@@ -52,5 +52,5 @@ template struct GRUUnitFunctor<CPU, float>;
 
 }  // namespace math
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 #endif

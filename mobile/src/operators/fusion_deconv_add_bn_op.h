@@ -20,7 +20,7 @@ limitations under the License. */
 #include "framework/program/program-optimize/fusion_op_register.h"
 #include "operators/kernel/deconv_add_bn_kernel.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 using std::string;
 using std::vector;
@@ -111,6 +111,6 @@ class FusionDeconvAddBNOp : public framework::OperatorWithKernel<
 };
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // FUSION_DECONV_ADD_BN_OP

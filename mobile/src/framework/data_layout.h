@@ -18,7 +18,7 @@ limitations under the License. */
 #include <cstdlib>
 #include <string>
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 enum class DataLayout {
@@ -60,4 +60,4 @@ inline std::string DataLayoutToString(const DataLayout &data_layout) {
 }
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

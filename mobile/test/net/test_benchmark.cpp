@@ -33,7 +33,7 @@ int main(int argc, char* argv[]) {
     optimize = atoi(argv[4]);
   }
 
-  paddle_mobile::PaddleMobile<paddle_mobile::CPU> paddle_mobile;
+  paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::CPU> paddle_mobile;
   paddle_mobile.SetThreadNum(thread_num);
   auto time1 = time();
   //  if (paddle_mobile.Load(fluid_model, optimize, false, 1, true)) {
@@ -42,8 +42,8 @@ int main(int argc, char* argv[]) {
                          1, true)) {
     auto time2 = time();
     std::cout << "load cost :" << time_diff(time1, time2) << "ms\n";
-    paddle_mobile::framework::Tensor input;
-    std::shared_ptr<paddle_mobile::framework::Tensor> output;
+    paddle_mobile_lens::framework::Tensor input;
+    std::shared_ptr<paddle_mobile_lens::framework::Tensor> output;
     std::vector<int64_t> dims{1, 3, 224, 224};
     if (feed_shape) {
       sscanf(feed_shape, "%lld,%lld,%lld,%lld", &dims[0], &dims[1], &dims[2],
@@ -51,8 +51,8 @@ int main(int argc, char* argv[]) {
     }
     std::cout << "feed shape: [" << dims[0] << ", " << dims[1] << ", "
               << dims[2] << ", " << dims[3] << "]\n";
-    paddle_mobile::framework::DDim in_shape =
-        paddle_mobile::framework::make_ddim(dims);
+    paddle_mobile_lens::framework::DDim in_shape =
+        paddle_mobile_lens::framework::make_ddim(dims);
     SetupTensor<float>(&input, in_shape, 0.f, 255.f);
     // warmup
     for (int i = 0; i < 2; ++i) {

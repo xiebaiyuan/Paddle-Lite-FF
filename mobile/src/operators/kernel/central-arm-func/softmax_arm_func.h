@@ -16,7 +16,7 @@ limitations under the License. */
 #pragma once
 #include "../../math/softmax.h"
 #include "operators/op_param.h"
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 template <typename P>
 void SoftmaxCompute(const SoftmaxParam<CPU> &param) {
@@ -28,5 +28,5 @@ void SoftmaxCompute(const SoftmaxParam<CPU> &param) {
   math::SoftmaxFuntor<CPU, float>()(in_x, out);
 }
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 #endif

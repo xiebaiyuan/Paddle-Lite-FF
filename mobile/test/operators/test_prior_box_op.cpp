@@ -15,7 +15,7 @@ limitations under the License. */
 #include "../test_include.h"
 #include "operators/prior_box_op.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 template <typename Dtype>
@@ -120,26 +120,26 @@ class TestPriorBoxOp {
 
 template class TestPriorBoxOp<CPU>;
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 int main() {
   DLOG << "----------**********----------";
   DLOG << "begin to run PriorBoxOp Test";
-  paddle_mobile::framework::Loader<paddle_mobile::CPU> loader;
+  paddle_mobile_lens::framework::Loader<paddle_mobile_lens::CPU> loader;
   auto program = loader.Load(std::string(g_mobilenet_ssd));
 
   /// input x (1,3,300,300)
-  paddle_mobile::framework::Tensor input_image;
+  paddle_mobile_lens::framework::Tensor input_image;
   SetupTensor<float>(&input_image, {1, 3, 300, 300}, static_cast<float>(0),
                      static_cast<float>(1));
   auto *input_image_ptr = input_image.data<float>();
 
-  paddle_mobile::framework::Tensor inputx1;
+  paddle_mobile_lens::framework::Tensor inputx1;
   SetupTensor<float>(&inputx1, {1, 1024, 10, 10}, static_cast<float>(0),
                      static_cast<float>(1));
   auto *inputx1_ptr = inputx1.data<float>();
 
-  paddle_mobile::framework::TestPriorBoxOp<paddle_mobile::CPU> testPriorBoxOp(
+  paddle_mobile_lens::framework::TestPriorBoxOp<paddle_mobile_lens::CPU> testPriorBoxOp(
       program);
 
   auto output_priorbox = testPriorBoxOp.predict_priorbox(input_image, inputx1);

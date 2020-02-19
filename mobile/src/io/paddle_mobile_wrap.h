@@ -22,7 +22,7 @@ limitations under the License. */
 #include <utility>
 #include <vector>
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace wrap {
 
 #ifndef PADDLE_MOBILE_FPGA
@@ -94,4 +94,4 @@ class Net {
 #endif
 
 }  // namespace wrap
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

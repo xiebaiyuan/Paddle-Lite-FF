@@ -20,7 +20,7 @@ limitations under the License. */
 #include "operators/math/activation.h"
 #include "operators/math/gru_compute.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 namespace math {
 
@@ -198,6 +198,6 @@ inline void forward_final_output(GRUMetaValue<T> value, int frame_size,
 
 }  // namespace math
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

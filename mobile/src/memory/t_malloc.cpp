@@ -28,12 +28,12 @@ limitations under the License. */
 #include "fpga/KD/llapi/zynqmp_api.h"
 #endif
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace memory {
 const int MALLOC_ALIGN = 64;
 
 #ifdef PADDLE_MOBILE_FPGA
-namespace fpga = paddle_mobile::fpga;
+namespace fpga = paddle_mobile_lens::fpga;
 
 void Copy(void *dst, const void *src, size_t num) {
   fpga::fpga_copy(dst, src, num);
@@ -89,4 +89,4 @@ void Free(void *ptr) {
 #endif
 
 }  // namespace memory
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

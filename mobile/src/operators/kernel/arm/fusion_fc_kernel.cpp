@@ -17,7 +17,7 @@ limitations under the License. */
 #include "operators/kernel/fusion_fc_kernel.h"
 #include "operators/kernel/central-arm-func/fusion_fc_arm_func.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -70,6 +70,6 @@ template class FusionFcKernel<CPU, int8_t>;
 #endif
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

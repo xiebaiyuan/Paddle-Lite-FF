@@ -20,7 +20,7 @@ limitations under the License. */
 #include <utility>
 #include <vector>
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 enum class Precision : int { FP32 = 0, FP16 = 1 };
 
 typedef int16_t half;
@@ -272,4 +272,4 @@ extern std::unordered_map<
 
 typedef std::map<std::string, std::vector<std::string>> VariableNameMap;
 
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

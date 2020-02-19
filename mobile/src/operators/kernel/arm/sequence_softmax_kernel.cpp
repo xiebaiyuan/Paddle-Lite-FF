@@ -18,7 +18,7 @@ limitations under the License. */
 #include "operators/kernel/sequence_kernels.h"
 #include "operators/math/softmax.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <typename T>
@@ -39,6 +39,6 @@ class SequenceSoftmaxKernel<CPU, T>
 template class SequenceSoftmaxKernel<CPU, float>;
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // SEQUENCE_SOFTMAX_OP

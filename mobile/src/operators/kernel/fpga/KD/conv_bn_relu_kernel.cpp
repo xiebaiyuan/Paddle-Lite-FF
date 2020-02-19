@@ -19,9 +19,9 @@ limitations under the License. */
 
 #include <math.h>
 
-using ConvPE = paddle_mobile::zynqmp::ConvPE;
+using ConvPE = paddle_mobile_lens::zynqmp::ConvPE;
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -71,6 +71,6 @@ void ConvBNReluKernel<FPGA, float>::Compute(
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

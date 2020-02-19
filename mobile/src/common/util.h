@@ -17,10 +17,10 @@ limitations under the License. */
 #include <string>
 #include "common/enforce.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 
 char *ReadFileToBuff(std::string filename);
 
 int GetFileLength(std::string filename);
 
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

@@ -19,7 +19,7 @@ limitations under the License. */
 #include "operators/kernel/central-arm-func/conv_arm_func.h"
 #include "operators/math/element_wise.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -74,6 +74,6 @@ void ConvAddKernel<CPU, float>::Compute(const FusionConvAddParam<CPU> &param) {
 template class ConvAddKernel<CPU, float>;
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

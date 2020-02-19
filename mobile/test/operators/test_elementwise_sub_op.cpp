@@ -16,7 +16,7 @@ limitations under the License. */
 #include "../test_include.h"
 #include "operators/elementwise_sub_op.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 template <typename Dtype>
@@ -99,28 +99,28 @@ class TestElementwiseSubOp {
 
 template class TestElementwiseSubOp<CPU>;
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 int main() {
   DLOG << "----------**********----------";
   DLOG << "begin to run ElementwiseSub Test";
-  paddle_mobile::framework::Loader<paddle_mobile::CPU> loader;
+  paddle_mobile_lens::framework::Loader<paddle_mobile_lens::CPU> loader;
   auto program = loader.Load(std::string(g_ocr) + "/model",
                              std::string(g_ocr) + "/params");
 
   /// input x1 (1,1,6,6)
-  paddle_mobile::framework::Tensor inputx1;
+  paddle_mobile_lens::framework::Tensor inputx1;
   SetupTensor<float>(&inputx1, {1, 1, 6, 6}, static_cast<float>(0),
                      static_cast<float>(1));
   auto *inputx1_ptr = inputx1.data<float>();
 
   /// input x2 (1,1,6,6)
-  paddle_mobile::framework::Tensor inputx2;
+  paddle_mobile_lens::framework::Tensor inputx2;
   SetupTensor<float>(&inputx2, {1, 1, 6, 6}, static_cast<float>(0),
                      static_cast<float>(1));
   auto *inputx2_ptr = inputx2.data<float>();
 
-  paddle_mobile::framework::TestElementwiseSubOp<paddle_mobile::CPU>
+  paddle_mobile_lens::framework::TestElementwiseSubOp<paddle_mobile_lens::CPU>
       testElementwiseSubOp(program);
 
   auto output_op = testElementwiseSubOp.predict_bn(inputx1, inputx2);

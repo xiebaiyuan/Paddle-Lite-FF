@@ -15,7 +15,7 @@ limitations under the License. */
 
 #include "fpga/common/fpga_common.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace fpga {
 
 uint64_t FPGAVersion();
@@ -32,4 +32,4 @@ int ComputeDWConv(const struct DWconvArgs& args);
 int ComputeDWDeconv(const struct DWDeconvArgs& args);
 
 }  // namespace fpga
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

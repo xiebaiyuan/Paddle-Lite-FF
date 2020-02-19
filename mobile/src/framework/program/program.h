@@ -19,7 +19,7 @@ limitations under the License. */
 #include "framework/program/program_desc.h"
 #include "framework/scope.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 template <typename Device, typename T = float>
@@ -38,4 +38,4 @@ class Program {
 };
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

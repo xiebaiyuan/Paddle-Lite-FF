@@ -24,7 +24,7 @@ limitations under the License. */
 #include "fpga/KD/llapi/config.h"
 #include "fpga/KD/llapi/zynqmp_api.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace zynqmp {
 
 #define PADDLE_MOBILE_OS_LINUX
@@ -381,4 +381,4 @@ float fp16_2_fp32(int16_t fp16_num) {
 }
 
 }  // namespace zynqmp
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

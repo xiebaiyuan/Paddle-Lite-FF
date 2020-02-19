@@ -20,7 +20,7 @@ limitations under the License. */
 #include "common/type_define.h"
 #include "framework/scope.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 template <typename Dtype>
@@ -93,4 +93,4 @@ class OpInfoMap {
 };
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

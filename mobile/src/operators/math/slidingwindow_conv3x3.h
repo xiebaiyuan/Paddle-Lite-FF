@@ -18,7 +18,7 @@ limitations under the License. */
 #include <vector>
 #include "framework/tensor.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 namespace math {
 template <typename Itype, typename Otype>
@@ -48,4 +48,4 @@ void SlidingwindowConv3x3s2Faster(const framework::Tensor *input,
                                   bool is_bias, bool is_relu);
 }  // namespace math
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

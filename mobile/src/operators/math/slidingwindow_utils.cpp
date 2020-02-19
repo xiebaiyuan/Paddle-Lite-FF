@@ -14,7 +14,7 @@ limitations under the License. */
 
 #include "operators/math/slidingwindow_utils.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 namespace math {
 
@@ -362,4 +362,4 @@ void slidingwindow_writeout_c4_fp32(const float* din, float* dout, int cs,
 
 }  // namespace math
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

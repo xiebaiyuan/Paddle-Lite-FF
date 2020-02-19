@@ -17,7 +17,7 @@ limitations under the License. */
 #include "operators/math/gemm/gemm_kernel.h"
 #include "operators/math/gemm/pack_kernel.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 namespace math {
 
@@ -117,4 +117,4 @@ struct I8o32gemvStrategy {
 
 }  // namespace math
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

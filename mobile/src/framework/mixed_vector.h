@@ -20,7 +20,7 @@
 #include "framework/tensor.h"
 #include "framework/tensor_util.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 // Vector<T> implements the std::vector interface, and can get Data or
@@ -268,4 +268,4 @@ class Vector {
 };
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

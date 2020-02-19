@@ -17,7 +17,7 @@ limitations under the License. */
 #include "../test_include.h"
 
 int main() {
-  paddle_mobile::PaddleMobile<paddle_mobile::FPGA> paddle_mobile;
+  paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::FPGA> paddle_mobile;
   paddle_mobile.SetThreadNum(4);
   auto time1 = time();
   if (paddle_mobile.Load(g_resnet, true)) {

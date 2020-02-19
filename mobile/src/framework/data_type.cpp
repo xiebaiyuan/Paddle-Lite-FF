@@ -18,7 +18,7 @@ limitations under the License. */
 #include <unordered_map>
 #include "common/type_define.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 struct DataTypeMap {
@@ -103,4 +103,4 @@ std::string DataTypeToString(
 }
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

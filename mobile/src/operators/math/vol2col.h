@@ -18,7 +18,7 @@ limitations under the License. */
 #include "common/types.h"
 #include "framework/tensor.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 namespace math {
 /*
@@ -71,7 +71,7 @@ namespace math {
  * equal to
  *       colShape.inputChannels.
  */
-using Tensor = paddle_mobile::framework::Tensor;
+using Tensor = paddle_mobile_lens::framework::Tensor;
 
 template <typename DeviceType, typename T>
 class Vol2ColFunctor {
@@ -91,4 +91,4 @@ class Col2VolFunctor {
 
 }  // namespace math
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

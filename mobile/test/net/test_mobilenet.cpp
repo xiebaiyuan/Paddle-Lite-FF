@@ -17,16 +17,16 @@ limitations under the License. */
 #include "../test_include.h"
 
 int main() {
-  paddle_mobile::PaddleMobile<paddle_mobile::CPU> paddle_mobile;
+  paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::CPU> paddle_mobile;
   paddle_mobile.SetThreadNum(4);
-  auto time1 = paddle_mobile::time();
+  auto time1 = paddle_mobile_lens::time();
   //  auto isok = paddle_mobile.Load(std::string(g_mobilenet_detect) + "/model",
   //                     std::string(g_mobilenet_detect) + "/params", true);
 
   auto isok = paddle_mobile.Load(g_mobilenet, true);
   if (isok) {
-    auto time2 = paddle_mobile::time();
-    std::cout << "load cost :" << paddle_mobile::time_diff(time1, time1) << "ms"
+    auto time2 = paddle_mobile_lens::time();
+    std::cout << "load cost :" << paddle_mobile_lens::time_diff(time1, time1) << "ms"
               << std::endl;
 
     std::vector<float> input;
@@ -43,13 +43,13 @@ int main() {
     for (int i = 0; i < 10; ++i) {
       auto vec_result = paddle_mobile.Predict(input, dims);
     }
-    auto time3 = paddle_mobile::time();
+    auto time3 = paddle_mobile_lens::time();
     for (int i = 0; i < 10; ++i) {
       auto vec_result = paddle_mobile.Predict(input, dims);
     }
     DLOG << vec_result;
-    auto time4 = paddle_mobile::time();
-    std::cout << "predict cost :" << paddle_mobile::time_diff(time3, time4) / 10
+    auto time4 = paddle_mobile_lens::time();
+    std::cout << "predict cost :" << paddle_mobile_lens::time_diff(time3, time4) / 10
               << "ms" << std::endl;
   }
 

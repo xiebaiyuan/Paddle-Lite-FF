@@ -16,7 +16,7 @@ limitations under the License. */
 
 #include "operators/kernel/prior_box_kernel.h"
 #include "framework/cl/cl_tensor.h"
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -76,11 +76,11 @@ void PriorBoxKernel<GPU_CL, float>::Compute(
   }
 
   float *box_width = static_cast<float *>(
-      paddle_mobile::memory::Alloc(sizeof(float) * num_priors));
+      paddle_mobile_lens::memory::Alloc(sizeof(float) * num_priors));
   float *box_height = static_cast<float *>(
-      paddle_mobile::memory::Alloc(sizeof(float) * num_priors));
+      paddle_mobile_lens::memory::Alloc(sizeof(float) * num_priors));
   float *variancesptr =
-      static_cast<float *>(paddle_mobile::memory::Alloc(sizeof(float) * 4));
+      static_cast<float *>(paddle_mobile_lens::memory::Alloc(sizeof(float) * 4));
   int idx = 0;
   for (size_t s = 0; s < min_sizes.size(); ++s) {
     auto min_size = min_sizes[s];
@@ -204,13 +204,13 @@ void PriorBoxKernel<GPU_CL, float>::Compute(
                                   NULL, global_work_size, NULL, 0, NULL, NULL);
   CL_CHECK_ERRORS(status);
 
-  paddle_mobile::memory::Free(box_width);
-  paddle_mobile::memory::Free(box_height);
-  paddle_mobile::memory::Free(variancesptr);
+  paddle_mobile_lens::memory::Free(box_width);
+  paddle_mobile_lens::memory::Free(box_height);
+  paddle_mobile_lens::memory::Free(variancesptr);
 }
 template class PriorBoxKernel<GPU_CL, float>;
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

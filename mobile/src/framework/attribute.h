@@ -25,7 +25,7 @@ limitations under the License. */
 #include "common/variant.h"
 #include "framework/framework.pb-c.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 using std::string;
 using std::vector;
@@ -180,4 +180,4 @@ class AttrReader {
 Print &operator<<(Print &printer, const Attribute &op_desc);
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

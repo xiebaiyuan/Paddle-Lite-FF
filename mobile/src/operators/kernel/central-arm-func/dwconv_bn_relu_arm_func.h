@@ -22,7 +22,7 @@ limitations under the License. */
 #include "operators/math/vol2col.h"
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 void DWConvBNReluBasic(const FusionDWConvBNReluParam<CPU> &param) {
@@ -139,6 +139,6 @@ void DWConvBNReluCompute(const FusionDWConvBNReluParam<CPU> &param) {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

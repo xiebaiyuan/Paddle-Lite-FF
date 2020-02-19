@@ -19,7 +19,7 @@ limitations under the License. */
 #ifdef __cplusplus
 extern "C" {
 #endif
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace jni {
 /**
  * load separated model for android
@@ -83,7 +83,7 @@ JNIEXPORT void JNICALL Java_com_baidu_paddle_PML_setThread(JNIEnv *env,
 JNIEXPORT void JNICALL Java_com_baidu_paddle_PML_clear(JNIEnv *env,
                                                        jclass thiz);
 }  // namespace jni
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 #ifdef __cplusplus
 }
 #endif

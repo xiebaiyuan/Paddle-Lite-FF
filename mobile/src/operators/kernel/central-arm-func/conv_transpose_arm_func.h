@@ -23,7 +23,7 @@ limitations under the License. */
 #include "operators/math/vol2col.h"
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <typename P>
@@ -107,5 +107,5 @@ void ConvTransposeCompute(const ConvTransposeParam<CPU> &param) {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 #endif

@@ -16,7 +16,7 @@ limitations under the License. */
 #include "../test_include.h"
 #include "operators/sum_op.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 template <typename Dtype>
@@ -98,27 +98,27 @@ class TestSumOp {
 
 template class TestSumOp<CPU>;
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 int main() {
   DLOG << "----------**********----------";
   DLOG << "begin to run Sum Test";
-  paddle_mobile::framework::Loader<paddle_mobile::CPU> loader;
+  paddle_mobile_lens::framework::Loader<paddle_mobile_lens::CPU> loader;
   auto program = loader.Load(std::string(g_eng) + "/model",
                              std::string(g_eng) + "/params");
 
   /// input x (4,10,2,2)
-  paddle_mobile::framework::Tensor inputx1;
+  paddle_mobile_lens::framework::Tensor inputx1;
   SetupTensor<float>(&inputx1, {2, 96}, static_cast<float>(0),
                      static_cast<float>(1));
   auto *inputx1_ptr = inputx1.data<float>();
 
-  paddle_mobile::framework::Tensor inputx2;
+  paddle_mobile_lens::framework::Tensor inputx2;
   SetupTensor<float>(&inputx2, {2, 96}, static_cast<float>(0),
                      static_cast<float>(1));
   auto *inputx2_ptr = inputx2.data<float>();
 
-  paddle_mobile::framework::TestSumOp<paddle_mobile::CPU> testSumOp(program);
+  paddle_mobile_lens::framework::TestSumOp<paddle_mobile_lens::CPU> testSumOp(program);
 
   auto output_sum = testSumOp.predict_bn(inputx1, inputx2);
   auto *output_sum_ptr = output_sum->data<float>();

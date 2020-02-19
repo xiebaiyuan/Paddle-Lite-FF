@@ -16,7 +16,7 @@ limitations under the License. */
 #include "operators/kernel/pool_kernel.h"
 
 class PoolingArgs;
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -99,6 +99,6 @@ void PoolKernel<FPGA, float>::Compute(const PoolParam<FPGA> &param) {
   fpga::ComputeFpgaPool(param.FpgaArgs());
 }
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

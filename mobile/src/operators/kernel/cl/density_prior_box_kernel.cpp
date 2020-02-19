@@ -16,12 +16,12 @@ limitations under the License. */
 
 #include <operators/kernel/prior_box_kernel.h>
 #include "framework/cl/cl_tensor.h"
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
 bool DensityPriorBoxKernel<GPU_CL, float>::Init(
-    paddle_mobile::operators::DensityPriorBoxParam<paddle_mobile::GPU_CL>
+    paddle_mobile_lens::operators::DensityPriorBoxParam<paddle_mobile_lens::GPU_CL>
         *param) {
   this->cl_helper_.AddKernel("density_prior_box",
                              "density_prior_box_kernel.cl");
@@ -59,7 +59,7 @@ bool DensityPriorBoxKernel<GPU_CL, float>::Init(
 
 template <>
 void DensityPriorBoxKernel<GPU_CL, float>::Compute(
-    const paddle_mobile::operators::DensityPriorBoxParam<paddle_mobile::GPU_CL>
+    const paddle_mobile_lens::operators::DensityPriorBoxParam<paddle_mobile_lens::GPU_CL>
         &param) {
   auto kernel = this->cl_helper_.KernelAt(0);
   const auto *input = param.Input();
@@ -155,6 +155,6 @@ void DensityPriorBoxKernel<GPU_CL, float>::Compute(
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

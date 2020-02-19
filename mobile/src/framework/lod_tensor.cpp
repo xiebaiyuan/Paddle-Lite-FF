@@ -15,7 +15,7 @@ limitations under the License. */
 #include "framework/lod_tensor.h"
 #include <algorithm>
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 LoD SliceInLevel(const LoD &in, size_t level, size_t elem_begin,
@@ -189,4 +189,4 @@ void AppendLoD(LoD *lod, const LoD &lod_length) {
 }
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

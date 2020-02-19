@@ -22,7 +22,7 @@ limitations under the License. */
 #include <arm_neon.h>
 #endif  // __ARM_NEON__
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <typename P>
@@ -78,6 +78,6 @@ void BatchnormCompute(const BatchNormParam<CPU> &param) {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

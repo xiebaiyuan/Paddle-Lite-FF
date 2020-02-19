@@ -20,7 +20,7 @@ limitations under the License. */
 void fun_yolo();
 int fun_mobilenet();
 int main() {
-  paddle_mobile::PaddleMobile<paddle_mobile::CPU> paddle_mobile2;
+  paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::CPU> paddle_mobile2;
 
   //  fun_yolo();
   //  fun_mobilenet();
@@ -35,7 +35,7 @@ int main() {
 }
 
 void fun_yolo() {
-  paddle_mobile::PaddleMobile<paddle_mobile::CPU> paddle_mobile;
+  paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::CPU> paddle_mobile;
   paddle_mobile.SetThreadNum(4);
   //  ../../../test/models/googlenet
   //  ../../../test/models/mobilenet
@@ -63,7 +63,7 @@ void fun_yolo() {
 }
 
 int fun_mobilenet() {
-  paddle_mobile::PaddleMobile<paddle_mobile::CPU> paddle_mobile;
+  paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::CPU> paddle_mobile;
   paddle_mobile.SetThreadNum(4);
   auto time1 = time();
   //  auto isok = paddle_mobile.Load(std::string(g_mobilenet_detect) + "/model",

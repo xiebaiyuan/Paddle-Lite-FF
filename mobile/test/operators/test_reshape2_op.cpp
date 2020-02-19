@@ -15,7 +15,7 @@ limitations under the License. */
 #include "../test_include.h"
 #include "operators/reshape2_op.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 template <typename Dtype>
@@ -107,16 +107,16 @@ class TestReshape2Op {
 
 template class TestReshape2Op<CPU>;
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 int main() {
   DLOG << "----------**********----------";
   DLOG << "begin to run Reshape2 Test";
-  paddle_mobile::framework::Loader<paddle_mobile::CPU> loader;
+  paddle_mobile_lens::framework::Loader<paddle_mobile_lens::CPU> loader;
   auto program = loader.Load(std::string(g_ocr) + "/model",
                              std::string(g_ocr) + "/params");
 
-  paddle_mobile::framework::Tensor input;
+  paddle_mobile_lens::framework::Tensor input;
   SetupTensor<float>(&input, {1, 4, 4}, static_cast<float>(0),
                      static_cast<float>(1));
   auto *input_ptr = input.data<float>();
@@ -128,7 +128,7 @@ int main() {
     DLOG << " index " << i << " : " << input_ptr[i];
   }
 
-  paddle_mobile::framework::TestReshape2Op<paddle_mobile::CPU> testReshape2Op(
+  paddle_mobile_lens::framework::TestReshape2Op<paddle_mobile_lens::CPU> testReshape2Op(
       program);
 
   auto output = testReshape2Op.predict(input);

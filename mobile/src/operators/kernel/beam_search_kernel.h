@@ -19,7 +19,7 @@ limitations under the License. */
 #include "framework/operator.h"
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <typename Dtype>
@@ -69,6 +69,6 @@ class BeamSearchParam : public OpParam {
 DECLARE_KERNEL(BeamSearch, BeamSearchParam);
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // BEAM_SEARCH_OP

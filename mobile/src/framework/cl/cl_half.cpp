@@ -16,7 +16,7 @@ limitations under the License. */
 
 #include "framework/cl/cl_half.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 static const uint32_t mantissatable[2048] = {
@@ -515,4 +515,4 @@ void HalfArray2FloatArray(half_t *h_array, float *f_array, int count) {
 }
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

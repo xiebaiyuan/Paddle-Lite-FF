@@ -15,7 +15,7 @@ limitations under the License. */
 #include "../test_include.h"
 #include "operators/transpose2_op.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 template <typename Dtype>
@@ -108,16 +108,16 @@ class TestTranspose2Op {
 
 template class TestTranspose2Op<CPU>;
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 int main() {
   DLOG << "----------**********----------";
   DLOG << "begin to run Transpose2 Test";
-  paddle_mobile::framework::Loader<paddle_mobile::CPU> loader;
+  paddle_mobile_lens::framework::Loader<paddle_mobile_lens::CPU> loader;
   auto program = loader.Load(std::string(g_ocr) + "/model",
                              std::string(g_ocr) + "/params");
 
-  paddle_mobile::framework::Tensor input;
+  paddle_mobile_lens::framework::Tensor input;
   SetupTensor<float>(&input, {1, 8, 2}, static_cast<float>(0),
                      static_cast<float>(1));
   auto *input_ptr = input.data<float>();
@@ -129,7 +129,7 @@ int main() {
     DLOG << " index " << i << " : " << input_ptr[i];
   }
 
-  paddle_mobile::framework::TestTranspose2Op<paddle_mobile::CPU>
+  paddle_mobile_lens::framework::TestTranspose2Op<paddle_mobile_lens::CPU>
       testTranspose2Op(program);
 
   auto output = testTranspose2Op.predict(input);

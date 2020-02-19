@@ -17,16 +17,16 @@ limitations under the License. */
 #include "../test_include.h"
 
 int main() {
-  paddle_mobile::PaddleMobile<paddle_mobile::CPU> paddle_mobile;
+  paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::CPU> paddle_mobile;
   paddle_mobile.SetThreadNum(1);
-  auto time1 = paddle_mobile::time();
+  auto time1 = paddle_mobile_lens::time();
 
   auto isok =
       paddle_mobile.Load(std::string(g_vgg16_ssd_combined) + "/model",
                          std::string(g_vgg16_ssd_combined) + "/params", false);
   if (isok) {
-    auto time2 = paddle_mobile::time();
-    std::cout << "load cost :" << paddle_mobile::time_diff(time1, time1) << "ms"
+    auto time2 = paddle_mobile_lens::time();
+    std::cout << "load cost :" << paddle_mobile_lens::time_diff(time1, time1) << "ms"
               << std::endl;
 
     std::vector<int64_t> dims{1, 3, 300, 300};

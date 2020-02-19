@@ -14,7 +14,7 @@ limitations under the License. */
 
 #include "operators/controlflow/tensor_array_read_write_op.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 #ifdef WRITE_TO_ARRAY_OP
@@ -28,9 +28,9 @@ void ReadFromArrayOp<Dtype, T>::InferShape() const {}
 #endif  // READ_FROM_ARRAY_OP
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
-namespace ops = paddle_mobile::operators;
+namespace ops = paddle_mobile_lens::operators;
 
 #ifdef PADDLE_MOBILE_CPU
 #ifdef WRITE_TO_ARRAY_OP

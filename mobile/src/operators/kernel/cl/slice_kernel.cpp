@@ -17,18 +17,18 @@ limitations under the License. */
 #include <framework/cl/cl_tensor.h>
 #include <operators/kernel/slice_kernel.h>
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 template <>
 bool SliceKernel<GPU_CL, float>::Init(
-    paddle_mobile::operators::SliceParam<paddle_mobile::GPU_CL> *param) {
+    paddle_mobile_lens::operators::SliceParam<paddle_mobile_lens::GPU_CL> *param) {
   this->cl_helper_.AddKernel("slice", "slice_kernel.cl");
   return true;
 }
 
 template <>
 void SliceKernel<GPU_CL, float>::Compute(
-    const paddle_mobile::operators::SliceParam<paddle_mobile::GPU_CL> &param) {
+    const paddle_mobile_lens::operators::SliceParam<paddle_mobile_lens::GPU_CL> &param) {
   auto kernel = this->cl_helper_.KernelAt(0);
   auto default_work_size = this->cl_helper_.DefaultWorkSize(*param.output_);
   auto input = param.input_;
@@ -59,6 +59,6 @@ void SliceKernel<GPU_CL, float>::Compute(
 }
 template class SliceKernel<GPU_CL, float>;
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

@@ -22,7 +22,7 @@ limitations under the License. */
 #include "framework/operator.h"
 #include "operators/kernel/conv_transpose_kernel.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 template <typename DeviceType, typename T>
 class ConvOpTranspose : public framework::OperatorWithKernel<
@@ -92,6 +92,6 @@ class ConvOpTranspose : public framework::OperatorWithKernel<
 };
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

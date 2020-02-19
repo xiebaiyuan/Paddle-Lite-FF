@@ -16,13 +16,13 @@ limitations under the License. */
 
 #include "operators/kernel/conv_kernel.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
 bool ConvKernel<FPGA, float>::Init(ConvParam<FPGA> *param) {
-  paddle_mobile::fpga::ActivationType activation_enable =
-      paddle_mobile::fpga::NONE;
+  paddle_mobile_lens::fpga::ActivationType activation_enable =
+      paddle_mobile_lens::fpga::NONE;
   int16_t leaky_relu_negative_slope = 0;
   auto input = const_cast<LoDTensor *>(param->Input());
   auto filter = const_cast<LoDTensor *>(param->Filter());
@@ -53,6 +53,6 @@ void ConvKernel<FPGA, float>::Compute(const ConvParam<FPGA> &param) {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

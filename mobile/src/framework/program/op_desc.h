@@ -22,7 +22,7 @@ limitations under the License. */
 #include "framework/attribute.h"
 #include "framework/framework.pb-c.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 class OpDesc {
@@ -75,4 +75,4 @@ class OpDesc {
 Print &operator<<(Print &printer, const OpDesc &op_desc);
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

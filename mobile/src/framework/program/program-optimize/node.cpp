@@ -18,7 +18,7 @@ limitations under the License. */
 #include <memory>
 #include "framework/operator.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 
 namespace framework {
 
@@ -278,4 +278,4 @@ Print &operator<<(Print &printer, const Node &node) {
 #endif
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

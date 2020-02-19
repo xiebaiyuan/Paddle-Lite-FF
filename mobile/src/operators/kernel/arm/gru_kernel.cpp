@@ -17,7 +17,7 @@ limitations under the License. */
 #include "operators/kernel/gru_kernel.h"
 #include "operators/kernel/central-arm-func/gru_arm_func.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -34,6 +34,6 @@ void GruKernel<CPU, float>::Compute(const GruParam<CPU> &param) {
 template class GruKernel<CPU, float>;
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

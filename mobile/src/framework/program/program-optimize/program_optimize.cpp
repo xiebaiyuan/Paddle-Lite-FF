@@ -17,7 +17,7 @@ limitations under the License. */
 #include <utility>
 #include "framework/program/program-optimize/fusion_op_register.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 
 namespace framework {
 
@@ -297,4 +297,4 @@ void ProgramOptimize::GenerateOps(
 }
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

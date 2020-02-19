@@ -14,9 +14,9 @@ limitations under the License. */
 
 #pragma once
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 // this class not only make proto but also init attribute checkers.
 class OpProtoAndCheckerMaker {};
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

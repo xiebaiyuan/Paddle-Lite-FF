@@ -19,7 +19,7 @@ limitations under the License. */
 #include <vector>
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 int ConvOutputSize(int input_size, int filter_size, int dilation, int padding,
@@ -53,6 +53,6 @@ void FasterDepthwiseConv3x3_bias_relu(const ConvParam<CPU> &param,
                                       const float *bias, bool flag_relu);
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

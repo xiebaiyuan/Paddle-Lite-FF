@@ -16,7 +16,7 @@ limitations under the License. */
 
 #include "operators/kernel/is_empty_kernel.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -32,6 +32,6 @@ void IsEmptyKernel<CPU, float>::Compute(const IsEmptyParam<CPU> &param) {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

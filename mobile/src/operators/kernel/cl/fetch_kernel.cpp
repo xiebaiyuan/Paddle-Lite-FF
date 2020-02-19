@@ -15,7 +15,7 @@ limitations under the License. */
 #include "operators/kernel/fetch_kernel.h"
 #include "framework/cl/cl_tensor.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -113,4 +113,4 @@ void FetchKernel<GPU_CL, float>::Compute(const FetchParam<GPU_CL> &param) {
 template class FetchKernel<GPU_CL, float>;
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

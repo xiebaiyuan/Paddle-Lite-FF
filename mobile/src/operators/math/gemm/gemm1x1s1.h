@@ -41,7 +41,7 @@ limitations under the License. */
 #pragma once
 #include "framework/tensor.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 namespace math {
 
@@ -76,6 +76,6 @@ void sgemm_prepack(const float* A_packed, const float* B, const float* bias,
 
 }  // namespace math
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // CONV_OP

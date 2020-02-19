@@ -19,7 +19,7 @@ limitations under the License. */
 #include "fpga/V2/filter.h"
 #include "fpga/V2/image.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace fpga {
 
 #define USE_RELU 1
@@ -1008,4 +1008,4 @@ void fill_DWDeconv_arg(struct DWDeconvArgs *arg, framework::Tensor *input,
 }  // end dwconv arg fill
 
 }  // namespace fpga
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

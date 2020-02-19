@@ -17,7 +17,7 @@ limitations under the License. */
 #include "../test_include.h"
 #include "operators/quantize_op.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace round {
 enum RoundType {
   RoundToEven = 0,
@@ -144,7 +144,7 @@ int TestQuqntizeOp(const int batch_size, const int channel, const int height,
   return 0;
 }
 
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 int main(int argc, char *argv[]) {
   TestQuqntizeOp(1, 10, 10, 5);

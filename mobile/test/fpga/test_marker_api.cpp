@@ -22,8 +22,8 @@ limitations under the License. */
 #include <iostream>
 #include "../../src/io/paddle_inference_api.h"
 
-using namespace paddle_mobile;        // NOLINT
-using namespace paddle_mobile::fpga;  // NOLINT
+using namespace paddle_mobile_lens;        // NOLINT
+using namespace paddle_mobile_lens::fpga;  // NOLINT
 
 static const char *g_image = "../models/marker/model/image.bin";
 static const char *g_model = "../models/marker/model/model";
@@ -58,12 +58,12 @@ signed char float_to_int8(float fdata) {
 void quantize(float **data_in, int data_size) {
   float *tmp = *data_in;
   signed char *tmp_data =
-      (signed char *)paddle_mobile::fpga::fpga_malloc(data_size * sizeof(char));
+      (signed char *)paddle_mobile_lens::fpga::fpga_malloc(data_size * sizeof(char));
   for (int i = 0; i < data_size; i++) {
     tmp_data[i] = float_to_int8((*data_in)[i] + 128);
   }
   *data_in = (float *)tmp_data;  // NOLINT
-  paddle_mobile::fpga::fpga_free(tmp);
+  paddle_mobile_lens::fpga::fpga_free(tmp);
 }
 
 void convert_to_chw(float **data_in, int channel, int height, int width,
@@ -79,7 +79,7 @@ void convert_to_chw(float **data_in, int channel, int height, int width,
 }
 
 void dump_stride_float(std::string filename,
-                       paddle_mobile::PaddleTensor input_tensor) {
+                       paddle_mobile_lens::PaddleTensor input_tensor) {
   auto data_ptr = reinterpret_cast<float *>(input_tensor.data.data());
   int c = (input_tensor.shape)[1];
   int h = (input_tensor.shape)[2];
@@ -103,7 +103,7 @@ void dump_stride_float(std::string filename,
 }
 
 void dump_stride(std::string filename,
-                 paddle_mobile::PaddleTensor input_tensor) {
+                 paddle_mobile_lens::PaddleTensor input_tensor) {
   if (input_tensor.dtypeid == PaddlekTypeId_t::paddle_float) {
     dump_stride_float(filename, input_tensor);
   } else {
@@ -185,7 +185,7 @@ int main() {
             << std::endl;
   std::cout << "Finishing predicting " << std::endl;
 
-  std::vector<paddle_mobile::PaddleTensor> v;  // No need to initialize v
+  std::vector<paddle_mobile_lens::PaddleTensor> v;  // No need to initialize v
   predictor->FetchPaddleTensors(&v);           // Old data in v will be cleared
   std::cout << "Output number is " << v.size() << std::endl;
   for (int fetchNum = 0; fetchNum < v.size(); fetchNum++) {
@@ -228,7 +228,7 @@ int main() {
               << std::endl;
     std::cout << "Finishing predicting " << std::endl;
 
-    std::vector<paddle_mobile::PaddleTensor> v1;  // No need to initialize v
+    std::vector<paddle_mobile_lens::PaddleTensor> v1;  // No need to initialize v
     predictor1->FetchPaddleTensors(&v1);  // Old data in v will be cleared
     std::cout << "Output number is " << v1.size() << std::endl;
     for (int fetchNum = 0; fetchNum < v1.size(); fetchNum++) {

@@ -17,7 +17,7 @@ limitations under the License. */
 #include "operators/kernel/polygon_box_transform_kernel.h"
 #include "operators/kernel/central-arm-func/polygon_box_transform_arm_func.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -33,6 +33,6 @@ void PolygonBoxTransformKernel<CPU, float>::Compute(
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

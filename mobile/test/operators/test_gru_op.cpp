@@ -16,13 +16,13 @@ limitations under the License. */
 #include "../test_include.h"
 #include "operators/gru_op.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 
 template <typename Itype, typename Otype>
 int TestGruOp(int in_channels, int out_channels, std::string opname) {
   size_t input_c = in_channels;
   size_t output_c = out_channels;
-  paddle_mobile::framework::LoD lod{{0, input_c}};
+  paddle_mobile_lens::framework::LoD lod{{0, input_c}};
   int batch_size = lod.size();
   framework::DDim input_shape = framework::make_ddim({input_c, output_c * 3});
   framework::DDim weight_shape = framework::make_ddim({output_c, output_c * 3});
@@ -92,9 +92,9 @@ int TestGruOp(int in_channels, int out_channels, std::string opname) {
   return 0;
 }
 
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 int main(int argc, char *argv[]) {
-  paddle_mobile::TestGruOp<float, float>(384, 120, "gru_forward");
+  paddle_mobile_lens::TestGruOp<float, float>(384, 120, "gru_forward");
   return 0;
 }

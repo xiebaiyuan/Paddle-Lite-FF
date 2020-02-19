@@ -23,7 +23,7 @@ limitations under the License. */
 #include "framework/cl/cl_engine.h"
 #include "framework/tensor_base.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 class CLTensor : public TensorBase {
@@ -190,4 +190,4 @@ class CLTensor : public TensorBase {
 };
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

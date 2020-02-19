@@ -25,7 +25,7 @@ limitations under the License. */
 #include "pass/pass_base.h"
 
 // use for opencl
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace pass {
 
 typedef struct {
@@ -66,10 +66,10 @@ class MemoryOptPassCl : public PassBase {
   std::vector<std::vector<ClVarNode *>> reused_nodes_;
   std::unordered_map<std::string, ClVarNode *> created_nodes_;
   std::unordered_map<std::string, framework::VarDesc *> block_vars_;
-  paddle_mobile::framework::CLImageConverterNormal *normal_converter =
-      new paddle_mobile::framework::CLImageConverterNormal();
+  paddle_mobile_lens::framework::CLImageConverterNormal *normal_converter =
+      new paddle_mobile_lens::framework::CLImageConverterNormal();
 };
 
 }  // namespace pass
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 #endif

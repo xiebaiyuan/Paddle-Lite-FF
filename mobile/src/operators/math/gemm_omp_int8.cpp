@@ -23,7 +23,7 @@ limitations under the License. */
 #include <omp.h>
 #endif
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 namespace math {
 
@@ -450,4 +450,4 @@ void Gemm::PackMatrixB_omp_4c_16(int32_t k, int32_t n, int32_t n_tail,
 
 }  // namespace math
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

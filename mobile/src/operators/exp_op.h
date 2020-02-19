@@ -19,7 +19,7 @@ limitations under the License. */
 #include "operators/kernel/exp_kernel.h"
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 #ifdef EXP_OP
@@ -27,4 +27,4 @@ DECLARE_OPERATOR(EXP, EXPParam, EXPKernel);
 #endif
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

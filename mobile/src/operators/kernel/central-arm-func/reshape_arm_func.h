@@ -19,7 +19,7 @@ limitations under the License. */
 #include "operators/kernel/reshape_kernel.h"
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <typename P>
@@ -51,6 +51,6 @@ void ReshapeCompute(const ReshapeParam<CPU> &param) {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

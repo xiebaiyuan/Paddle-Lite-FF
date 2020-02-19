@@ -20,7 +20,7 @@ limitations under the License. */
 #include <string.h>
 #include "operators/math/math.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 namespace math {
 
@@ -644,7 +644,7 @@ void sgemv_trans_mx1(const int M, const int N, const float alpha,
   int threads_num = 1;
 #endif  // _OPENMP
   float *buf_c = static_cast<float *>(
-      paddle_mobile::memory::Alloc(sizeof(float) * threads_num * M));
+      paddle_mobile_lens::memory::Alloc(sizeof(float) * threads_num * M));
   memset(buf_c, 0, threads_num * M * sizeof(float));
 
   #pragma omp parallel for
@@ -771,7 +771,7 @@ void sgemv_trans_mx1(const int M, const int N, const float alpha,
   }
 
   // free buff_c
-  paddle_mobile::memory::Free(buf_c);
+  paddle_mobile_lens::memory::Free(buf_c);
 }
 
 void sgemv_mx1(const bool trans, const int M, const int N, const float alpha,
@@ -787,6 +787,6 @@ void sgemv_mx1(const bool trans, const int M, const int N, const float alpha,
 
 }  // namespace math
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // __ARM_NEON__

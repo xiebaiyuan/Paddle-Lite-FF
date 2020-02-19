@@ -21,7 +21,7 @@ limitations under the License. */
 #include "framework/program/program.h"
 #include "pass/pass_base.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace pass {
 
 typedef struct {
@@ -59,4 +59,4 @@ class MemoryOptPass : public PassBase {
 };
 
 }  // namespace pass
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

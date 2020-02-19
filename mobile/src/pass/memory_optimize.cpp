@@ -16,7 +16,7 @@ limitations under the License. */
 #include <algorithm>
 #include "framework/lod_tensor.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace pass {
 
 void MemoryOptPass::AppendBlockVars(const framework::BlockDesc *block) {
@@ -167,4 +167,4 @@ void MemoryOptPass::operator()(
 }
 
 }  // namespace pass
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

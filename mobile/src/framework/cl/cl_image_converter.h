@@ -17,7 +17,7 @@ limitations under the License. */
 #include "framework/cl/cl_half.h"
 #include "framework/ddim.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 class CLImageConverterBase {
@@ -118,4 +118,4 @@ class CLImageConverterConv2dTransposeTransWeight : public CLImageConverterBase {
 };
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

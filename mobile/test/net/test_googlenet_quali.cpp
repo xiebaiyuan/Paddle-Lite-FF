@@ -18,11 +18,11 @@ limitations under the License. */
 
 int main() {
 #ifdef PADDLE_MOBILE_FPGA
-  paddle_mobile::PaddleMobile<paddle_mobile::FPGA> paddle_mobile;
+  paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::FPGA> paddle_mobile;
 #endif
 
 #ifdef PADDLE_MOBILE_CPU
-  paddle_mobile::PaddleMobile<paddle_mobile::CPU> paddle_mobile;
+  paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::CPU> paddle_mobile;
 #endif
 
   paddle_mobile.SetThreadNum(4);

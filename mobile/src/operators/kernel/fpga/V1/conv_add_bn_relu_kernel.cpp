@@ -17,15 +17,15 @@ limitations under the License. */
 #include "operators/kernel/conv_add_bn_relu_kernel.h"
 #include <cmath>
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
 bool ConvAddBNReluKernel<FPGA, float>::Init(
     FusionConvAddBNReluParam<FPGA> *param) {
   // bool relu_enabled = true;
-  paddle_mobile::fpga::ActivationType activation_enable =
-      paddle_mobile::fpga::LEAKYRELU;
+  paddle_mobile_lens::fpga::ActivationType activation_enable =
+      paddle_mobile_lens::fpga::LEAKYRELU;
   int16_t leaky_relu_negative_slope = 0;
   auto input = const_cast<LoDTensor *>(param->Input());
   auto bias = param->Bias();
@@ -95,6 +95,6 @@ void ConvAddBNReluKernel<FPGA, float>::Compute(
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

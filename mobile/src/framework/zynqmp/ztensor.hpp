@@ -30,7 +30,7 @@ limitations under the License. */
 
 #include "fpga/KD/tensor.hpp"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 class LoDTensor;
@@ -307,6 +307,6 @@ inline Tensor ReshapeToMatrix(const Tensor &src, int num_col_dims) {
 }
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

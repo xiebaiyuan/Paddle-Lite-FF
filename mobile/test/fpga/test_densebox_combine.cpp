@@ -25,8 +25,8 @@ limitations under the License. */
 
 static const char *g_densebox_combine = "../models/densebox";
 int main() {
-  paddle_mobile::fpga::open_device();
-  paddle_mobile::PaddleMobile<paddle_mobile::FPGA> paddle_mobile;
+  paddle_mobile_lens::fpga::open_device();
+  paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::FPGA> paddle_mobile;
   // paddle_mobile.SetThreadNum(4);
   if (paddle_mobile.Load(std::string(g_densebox_combine) + "/model",
                          std::string(g_densebox_combine) + "/params", true)) {

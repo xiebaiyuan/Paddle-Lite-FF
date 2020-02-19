@@ -17,7 +17,7 @@ limitations under the License. */
 #include "framework/operator.h"
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 #ifdef WHILE_OP
@@ -44,4 +44,4 @@ DECLARE_KERNEL(While, WhileParam);
 #endif  // WHILE_OP
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

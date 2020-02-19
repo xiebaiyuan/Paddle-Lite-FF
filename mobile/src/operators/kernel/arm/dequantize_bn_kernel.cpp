@@ -20,7 +20,7 @@ limitations under the License. */
 #include <arm_neon.h>
 #endif
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 #if defined(FUSION_DEQUANT_BN_OP) || defined(FUSION_DEQUANT_ADD_BN_OP) || \
@@ -337,4 +337,4 @@ void FusionDequantAddBNReluQuantKernel<CPU, float>::Compute(
 #endif  // FUSION_DEQUANT_ADD_BN_RELU_QUANT_OP
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

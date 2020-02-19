@@ -16,7 +16,7 @@ limitations under the License. */
 #include "operators/kernel/fusion_fc_kernel.h"
 #include "fpga/KD/pes/fully_connected_pe.hpp"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 using FullyConnectedPE = zynqmp::FullyConnectedPE;
@@ -51,6 +51,6 @@ void FusionFcKernel<FPGA, float>::Compute(const FusionFcParam<FPGA>& param) {
             << std::endl;
 }
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

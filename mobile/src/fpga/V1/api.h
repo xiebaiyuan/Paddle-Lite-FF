@@ -19,7 +19,7 @@ limitations under the License. */
 #include "fpga/common/pe.h"
 #include "framework/tensor.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace fpga {
 
 void format_image(framework::Tensor* image_tensor);
@@ -99,4 +99,4 @@ void savefile(std::string filename, void* buffer, int dataSize, Dtype tmp) {
 }
 
 }  // namespace fpga
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

@@ -14,7 +14,7 @@ limitations under the License. */
 
 #include "operators/math/pad.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 namespace math {
 
@@ -51,4 +51,4 @@ template class PadFunctor<CPU, int8_t>;
 
 }  // namespace math
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

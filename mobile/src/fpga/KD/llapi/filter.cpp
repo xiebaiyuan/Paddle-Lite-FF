@@ -18,7 +18,7 @@ limitations under the License. */
 #include "fpga/KD/float16.hpp"
 #include "fpga/KD/llapi/zynqmp_api.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace zynqmp {
 namespace filter {
 
@@ -343,4 +343,4 @@ void format_dwconv_filter(float **data_in, int num, int height, int width,
 }
 }  // namespace filter
 }  // namespace zynqmp
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

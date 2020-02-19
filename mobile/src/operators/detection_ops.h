@@ -19,7 +19,7 @@ limitations under the License. */
 #include "operators/kernel/detection_kernel.h"
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 #ifdef ANCHOR_GENERATOR_OP
@@ -43,4 +43,4 @@ DECLARE_OPERATOR(RoiPerspective, RoiPerspectiveParam, RoiPerspectiveKernel);
 #endif
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

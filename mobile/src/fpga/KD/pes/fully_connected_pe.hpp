@@ -20,7 +20,7 @@ limitations under the License. */
 #include "../pe_params.hpp"
 #include "conv_process.hpp"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace zynqmp {
 
 class FullyConnectedPE : public PE {
@@ -95,4 +95,4 @@ class FullyConnectedPE : public PE {
   ConvParam convParam_;
 };
 }  // namespace zynqmp
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

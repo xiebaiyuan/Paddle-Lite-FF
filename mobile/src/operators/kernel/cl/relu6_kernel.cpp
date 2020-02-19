@@ -15,7 +15,7 @@ limitations under the License. */
 
 #include "operators/kernel/activation_kernel.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -49,5 +49,5 @@ void Relu6Kernel<GPU_CL, float>::Compute(const Relu6Param<GPU_CL>& param) {
 template class Relu6Kernel<GPU_CL, float>;
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 #endif

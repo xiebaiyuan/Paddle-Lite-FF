@@ -23,7 +23,7 @@ limitations under the License. */
 #include "llapi/zynqmp_api.h"
 #include "tensor.hpp"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace zynqmp {
 
 struct PEParam {};
@@ -174,6 +174,6 @@ struct NormParam : PEParam {
   Tensor* floatInput = nullptr;
 };
 }  // namespace zynqmp
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif /* PEParams_hpp */

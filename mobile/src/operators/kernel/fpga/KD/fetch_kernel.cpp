@@ -14,7 +14,7 @@ limitations under the License. */
 #include "operators/kernel/fetch_kernel.h"
 #include "fpga/KD/pes/output_pe.hpp"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 using OutputPE = zynqmp::OutputPE;
@@ -52,4 +52,4 @@ void FetchKernel<FPGA, float>::Compute(const FetchParam<FPGA>& param) {
 template class FetchKernel<FPGA, float>;
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

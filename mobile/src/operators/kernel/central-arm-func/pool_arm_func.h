@@ -21,7 +21,7 @@ limitations under the License. */
 #include "common/types.h"
 #include "operators/math/pooling.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <typename P>
@@ -87,5 +87,5 @@ void PoolCompute(const PoolParam<CPU> &param) {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 #endif

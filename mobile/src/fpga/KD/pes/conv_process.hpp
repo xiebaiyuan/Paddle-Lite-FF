@@ -27,7 +27,7 @@ limitations under the License. */
 #include "../llapi/image.h"
 #include "../tensor.hpp"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace zynqmp {
 
 inline int get_aligned_filter_element_num(int chw) {
@@ -369,6 +369,6 @@ inline bool compute_conv(const SplitConvArgs& args) {
 }
 
 }  // namespace zynqmp
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif /* conv_process_hpp */

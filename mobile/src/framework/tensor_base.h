@@ -20,7 +20,7 @@ limitations under the License. */
 #include "common/types.h"
 #include "framework/ddim.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 template <typename... T>
@@ -145,4 +145,4 @@ class TensorBase {
 };
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

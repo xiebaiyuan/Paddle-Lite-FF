@@ -21,7 +21,7 @@ limitations under the License. */
 #include "framework/tensor.h"
 #include "framework/tensor_util.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 /*
@@ -231,4 +231,4 @@ inline Print &operator<<(Print &printer, const LoDTensor &tensor) {
 #endif  // PADDLE_MOBILE_DEBUG
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

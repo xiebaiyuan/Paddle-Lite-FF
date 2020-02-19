@@ -43,7 +43,7 @@ limitations under the License. */
 #include "framework/cl/cl_image.h"
 #endif
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 using framework::Attribute;
@@ -3659,4 +3659,4 @@ class PixelShuffleParam : public OpParam {
 #endif
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

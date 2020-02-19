@@ -15,7 +15,7 @@ limitations under the License. */
 #include "block_desc.h"
 #include <algorithm>
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 std::vector<std::shared_ptr<VarDesc>> BlockDesc::Vars() const { return vars_; }
@@ -41,4 +41,4 @@ BlockDesc::BlockDesc(PaddleMobile__Framework__Proto__BlockDesc *desc)
 }
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

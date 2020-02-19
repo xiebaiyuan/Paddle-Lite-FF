@@ -17,7 +17,7 @@ limitations under the License. */
 #include "operators/kernel/box_coder_kernel.h"
 #include "operators/kernel/central-arm-func/box_coder_arm_func.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -31,6 +31,6 @@ void BoxCoderKernel<CPU, float>::Compute(const BoxCoderParam<CPU> &param) {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

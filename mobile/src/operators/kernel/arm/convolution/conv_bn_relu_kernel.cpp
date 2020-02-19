@@ -23,7 +23,7 @@ limitations under the License. */
 #include "operators/math/gemm/gemm1x1s1.h"
 #include "operators/math/slidingwindow_utils.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -141,6 +141,6 @@ void ConvBNReluKernel<CPU, float>::Compute(
 template class ConvBNReluKernel<CPU, float>;
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

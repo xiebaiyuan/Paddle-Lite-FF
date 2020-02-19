@@ -18,7 +18,7 @@ limitations under the License. */
 #include "fpga/KD/pes/softmax_pe.hpp"
 #include "operators/kernel/central-arm-func/softmax_arm_func.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -50,6 +50,6 @@ void SoftmaxKernel<FPGA, float>::Compute(const SoftmaxParam<FPGA>& param) {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

@@ -20,7 +20,7 @@ limitations under the License. */
 #include "framework/program/op_desc.h"
 #include "framework/program/var_desc.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 class BlockDesc {
@@ -48,11 +48,11 @@ class BlockDesc {
 
   const int &Parent() const { return parent_index_; }
 
-  bool operator==(const paddle_mobile::framework::BlockDesc &in_block) const {
+  bool operator==(const paddle_mobile_lens::framework::BlockDesc &in_block) const {
     return this->ID() == in_block.ID() && this->Parent() == in_block.Parent();
   }
 
-  bool operator<(const paddle_mobile::framework::BlockDesc &in_block) const {
+  bool operator<(const paddle_mobile_lens::framework::BlockDesc &in_block) const {
     return this->ID() < in_block.ID() && this->Parent() < in_block.Parent();
   }
 
@@ -68,13 +68,13 @@ class BlockDesc {
 };
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 namespace std {
 
 template <>
-struct hash<paddle_mobile::framework::BlockDesc> {
-  typedef paddle_mobile::framework::BlockDesc argument_type;
+struct hash<paddle_mobile_lens::framework::BlockDesc> {
+  typedef paddle_mobile_lens::framework::BlockDesc argument_type;
   typedef std::size_t result_type;
   result_type operator()(argument_type const &s) const noexcept {
     result_type const h1(std::hash<int>{}(s.ID()));

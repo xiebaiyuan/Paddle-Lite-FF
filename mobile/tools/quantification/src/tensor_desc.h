@@ -18,7 +18,7 @@ limitations under the License. */
 
 #include "src/framework.pb-c.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 enum VarType_Type {
@@ -69,4 +69,4 @@ class TensorDesc {
 };
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

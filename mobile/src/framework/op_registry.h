@@ -23,7 +23,7 @@ limitations under the License. */
 #include "framework/op_info.h"
 #include "framework/operator.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 class Registrar {
@@ -38,12 +38,12 @@ template <typename Dtype, typename... ARGS>
 struct OperatorRegistrar : public Registrar {
   explicit OperatorRegistrar(const std::string& op_type) {
     if (OpInfoMap<Dtype>::Instance()->Has(op_type)) {
-      LOG(paddle_mobile::kLOG_DEBUG1)
+      LOG(paddle_mobile_lens::kLOG_DEBUG1)
           << op_type << " is registered more than once.";
       return;
     }
     if (sizeof...(ARGS) == 0) {
-      LOG(paddle_mobile::kLOG_DEBUG1)
+      LOG(paddle_mobile_lens::kLOG_DEBUG1)
           << "OperatorRegistrar should be invoked at least by OpClass";
       return;
     }
@@ -90,7 +90,7 @@ class OpRegistry {
   static std::shared_ptr<OperatorBase<Dtype>> CreateOp(
       const std::string& type, const VariableNameMap& inputs,
       const VariableNameMap& outputs, const AttributeMap attrs,
-      paddle_mobile::framework::Scope* scope) {
+      paddle_mobile_lens::framework::Scope* scope) {
     auto& info = OpInfoMap<Dtype>::Instance()->Get(type);
     auto op = info.Creator()(type, inputs, outputs, attrs, scope);
     return std::shared_ptr<OperatorBase<Dtype>>(op);
@@ -104,7 +104,7 @@ class OpRegistry {
    public:                                                                 \
     DEFINE_OP_CONSTRUCTOR(_OpClass_##op_type##_##device_name, op_class);   \
   };                                                                       \
-  static paddle_mobile::framework::OperatorRegistrar<                      \
+  static paddle_mobile_lens::framework::OperatorRegistrar<                      \
       device_type, _OpClass_##op_type##_##device_name<device_type, float>> \
       __op_registrar_##op_type##_##device_name(#op_type);                  \
   int TouchOpRegistrar_##op_type##_##device_name() {                       \
@@ -113,13 +113,13 @@ class OpRegistry {
   }
 
 #define REGISTER_OPERATOR_CPU(op_type, op_class) \
-  REGISTER_OPERATOR(op_type, op_class, cpu, paddle_mobile::CPU);
+  REGISTER_OPERATOR(op_type, op_class, cpu, paddle_mobile_lens::CPU);
 
 #define REGISTER_OPERATOR_FPGA(op_type, op_class) \
-  REGISTER_OPERATOR(op_type, op_class, fpga, paddle_mobile::FPGA);
+  REGISTER_OPERATOR(op_type, op_class, fpga, paddle_mobile_lens::FPGA);
 
 #define REGISTER_OPERATOR_CL(op_type, op_class) \
-  REGISTER_OPERATOR(op_type, op_class, cl, paddle_mobile::GPU_CL);
+  REGISTER_OPERATOR(op_type, op_class, cl, paddle_mobile_lens::GPU_CL);
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

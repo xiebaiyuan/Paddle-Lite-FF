@@ -20,7 +20,7 @@ limitations under the License. */
 #include "framework/cl/cl_tool.h"
 #include "operators/kernel/cl/cl-kernel-func/conv_func.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 template <>
 bool ConvAddBNReluKernel<GPU_CL, float>::Init(
@@ -230,6 +230,6 @@ void ConvAddBNReluKernel<GPU_CL, float>::Compute(
 template class ConvAddBNReluKernel<GPU_CL, float>;
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

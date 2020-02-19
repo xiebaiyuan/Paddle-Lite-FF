@@ -19,7 +19,7 @@ limitations under the License. */
 #include "fpga/common/config.h"
 #include "fpga/common/driver.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace fpga {
 
 int16_t fp32_2_fp16(float fp32_num) {
@@ -211,4 +211,4 @@ uint32_t paddle_mobile_version() {
 }
 
 }  // namespace fpga
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

@@ -14,7 +14,7 @@ limitations under the License. */
 
 #include "operators/kernel/logical_kernel.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <typename T>
@@ -122,4 +122,4 @@ void LogicalXorKernel<CPU, float>::Compute(
 #endif
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

@@ -21,7 +21,7 @@ limitations under the License. */
 #include "operators/kernel/is_empty_kernel.h"
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 using std::string;
 template <typename DeviceType, typename T>
@@ -42,6 +42,6 @@ class IsEmptyOp
 };
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

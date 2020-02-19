@@ -17,7 +17,7 @@ limitations under the License. */
 #include "operators/kernel/pad2d_kernel.h"
 #include "operators/math/pad.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -40,6 +40,6 @@ void Pad2DKernel<CPU, float>::Compute(const Pad2DParam<CPU> &param) {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // PAD2D_OP

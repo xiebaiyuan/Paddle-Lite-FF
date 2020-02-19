@@ -17,7 +17,7 @@ limitations under the License. */
 #include "operators/math/gemm.h"
 #include "operators/math/math_function.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 namespace math {
 
@@ -45,7 +45,7 @@ void MatMul<int8_t, int32_t>(const framework::Tensor &matrix_a, bool trans_a,
     int32_t n = matrix_a.dims()[1];
     int8_t *tmp = (int8_t *)(matrix_a.data<int8_t>());  // NOLINT
     int8_t *a = static_cast<int8_t *>(
-        paddle_mobile::memory::Alloc(sizeof(int8_t) * numel));
+        paddle_mobile_lens::memory::Alloc(sizeof(int8_t) * numel));
     int32_t index = 0;
     for (int32_t j = 0; j < n; j++) {
       for (int32_t i = 0; i < m; i++) {
@@ -106,4 +106,4 @@ void MatMul<int8_t, int32_t>(const framework::Tensor &matrix_a, bool trans_a,
 
 }  // namespace math
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

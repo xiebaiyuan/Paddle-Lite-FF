@@ -18,7 +18,7 @@ limitations under the License. */
 #include <vector>
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <typename P>
@@ -86,6 +86,6 @@ void BilinearInterpCompute(const BilinearInterpParam<CPU>& param) {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

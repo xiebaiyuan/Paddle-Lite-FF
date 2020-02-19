@@ -17,7 +17,7 @@ limitations under the License. */
 #include "../test_include.h"
 #include "operators/conv_op.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 
 // Reference convolution from Caffe for checking results.
 // accumulate through explicit loops over input, output, and filters.
@@ -221,7 +221,7 @@ int TestConvOp(int in_channels, int in_height, int in_width, int out_channels,
   return 0;
 }
 
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 int TestAll(const int in_channels, const int in_height, const int in_width,
             const int out_channels, const int groups) {
@@ -229,112 +229,112 @@ int TestAll(const int in_channels, const int in_height, const int in_width,
             << ", in_width=" << in_width << ", out_channels=" << out_channels
             << ", groups=" << groups << std::endl;
   std::cerr << "float, kernel=1, pad=0, stride=1" << std::endl;
-  paddle_mobile::TestConvOp<float, float, 1, 0, 1>(
+  paddle_mobile_lens::TestConvOp<float, float, 1, 0, 1>(
       in_channels, in_height, in_width, out_channels, groups);
 
   // kernel = 3, pad = 0, stride = 1
   std::cerr << "float, kernel=3, pad=0, stride=1" << std::endl;
-  paddle_mobile::TestConvOp<float, float, 3, 0, 1>(
+  paddle_mobile_lens::TestConvOp<float, float, 3, 0, 1>(
       in_channels, in_height, in_width, out_channels, groups);
   // kernel = 3, pad = 1, stride = 1
   std::cerr << "float, kernel=3, pad=1, stride=1" << std::endl;
-  paddle_mobile::TestConvOp<float, float, 3, 1, 1>(
+  paddle_mobile_lens::TestConvOp<float, float, 3, 1, 1>(
       in_channels, in_height, in_width, out_channels, groups);
   // kernel = 3, pad = 2, stride = 1
   std::cerr << "float, kernel=3, pad=2, stride=1" << std::endl;
-  paddle_mobile::TestConvOp<float, float, 3, 2, 1>(
+  paddle_mobile_lens::TestConvOp<float, float, 3, 2, 1>(
       in_channels, in_height, in_width, out_channels, groups);
   // kernel = 3, pad = 5, stride = 1
   std::cerr << "float, kernel=3, pad=5, stride=1" << std::endl;
-  paddle_mobile::TestConvOp<float, float, 3, 5, 1>(
+  paddle_mobile_lens::TestConvOp<float, float, 3, 5, 1>(
       in_channels, in_height, in_width, out_channels, groups);
 
   // kernel = 3, pad = 0, stride = 2
   std::cerr << "float, kernel=3, pad=0, stride=2" << std::endl;
-  paddle_mobile::TestConvOp<float, float, 3, 0, 2>(
+  paddle_mobile_lens::TestConvOp<float, float, 3, 0, 2>(
       in_channels, in_height, in_width, out_channels, groups);
   // kernel = 3, pad = 1, stride = 2
   std::cerr << "float, kernel=3, pad=1, stride=2" << std::endl;
-  paddle_mobile::TestConvOp<float, float, 3, 1, 2>(
+  paddle_mobile_lens::TestConvOp<float, float, 3, 1, 2>(
       in_channels, in_height, in_width, out_channels, groups);
   // kernel = 3, pad = 2, stride = 2
   std::cerr << "float, kernel=3, pad=2, stride=2" << std::endl;
-  paddle_mobile::TestConvOp<float, float, 3, 2, 2>(
+  paddle_mobile_lens::TestConvOp<float, float, 3, 2, 2>(
       in_channels, in_height, in_width, out_channels, groups);
   // kernel = 3, pad = 5, stride = 2
   std::cerr << "float, kernel=3, pad=5, stride=2" << std::endl;
-  paddle_mobile::TestConvOp<float, float, 3, 5, 2>(
+  paddle_mobile_lens::TestConvOp<float, float, 3, 5, 2>(
       in_channels, in_height, in_width, out_channels, groups);
 
 #ifndef __aarch64__
   // kernel = 3, pad = 0, stride = 1
   std::cerr << "int8, kernel=3, pad=0, stride=1" << std::endl;
-  paddle_mobile::TestConvOp<int8_t, int32_t, 3, 0, 1>(
+  paddle_mobile_lens::TestConvOp<int8_t, int32_t, 3, 0, 1>(
       in_channels, in_height, in_width, out_channels, groups);
   // kernel = 3, pad = 1, stride = 1
   std::cerr << "int8, kernel=3, pad=1, stride=1" << std::endl;
-  paddle_mobile::TestConvOp<int8_t, int32_t, 3, 1, 1>(
+  paddle_mobile_lens::TestConvOp<int8_t, int32_t, 3, 1, 1>(
       in_channels, in_height, in_width, out_channels, groups);
   // kernel = 3, pad = 2, stride = 1
   std::cerr << "int8, kernel=3, pad=2, stride=1" << std::endl;
-  paddle_mobile::TestConvOp<int8_t, int32_t, 3, 2, 1>(
+  paddle_mobile_lens::TestConvOp<int8_t, int32_t, 3, 2, 1>(
       in_channels, in_height, in_width, out_channels, groups);
   // kernel = 3, pad = 5, stride = 1
   std::cerr << "int8, kernel=3, pad=5, stride=1" << std::endl;
-  paddle_mobile::TestConvOp<int8_t, int32_t, 3, 5, 1>(
+  paddle_mobile_lens::TestConvOp<int8_t, int32_t, 3, 5, 1>(
       in_channels, in_height, in_width, out_channels, groups);
 
   // kernel = 3, pad = 0, stride = 2
   std::cerr << "int8, kernel=3, pad=0, stride=2" << std::endl;
-  paddle_mobile::TestConvOp<int8_t, int32_t, 3, 0, 2>(
+  paddle_mobile_lens::TestConvOp<int8_t, int32_t, 3, 0, 2>(
       in_channels, in_height, in_width, out_channels, groups);
   // kernel = 3, pad = 1, stride = 2
   std::cerr << "int8, kernel=3, pad=1, stride=2" << std::endl;
-  paddle_mobile::TestConvOp<int8_t, int32_t, 3, 1, 2>(
+  paddle_mobile_lens::TestConvOp<int8_t, int32_t, 3, 1, 2>(
       in_channels, in_height, in_width, out_channels, groups);
   // kernel = 3, pad = 2, stride = 2
   std::cerr << "int8, kernel=3, pad=2, stride=2" << std::endl;
-  paddle_mobile::TestConvOp<int8_t, int32_t, 3, 2, 2>(
+  paddle_mobile_lens::TestConvOp<int8_t, int32_t, 3, 2, 2>(
       in_channels, in_height, in_width, out_channels, groups);
   // kernel = 3, pad = 5, stride = 2
   std::cerr << "int8, kernel=3, pad=5, stride=2" << std::endl;
-  paddle_mobile::TestConvOp<int8_t, int32_t, 3, 5, 2>(
+  paddle_mobile_lens::TestConvOp<int8_t, int32_t, 3, 5, 2>(
       in_channels, in_height, in_width, out_channels, groups);
 #endif  // __aarch64__
 
   // kernel = 5, pad = 0, stride = 1
   std::cerr << "float, kernel=5, pad=0, stride=1" << std::endl;
-  paddle_mobile::TestConvOp<float, float, 5, 0, 1>(
+  paddle_mobile_lens::TestConvOp<float, float, 5, 0, 1>(
       in_channels, in_height, in_width, out_channels, groups);
   // kernel = 5, pad = 1, stride = 1
   std::cerr << "float, kernel=5, pad=1, stride=1" << std::endl;
-  paddle_mobile::TestConvOp<float, float, 5, 1, 1>(
+  paddle_mobile_lens::TestConvOp<float, float, 5, 1, 1>(
       in_channels, in_height, in_width, out_channels, groups);
   // kernel = 5, pad = 2, stride = 1
   std::cerr << "float, kernel=5, pad=2, stride=1" << std::endl;
-  paddle_mobile::TestConvOp<float, float, 5, 2, 1>(
+  paddle_mobile_lens::TestConvOp<float, float, 5, 2, 1>(
       in_channels, in_height, in_width, out_channels, groups);
   // kernel = 5, pad = 5, stride = 1
   std::cerr << "float, kernel=5, pad=5, stride=1" << std::endl;
-  paddle_mobile::TestConvOp<float, float, 5, 5, 1>(
+  paddle_mobile_lens::TestConvOp<float, float, 5, 5, 1>(
       in_channels, in_height, in_width, out_channels, groups);
 
 #ifndef __aarch64__
   // kernel = 5, pad = 0, stride = 1
   std::cerr << "int8, kernel=5, pad=0, stride=1" << std::endl;
-  paddle_mobile::TestConvOp<int8_t, int32_t, 5, 0, 1>(
+  paddle_mobile_lens::TestConvOp<int8_t, int32_t, 5, 0, 1>(
       in_channels, in_height, in_width, out_channels, groups);
   // kernel = 5, pad = 1, stride = 1
   std::cerr << "int8, kernel=5, pad=1, stride=1" << std::endl;
-  paddle_mobile::TestConvOp<int8_t, int32_t, 5, 1, 1>(
+  paddle_mobile_lens::TestConvOp<int8_t, int32_t, 5, 1, 1>(
       in_channels, in_height, in_width, out_channels, groups);
   // kernel = 5, pad = 2, stride = 1
   std::cerr << "int8, kernel=5, pad=2, stride=1" << std::endl;
-  paddle_mobile::TestConvOp<int8_t, int32_t, 5, 2, 1>(
+  paddle_mobile_lens::TestConvOp<int8_t, int32_t, 5, 2, 1>(
       in_channels, in_height, in_width, out_channels, groups);
   // kernel = 5, pad = 5, stride = 1
   std::cerr << "int8, kernel=5, pad=5, stride=1" << std::endl;
-  paddle_mobile::TestConvOp<int8_t, int32_t, 5, 5, 1>(
+  paddle_mobile_lens::TestConvOp<int8_t, int32_t, 5, 5, 1>(
       in_channels, in_height, in_width, out_channels, groups);
 #endif  // __aarch64__
 

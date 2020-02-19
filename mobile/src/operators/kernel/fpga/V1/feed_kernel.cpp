@@ -14,7 +14,7 @@ limitations under the License. */
 
 #include "operators/kernel/feed_kernel.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -105,4 +105,4 @@ void FeedKernel<FPGA, float>::Compute(const FeedParam<FPGA> &param) {
 template class FeedKernel<FPGA, float>;
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

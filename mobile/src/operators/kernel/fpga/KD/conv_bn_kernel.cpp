@@ -17,9 +17,9 @@ limitations under the License. */
 #include "operators/kernel/conv_bn_kernel.h"
 #include "fpga/KD/pes/conv_pe.hpp"
 
-using ConvPE = paddle_mobile::zynqmp::ConvPE;
+using ConvPE = paddle_mobile_lens::zynqmp::ConvPE;
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -64,6 +64,6 @@ void ConvBNKernel<FPGA, float>::Compute(const FusionConvBNParam<FPGA>& param) {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

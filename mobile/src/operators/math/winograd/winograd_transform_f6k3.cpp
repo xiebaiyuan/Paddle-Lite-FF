@@ -22,7 +22,7 @@ limitations under the License. */
 #include "operators/math/pad.h"
 #include "operators/math/winograd/winograd_transform.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 namespace math {
 
@@ -1675,7 +1675,7 @@ void winograd_transform_output<8, 3>(const framework::Tensor &input,
 
 }  // namespace math
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // CONV_OP
 #endif  // __ARM_NEON__

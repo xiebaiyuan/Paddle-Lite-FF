@@ -20,7 +20,7 @@ limitations under the License. */
 
 #include "fpga/V2/api.h"
 // #include "fpga_api.h"
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace fpga {
 namespace deconv_bias_scale {
 
@@ -45,4 +45,4 @@ void deconv_bias_scale_expand(float** bias_scale_array, int num,
 
 }  // namespace deconv_bias_scale
 }  // namespace fpga
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

@@ -14,7 +14,7 @@ limitations under the License. */
 
 #include "common/util.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 
 char *ReadFileToBuff(std::string filename) {
   FILE *file = fopen(filename.c_str(), "rb");
@@ -43,4 +43,4 @@ int GetFileLength(std::string filename) {
   return size;
 }
 
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

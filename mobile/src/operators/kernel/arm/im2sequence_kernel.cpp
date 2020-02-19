@@ -16,7 +16,7 @@ limitations under the License. */
 
 #include "operators/kernel/im2sequence_kernel.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -82,6 +82,6 @@ void Im2SequenceKernel<CPU, float>::Compute(
 template class Im2SequenceKernel<CPU, float>;
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

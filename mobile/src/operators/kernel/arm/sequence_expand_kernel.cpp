@@ -17,7 +17,7 @@ limitations under the License. */
 #include <vector>
 #include "operators/kernel/sequence_kernels.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 typedef int (*LoDElementFunctor)(const std::vector<size_t> &x_lod, int index);
@@ -110,6 +110,6 @@ template class SequenceExpandKernel<CPU, float>;
 // template class SequenceExpandKernel<CPU, int64_t>;
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // SEQUENCE_EXPAND_OP

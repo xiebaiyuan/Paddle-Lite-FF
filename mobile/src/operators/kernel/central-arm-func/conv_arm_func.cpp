@@ -27,7 +27,7 @@ limitations under the License. */
 #include "operators/math/winograd/winograd_transform.h"
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 int ConvOutputSize(int input_size, int filter_size, int dilation, int padding,
@@ -374,4 +374,4 @@ template void DepthwiseConv5x5<int8_t, int32_t>(const ConvParam<CPU> &param);
 #endif
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

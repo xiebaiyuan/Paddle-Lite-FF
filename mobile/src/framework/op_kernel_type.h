@@ -17,7 +17,7 @@ limitations under the License. */
 #include "framework/data_layout.h"
 #include "framework/program/tensor_desc.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 struct OpKernelType {
   struct Hash {
@@ -57,4 +57,4 @@ inline bool TransFromNeeded(const OpKernelType &l, const OpKernelType &r) {
 }
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

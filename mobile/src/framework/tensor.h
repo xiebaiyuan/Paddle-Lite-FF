@@ -33,7 +33,7 @@ limitations under the License. */
 
 #ifndef PADDLE_MOBILE_FPGA_KD
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 enum LayoutType {
@@ -350,6 +350,6 @@ inline Tensor ReshapeToMatrix(const Tensor &src, int num_col_dims) {
 }
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

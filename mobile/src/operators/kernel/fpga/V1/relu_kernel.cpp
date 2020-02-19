@@ -16,7 +16,7 @@ limitations under the License. */
 
 #include "operators/kernel/activation_kernel.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -30,6 +30,6 @@ void ReluKernel<FPGA, float>::Compute(const ReluParam<FPGA> &param) {
   PADDLE_MOBILE_ENFORCE(0, "relu as a single op is wrong");
 }
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

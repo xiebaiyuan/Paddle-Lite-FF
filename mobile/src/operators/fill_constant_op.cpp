@@ -16,7 +16,7 @@ limitations under the License. */
 
 #include "operators/fill_constant_op.h"
 
-namespace ops = paddle_mobile::operators;
+namespace ops = paddle_mobile_lens::operators;
 #ifdef PADDLE_MOBILE_CPU
 REGISTER_OPERATOR_CPU(fill_constant, ops::FillConstantOp);
 #endif

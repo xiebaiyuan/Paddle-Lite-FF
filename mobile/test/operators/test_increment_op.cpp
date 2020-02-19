@@ -15,7 +15,7 @@ limitations under the License. */
 #include "../test_include.h"
 #include "operators/increment_op.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 
 template <typename T>
 void Increment(const framework::Tensor *input, framework::Tensor *out,
@@ -65,11 +65,11 @@ int TestIncrementOp(const std::vector<int> input_shape, int step) {
     }
   }
 }
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 int main() {
-  paddle_mobile::TestIncrementOp({1}, 4);
-  paddle_mobile::TestIncrementOp({1}, 10);
+  paddle_mobile_lens::TestIncrementOp({1}, 4);
+  paddle_mobile_lens::TestIncrementOp({1}, 10);
   DLOG << "test increment op pass.";
   return 0;
 }

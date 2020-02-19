@@ -19,8 +19,8 @@ limitations under the License. */
 #include <iostream>
 #include "../../src/io/paddle_inference_api.h"
 
-using namespace paddle_mobile;        // NOLINT
-using namespace paddle_mobile::fpga;  // NOLINT
+using namespace paddle_mobile_lens;        // NOLINT
+using namespace paddle_mobile_lens::fpga;  // NOLINT
 
 static const char *g_image = "../images/yolo_test_txtimg/1.txt";
 static const char *g_model = "../models/yolo_bn_l2_model/__model__";

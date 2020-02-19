@@ -14,7 +14,7 @@ limitations under the License. */
 
 #include "framework/cl/cl_image_converter.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 DDim CLImageConverterDefault::InitImageDimInfoWith(const DDim &tensor_dim) {
@@ -507,4 +507,4 @@ void CLImageConverterConv2dTransposeTransWeight::ImageToNCHW(
     const DDim &tensor_dim) {}
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

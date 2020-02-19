@@ -16,11 +16,11 @@ limitations under the License. */
 
 #include "operators/fusion_deconv_add_relu_op.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {}
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
-namespace ops = paddle_mobile::operators;
+namespace ops = paddle_mobile_lens::operators;
 REGISTER_FUSION_MATCHER(fusion_deconv_add_relu,
                         ops::FusionDeconvAddReluMatcher);
 #ifdef PADDLE_MOBILE_CPU

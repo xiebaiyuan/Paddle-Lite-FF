@@ -21,7 +21,7 @@ limitations under the License. */
 #include "fpga/V1/api.h"
 #include "fpga/V1/image.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -291,6 +291,6 @@ void RoiAlignPoolKernel<FPGA, float>::Compute(
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // ROIALIGN_POOL_OP

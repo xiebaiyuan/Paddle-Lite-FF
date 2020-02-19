@@ -17,7 +17,7 @@ limitations under the License. */
 #include "framework/tensor.h"
 #include "memory/t_malloc.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 void TensorCopy(const Tensor& src, Tensor* dst);
@@ -36,4 +36,4 @@ void TensorFromVector(const std::vector<T>& src, Tensor* dst) {
 }
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

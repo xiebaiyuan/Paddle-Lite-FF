@@ -14,7 +14,7 @@ limitations under the License. */
 
 #include "operators/logical_op.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 #define DEFINE_LOGICAL_INFERSHAPE(OpName)                   \
@@ -41,9 +41,9 @@ DEFINE_LOGICAL_INFERSHAPE(LogicalXor);
 #endif  // TLOGICAL_XOR_OP
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
-namespace ops = paddle_mobile::operators;
+namespace ops = paddle_mobile_lens::operators;
 #ifdef LOGICAL_AND_OP
 #ifdef PADDLE_MOBILE_CPU
 REGISTER_OPERATOR_CPU(logical_and, ops::LogicalAndOp);

@@ -23,7 +23,7 @@ limitations under the License. */
 #include "operators/kernel/flatten_kernel.h"
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 inline std::vector<int32_t> GetOutputShape(const int axis,
@@ -66,6 +66,6 @@ class Flatten2Op : public FlattenOp<DeviceType, T> {
 };
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

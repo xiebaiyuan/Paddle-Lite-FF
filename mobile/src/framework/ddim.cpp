@@ -15,7 +15,7 @@ limitations under the License. */
 #include "ddim.h"
 #include <algorithm>
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 /// @cond HIDDEN
@@ -324,4 +324,4 @@ DDim stride_numel(const framework::DDim &ddim) {
 }
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

@@ -16,24 +16,24 @@ limitations under the License. */
 #include "operators/depthwise_conv_op.h"
 
 int main() {
-  paddle_mobile::framework::Loader<paddle_mobile::CPU> loader;
+  paddle_mobile_lens::framework::Loader<paddle_mobile_lens::CPU> loader;
   //  ../models/image_classification_resnet.inference.model
   auto program = loader.Load(g_mobilenet_ssd);
 
   PADDLE_MOBILE_ENFORCE(program.originProgram != nullptr,
                         "program file read fail");
 
-  Executor4Test<paddle_mobile::CPU, paddle_mobile::operators::DepthwiseConvOp<
-                                        paddle_mobile::CPU, float>>
+  Executor4Test<paddle_mobile_lens::CPU, paddle_mobile_lens::operators::DepthwiseConvOp<
+                                        paddle_mobile_lens::CPU, float>>
       executor(program, "depthwise_conv2d");
 
-  paddle_mobile::framework::LoDTensor input;
+  paddle_mobile_lens::framework::LoDTensor input;
   // GetInput<float>(g_test_image_1x3x224x224, &input, {1, 3, 224, 224});
   // use SetupTensor if not has local input image .
   SetupTensor<float>(&input, {1, 32, 150, 150}, static_cast<float>(0),
                      static_cast<float>(1));
   auto input_ptr = input.data<float>();
-  auto out_ddim = paddle_mobile::framework::make_ddim({1, 32, 150, 150});
+  auto out_ddim = paddle_mobile_lens::framework::make_ddim({1, 32, 150, 150});
   auto output = executor.Predict(input, "batch_norm_0.tmp_3",
                                  "depthwise_conv2d_0.tmp_0", out_ddim);
 

@@ -73,14 +73,14 @@ static const char *g_test_image_1x3x224x224_vision_mobilenet_input =
 static const char *g_test_image_1x3x416x416_vision_yolo_input =
     "../images/yolo_input";
 
-using namespace paddle_mobile;  // NOLINT
-using paddle_mobile::framework::DDim;
-using paddle_mobile::framework::LoDTensor;
-using paddle_mobile::framework::Tensor;
+using namespace paddle_mobile_lens;  // NOLINT
+using paddle_mobile_lens::framework::DDim;
+using paddle_mobile_lens::framework::LoDTensor;
+using paddle_mobile_lens::framework::Tensor;
 
 template <typename T>
-void SetupTensor(paddle_mobile::framework::Tensor *input,
-                 paddle_mobile::framework::DDim dims, T lower, T upper) {
+void SetupTensor(paddle_mobile_lens::framework::Tensor *input,
+                 paddle_mobile_lens::framework::DDim dims, T lower, T upper) {
   static unsigned int seed = 100;
   std::mt19937 rng(seed++);
   std::uniform_real_distribution<double> uniform_dist(0, 1);
@@ -92,8 +92,8 @@ void SetupTensor(paddle_mobile::framework::Tensor *input,
 }
 
 template <>
-void SetupTensor<bool>(paddle_mobile::framework::Tensor *input,
-                       paddle_mobile::framework::DDim dims, bool lower,
+void SetupTensor<bool>(paddle_mobile_lens::framework::Tensor *input,
+                       paddle_mobile_lens::framework::DDim dims, bool lower,
                        bool upper) {
   static unsigned int seed = 100;
   std::mt19937 rng(seed++);
@@ -137,8 +137,8 @@ void GetInput(const std::string &input_name, std::vector<T> *input,
 
 template <typename T>
 void GetInput(const std::string &input_name,
-              paddle_mobile::framework::Tensor *input,
-              paddle_mobile::framework::DDim dims) {
+              paddle_mobile_lens::framework::Tensor *input,
+              paddle_mobile_lens::framework::DDim dims) {
   T *input_ptr = input->mutable_data<T>(dims);
 
   std::ifstream in(input_name, std::ios::in | std::ios::binary);

@@ -18,7 +18,7 @@ limitations under the License. */
 #include <vector>
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 // Strided numel memory copy from src to dst by the specified axis
@@ -81,6 +81,6 @@ void SplitCompute(const SplitParam<CPU>& param) {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

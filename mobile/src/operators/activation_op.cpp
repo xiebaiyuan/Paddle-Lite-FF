@@ -14,7 +14,7 @@ limitations under the License. */
 
 #include "operators/activation_op.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 #define DEFINE_ACTIVATION_INFERSHAPE(OpName)                \
@@ -31,7 +31,7 @@ DEFINE_ACTIVATION_INFERSHAPE(Relu6);
 
 #ifdef SIGMOID_OP
 DEFINE_ACTIVATION_INFERSHAPE(Sigmoid);
-namespace ops = paddle_mobile::operators;
+namespace ops = paddle_mobile_lens::operators;
 #ifdef PADDLE_MOBILE_FPGA
 REGISTER_OPERATOR_FPGA(sigmoid, ops::SigmoidOp);
 #endif
@@ -50,9 +50,9 @@ DEFINE_ACTIVATION_INFERSHAPE(LeakyRelu);
 #endif  // LEAKY_RELU_OP
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
-namespace ops = paddle_mobile::operators;
+namespace ops = paddle_mobile_lens::operators;
 #ifdef RELU_OP
 #ifdef PADDLE_MOBILE_CPU
 REGISTER_OPERATOR_CPU(relu, ops::ReluOp);

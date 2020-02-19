@@ -17,7 +17,7 @@ limitations under the License. */
 #include "framework/cl/cl_image_converter.h"
 #include "framework/cl/cl_tensor.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 bool use_lws = true;
 int preferred_lws = 0;
@@ -1122,4 +1122,4 @@ void ConvTranspose3x3s2AddBnRelu(framework::CLHelper *cl_helper,
   CL_CHECK_ERRORS(status);
 }
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

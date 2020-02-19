@@ -16,7 +16,7 @@ limitations under the License. */
 
 #include "operators/assign_op.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <typename Dtype, typename T>
@@ -28,9 +28,9 @@ void AssignOp<Dtype, T>::InferShape() const {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
-namespace ops = paddle_mobile::operators;
+namespace ops = paddle_mobile_lens::operators;
 
 #ifdef PADDLE_MOBILE_CPU
 REGISTER_OPERATOR_CPU(assign, ops::AssignOp);

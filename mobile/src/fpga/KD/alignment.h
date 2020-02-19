@@ -21,12 +21,12 @@ limitations under the License. */
 
 #include "llapi/zynqmp_api.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace zynqmp {
 
 inline int align_image(int wc) { return align_to_x(wc, IMAGE_ALIGNMENT); }
 
 }  // namespace zynqmp
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif /* alignment_h */

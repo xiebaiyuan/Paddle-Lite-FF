@@ -16,7 +16,7 @@ limitations under the License. */
 
 #pragma once
 #include "operators/op_param.h"
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <typename P>
@@ -42,6 +42,6 @@ void LrnCompute(const LrnParam<CPU> &param) {
 template class LrnKernel<CPU, float>;
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

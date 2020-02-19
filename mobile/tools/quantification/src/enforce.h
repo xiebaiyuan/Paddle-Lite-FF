@@ -21,7 +21,7 @@ limitations under the License. */
 
 #endif
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 
 #ifdef ENABLE_EXCEPTION
 struct PaddleMobileException : public std::exception {
@@ -44,7 +44,7 @@ struct PaddleMobileException : public std::exception {
     char buffer[1000];                                                     \
     snprintf(buffer, sizeof(buffer), __VA_ARGS__);                         \
     std::string detail(buffer);                                            \
-    throw paddle_mobile::PaddleMobileException("Custom Exception", buffer, \
+    throw paddle_mobile_lens::PaddleMobileException("Custom Exception", buffer, \
                                                __FILE__, __LINE__);        \
   }
 
@@ -55,7 +55,7 @@ struct PaddleMobileException : public std::exception {
       char buffer[1000];                                                      \
       snprintf(buffer, sizeof(buffer), __VA_ARGS__);                          \
       std::string detail(buffer);                                             \
-      throw paddle_mobile::PaddleMobileException("paddle-mobile enforce",     \
+      throw paddle_mobile_lens::PaddleMobileException("paddle-mobile enforce",     \
                                                  buffer, __FILE__, __LINE__); \
     }                                                                         \
   }
@@ -64,4 +64,4 @@ struct PaddleMobileException : public std::exception {
 #define PADDLE_MOBILE_ENFORCE(stat, ...)
 #endif
 
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

@@ -26,7 +26,7 @@ static const char* g_ssd = "../models/resnet50";
 int main() {
   zynqmp::open_device();
 
-  paddle_mobile::PaddleMobile<paddle_mobile::FPGA> paddle_mobile;
+  paddle_mobile_lens::PaddleMobile<paddle_mobile_lens::FPGA> paddle_mobile;
   std::string dir = std::string(g_ssd);
   std::string model = std::string(g_ssd) + "/model";
   std::string params = std::string(g_ssd) + "/params";

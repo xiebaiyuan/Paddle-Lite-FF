@@ -17,7 +17,7 @@ limitations under the License. */
 #include <string>
 #include "pass/pass_base.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace pass {
 
 class ModelObfuscatePass : public PassBase {
@@ -33,4 +33,4 @@ class ModelObfuscatePass : public PassBase {
 };
 
 }  // namespace pass
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

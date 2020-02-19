@@ -16,7 +16,7 @@ limitations under the License. */
 
 #include "operators/kernel/nearest_interp_kernel.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -83,6 +83,6 @@ void NearestInterpolationKernel<CPU, float>::Compute(
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

@@ -14,7 +14,7 @@ limitations under the License. */
 
 #pragma once
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace fpga {
 namespace bias_scale {
 
@@ -26,4 +26,4 @@ void format_bias_array(float** bias_array, int num);
 
 }  // namespace bias_scale
 }  // namespace fpga
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

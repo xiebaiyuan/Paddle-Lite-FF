@@ -19,7 +19,7 @@ limitations under the License. */
 #include <array>
 #include "framework/data_type.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -60,6 +60,6 @@ void ReduceProdKernel<CPU, float>::Compute(const ReduceProdParam<CPU>& param) {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // REDUCE_PROD_OP

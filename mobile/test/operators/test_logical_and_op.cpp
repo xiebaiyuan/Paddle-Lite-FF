@@ -15,7 +15,7 @@ limitations under the License. */
 #include "../test_include.h"
 #include "operators/logical_op.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 
 void LogicalAnd(const framework::Tensor *inputX,
                 const framework::Tensor *inputY, framework::Tensor *output) {
@@ -73,12 +73,12 @@ int TestLogicalAndOp(const std::vector<int> input_shape) {
     }
   }
 }
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 int main() {
-  paddle_mobile::TestLogicalAndOp({1, 1, 2, 3});
-  paddle_mobile::TestLogicalAndOp({1, 3, 11, 12});
-  paddle_mobile::TestLogicalAndOp({1, 16, 32, 32});
+  paddle_mobile_lens::TestLogicalAndOp({1, 1, 2, 3});
+  paddle_mobile_lens::TestLogicalAndOp({1, 3, 11, 12});
+  paddle_mobile_lens::TestLogicalAndOp({1, 16, 32, 32});
   DLOG << "test logical_and op pass.";
   return 0;
 }

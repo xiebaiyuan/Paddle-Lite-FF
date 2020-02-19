@@ -13,7 +13,7 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 
 #include "operators/op_param.h"
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 #ifdef CONV_OP
@@ -95,4 +95,4 @@ Print &operator<<(Print &printer, const FusionConvAddParam<CPU> &conv_param) {
 #endif
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

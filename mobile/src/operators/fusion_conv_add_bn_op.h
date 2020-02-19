@@ -23,7 +23,7 @@ limitations under the License. */
 #include "operators/kernel/conv_add_bn_kernel.h"
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 using std::string;
 using std::vector;
@@ -71,6 +71,6 @@ class FusionConvAddBNOp : public framework::OperatorWithKernel<
 };
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

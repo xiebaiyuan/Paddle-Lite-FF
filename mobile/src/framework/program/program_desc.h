@@ -21,7 +21,7 @@ limitations under the License. */
 #include "framework/framework.pb-c.h"
 #include "framework/program/block_desc.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 class ProgramDesc {
@@ -59,4 +59,4 @@ class ProgramDesc {
 };
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

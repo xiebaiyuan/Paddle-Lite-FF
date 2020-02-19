@@ -16,13 +16,13 @@ limitations under the License. */
 #include "operators/lrn_op.h"
 
 int main() {
-  paddle_mobile::framework::Loader<paddle_mobile::CPU> loader;
+  paddle_mobile_lens::framework::Loader<paddle_mobile_lens::CPU> loader;
   auto program = loader.Load(g_googlenet);
   PADDLE_MOBILE_ENFORCE(program.originProgram != nullptr,
                         "program file read fail");
 
-  Executor4Test<paddle_mobile::CPU,
-                paddle_mobile::operators::LrnOp<paddle_mobile::CPU, float>>
+  Executor4Test<paddle_mobile_lens::CPU,
+                paddle_mobile_lens::operators::LrnOp<paddle_mobile_lens::CPU, float>>
       executor(program, "lrn");
 
   // 1. input_tensors;
@@ -42,7 +42,7 @@ int main() {
 
   // 4. out_dims;
   vector<DDim> out_ddims;
-  auto out_ddim = paddle_mobile::framework::make_ddim({3, 4, 2, 2});
+  auto out_ddim = paddle_mobile_lens::framework::make_ddim({3, 4, 2, 2});
   out_ddims.push_back(out_ddim);
 
   auto output = executor.Predict<LoDTensor>(input_tensors, input_names,

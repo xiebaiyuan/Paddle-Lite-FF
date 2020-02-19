@@ -102,13 +102,13 @@ int do_sgemm(int m, int n, int k, bool relu, int pr) {
   default_random_engine e;
   uniform_int_distribution<int8_t> pixel(-127, 127);
   int8_t *a = static_cast<int8_t *>(
-      paddle_mobile::memory::Alloc(sizeof(int8_t) * m * k));
+      paddle_mobile_lens::memory::Alloc(sizeof(int8_t) * m * k));
   int8_t *b = static_cast<int8_t *>(
-      paddle_mobile::memory::Alloc(sizeof(int8_t) * k * n));
+      paddle_mobile_lens::memory::Alloc(sizeof(int8_t) * k * n));
   int32_t *c = static_cast<int32_t *>(
-      paddle_mobile::memory::Alloc(sizeof(int32_t) * m * n));
+      paddle_mobile_lens::memory::Alloc(sizeof(int32_t) * m * n));
   int32_t *c1 = static_cast<int32_t *>(
-      paddle_mobile::memory::Alloc(sizeof(int32_t) * m * n));
+      paddle_mobile_lens::memory::Alloc(sizeof(int32_t) * m * n));
 
   for (int i = 0; i < m * k; ++i) {
     a[i] = pixel(e);
@@ -127,7 +127,7 @@ int do_sgemm(int m, int n, int k, bool relu, int pr) {
     }
   }
 
-  paddle_mobile::operators::math::Gemm gemm;
+  paddle_mobile_lens::operators::math::Gemm gemm;
 #ifdef _OPENMP
   gemm.Sgemm_omp(m, n, k, static_cast<int8_t>(1), a, lda, b, ldb,
                  static_cast<int8_t>(0), c, ldc, relu, nullptr);
@@ -161,10 +161,10 @@ int do_sgemm(int m, int n, int k, bool relu, int pr) {
 
   PADDLE_MOBILE_ENFORCE(neq == 0, "The execution of do_sgemm is failed!");
 
-  paddle_mobile::memory::Free(a);
-  paddle_mobile::memory::Free(b);
-  paddle_mobile::memory::Free(c);
-  paddle_mobile::memory::Free(c1);
+  paddle_mobile_lens::memory::Free(a);
+  paddle_mobile_lens::memory::Free(b);
+  paddle_mobile_lens::memory::Free(c);
+  paddle_mobile_lens::memory::Free(c1);
 
   return 0;
 }
@@ -178,21 +178,21 @@ int do_sgemm_with_bias(int m, int n, int k, bool relu, int pr,
   default_random_engine e;
   uniform_int_distribution<int8_t> pixel(-127, 127);
   int8_t *a = static_cast<int8_t *>(
-      paddle_mobile::memory::Alloc(sizeof(int8_t) * m * k));
+      paddle_mobile_lens::memory::Alloc(sizeof(int8_t) * m * k));
   int8_t *b = static_cast<int8_t *>(
-      paddle_mobile::memory::Alloc(sizeof(int8_t) * k * n));
+      paddle_mobile_lens::memory::Alloc(sizeof(int8_t) * k * n));
   int8_t *c = static_cast<int8_t *>(
-      paddle_mobile::memory::Alloc(sizeof(int8_t) * m * n));
+      paddle_mobile_lens::memory::Alloc(sizeof(int8_t) * m * n));
   int8_t *c1 = static_cast<int8_t *>(
-      paddle_mobile::memory::Alloc(sizeof(int8_t) * m * n));
+      paddle_mobile_lens::memory::Alloc(sizeof(int8_t) * m * n));
 
   int32_t *bias = nullptr;
   if (addOnRow) {
     bias = static_cast<int32_t *>(
-        paddle_mobile::memory::Alloc(sizeof(int32_t) * n));
+        paddle_mobile_lens::memory::Alloc(sizeof(int32_t) * n));
   } else {
     bias = static_cast<int32_t *>(
-        paddle_mobile::memory::Alloc(sizeof(int32_t) * m));
+        paddle_mobile_lens::memory::Alloc(sizeof(int32_t) * m));
   }
 
   for (int i = 0; i < m * k; ++i) {
@@ -236,7 +236,7 @@ int do_sgemm_with_bias(int m, int n, int k, bool relu, int pr,
     }
   }
 
-  paddle_mobile::operators::math::Gemm gemm;
+  paddle_mobile_lens::operators::math::Gemm gemm;
 #ifdef _OPENMP
   gemm.Sgemm_omp(m, n, k, scale, a, lda, b, ldb, static_cast<float>(0), c, ldc,
                  relu, bias, addOnRow);
@@ -277,11 +277,11 @@ int do_sgemm_with_bias(int m, int n, int k, bool relu, int pr,
   PADDLE_MOBILE_ENFORCE(neq == 0,
                         "The execution of do_sgemm_with_bias is failed!");
 
-  paddle_mobile::memory::Free(a);
-  paddle_mobile::memory::Free(b);
-  paddle_mobile::memory::Free(c);
-  paddle_mobile::memory::Free(c1);
-  paddle_mobile::memory::Free(bias);
+  paddle_mobile_lens::memory::Free(a);
+  paddle_mobile_lens::memory::Free(b);
+  paddle_mobile_lens::memory::Free(c);
+  paddle_mobile_lens::memory::Free(c1);
+  paddle_mobile_lens::memory::Free(bias);
 
   return 0;
 }

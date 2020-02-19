@@ -18,10 +18,10 @@ limitations under the License. */
 
 #include "framework/cl/cl_helper.h"
 #include "operators/op_param.h"
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 void InstanceNorm(framework::CLHelper *cl_helper,
                   const InstanceNormParam<GPU_CL> &param);
 }
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 #endif

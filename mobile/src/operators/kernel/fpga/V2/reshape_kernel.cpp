@@ -16,7 +16,7 @@ limitations under the License. */
 
 #include "operators/kernel/reshape_kernel.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -35,6 +35,6 @@ template <>
 void ReshapeKernel<FPGA, float>::Compute(const ReshapeParam<FPGA> &param) {}
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

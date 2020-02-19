@@ -44,13 +44,13 @@ class BlockDesc {
     return this->ID() < in_block.ID() && this->Parent() < in_block.Parent();
   }
 
-  std::vector<std::shared_ptr<paddle_mobile::framework::VarDesc>> Vars() const;
+  std::vector<std::shared_ptr<paddle_mobile_lens::framework::VarDesc>> Vars() const;
 
  private:
   int index_;
   bool multi_thread_;
   int parent_index_;
-  std::vector<std::shared_ptr<paddle_mobile::framework::VarDesc>> vars_;
+  std::vector<std::shared_ptr<paddle_mobile_lens::framework::VarDesc>> vars_;
 };
 
 #endif  // TOOLS_QUANTIFICATION_SRC_BLOCK_DESC_LOCAL_H_

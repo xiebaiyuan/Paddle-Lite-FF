@@ -23,7 +23,7 @@ limitations under the License. */
 #include "operators/kernel/dequant_bn_relu_kernel.h"
 #include "operators/op_param.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 class FusionDequantBNReluMatcher : public framework::FusionOpMatcher {
@@ -69,6 +69,6 @@ class FusionDequantBNReluOp
 };
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

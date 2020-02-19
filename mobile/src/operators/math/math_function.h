@@ -17,7 +17,7 @@ limitations under the License. */
 #include <string>
 #include "framework/tensor.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 namespace math {
 
@@ -59,4 +59,4 @@ struct RowwiseAdd {
 
 }  // namespace math
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

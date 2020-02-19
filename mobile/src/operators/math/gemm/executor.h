@@ -25,7 +25,7 @@ limitations under the License. */
 #include "memory/t_malloc.h"
 #include "operators/math/gemm/gemm_kernel.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 namespace math {
 
@@ -122,11 +122,11 @@ class GemmExecutor : public Executor {
     }
 
     lhs_workspace_ =
-        static_cast<Itype *>(paddle_mobile::memory::Alloc(lhs_worksize_));
+        static_cast<Itype *>(paddle_mobile_lens::memory::Alloc(lhs_worksize_));
     rhs_workspace_ =
-        static_cast<Itype *>(paddle_mobile::memory::Alloc(rhs_worksize_));
+        static_cast<Itype *>(paddle_mobile_lens::memory::Alloc(rhs_worksize_));
     out_workspace_ =
-        static_cast<Otype *>(paddle_mobile::memory::Alloc(out_worksize_));
+        static_cast<Otype *>(paddle_mobile_lens::memory::Alloc(out_worksize_));
 
     //  std::cout << "M: " << M_ << ", N: " << N_ << ", K: " << K_ << std::endl;
     //  std::cout << "lhs_block: " << CeilDiv(M_, lhs_tile_num_) << ", "
@@ -197,9 +197,9 @@ class GemmExecutor : public Executor {
       }
     }
 
-    paddle_mobile::memory::Free(lhs_workspace_);
-    paddle_mobile::memory::Free(rhs_workspace_);
-    paddle_mobile::memory::Free(out_workspace_);
+    paddle_mobile_lens::memory::Free(lhs_workspace_);
+    paddle_mobile_lens::memory::Free(rhs_workspace_);
+    paddle_mobile_lens::memory::Free(out_workspace_);
 
     //  gettimeofday(&tv_end,NULL);
     //  float elapsed = (tv_end.tv_sec - tv_begin.tv_sec) * 1000.f +
@@ -263,4 +263,4 @@ class GemvExecutor : public Executor {
 
 }  // namespace math
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

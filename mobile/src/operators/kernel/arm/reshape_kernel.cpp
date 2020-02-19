@@ -17,7 +17,7 @@ limitations under the License. */
 #include "operators/kernel/reshape_kernel.h"
 #include "operators/kernel/central-arm-func/reshape_arm_func.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -31,6 +31,6 @@ void ReshapeKernel<CPU, float>::Compute(const ReshapeParam<CPU> &param) {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

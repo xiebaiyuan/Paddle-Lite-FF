@@ -16,7 +16,7 @@ limitations under the License. */
 
 #include "operators/kernel/transpose2_kernel.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 bool IsShuffleChannel(const std::vector<int> &axis) {
@@ -141,6 +141,6 @@ void Transpose2Kernel<CPU, float>::Compute(const Transpose2Param<CPU> &param) {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // TRANSPOSE2_OP

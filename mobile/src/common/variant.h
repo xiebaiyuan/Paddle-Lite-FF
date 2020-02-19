@@ -23,7 +23,7 @@ limitations under the License. */
 #include "common/log.h"
 #include "common/type_define.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 
 template <int ID, typename Type>
 struct IDToType {
@@ -103,4 +103,4 @@ struct Vistor {
   typedef T type_t;
 };
 
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

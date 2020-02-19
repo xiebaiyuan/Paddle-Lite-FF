@@ -19,7 +19,7 @@ limitations under the License. */
 #include "operators/kernel/central-arm-func/activation_arm_func.h"
 #include "operators/kernel/central-arm-func/conv_arm_func.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -61,6 +61,6 @@ void ConvReluKernel<CPU, float>::Compute(
 template class ConvReluKernel<CPU, float>;
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

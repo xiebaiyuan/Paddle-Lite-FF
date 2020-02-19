@@ -17,7 +17,7 @@ limitations under the License. */
 #include "operators/kernel/sum_kernel.h"
 #include "operators/kernel/central-arm-func/sum_arm_func.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -32,6 +32,6 @@ void SumKernel<CPU, float>::Compute(const SumParam<CPU> &param) {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

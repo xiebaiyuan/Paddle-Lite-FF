@@ -20,7 +20,7 @@ limitations under the License. */
 #include "common/types.h"
 #include "operators/math/im2col.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 namespace math {
 
@@ -665,4 +665,4 @@ template class Col2ImFunctor<ColFormat::kOCF, CPU, float>;
 
 }  // namespace math
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

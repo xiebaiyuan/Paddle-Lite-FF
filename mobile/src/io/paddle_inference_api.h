@@ -26,7 +26,7 @@ limitations under the License. */
 #include <string>
 #include <vector>
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 
 #ifdef PADDLE_MOBILE_FPGA
 
@@ -231,4 +231,4 @@ template <typename ConfigT,
           PaddleEngineKind engine = PaddleEngineKind::kPaddleMobile>
 std::unique_ptr<PaddlePredictor> CreatePaddlePredictor(const ConfigT& config);
 
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

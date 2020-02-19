@@ -19,7 +19,7 @@ limitations under the License. */
 #include "src/framework.pb-c.h"
 #include "src/tensor_desc.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace framework {
 
 class VarDesc {
@@ -77,4 +77,4 @@ class VarDesc {
 };
 
 }  // namespace framework
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

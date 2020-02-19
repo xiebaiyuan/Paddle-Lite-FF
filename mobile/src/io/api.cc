@@ -16,7 +16,7 @@ limitations under the License. */
 #include "cstring"
 #include "io/paddle_inference_api.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 
 int PaddleDtypeSize(PaddleDType dtype) {
   switch (dtype) {
@@ -83,4 +83,4 @@ void PaddleBuf::Free() {
   }
 }
 
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

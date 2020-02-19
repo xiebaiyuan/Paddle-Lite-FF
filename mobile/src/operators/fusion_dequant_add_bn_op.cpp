@@ -16,7 +16,7 @@ limitations under the License. */
 
 #include "operators/fusion_dequant_add_bn_op.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <typename Dtype, typename T>
@@ -26,9 +26,9 @@ void FusionDequantAddBNOp<Dtype, T>::InferShape() const {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
-namespace ops = paddle_mobile::operators;
+namespace ops = paddle_mobile_lens::operators;
 REGISTER_FUSION_MATCHER(fusion_dequant_add_bn, ops::FusionDequantAddBNMatcher);
 
 #ifdef PADDLE_MOBILE_CPU

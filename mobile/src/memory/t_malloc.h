@@ -17,7 +17,7 @@ limitations under the License. */
 #include <cstddef>
 #include <type_traits>
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace memory {
 
 void Copy(void *dst, const void *src, size_t num);
@@ -60,4 +60,4 @@ class PlainDeleter {
   void operator()(T *ptr) { Free(reinterpret_cast<void *>(ptr)); }
 };
 }  // namespace memory
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens

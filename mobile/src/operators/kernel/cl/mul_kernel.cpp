@@ -16,7 +16,7 @@ limitations under the License. */
 
 #include "operators/kernel/mul_kernel.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <>
@@ -83,6 +83,6 @@ void MulKernel<GPU_CL, float>::Compute(const MulParam<GPU_CL> &param) {
 template class MulKernel<GPU_CL, float>;
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif

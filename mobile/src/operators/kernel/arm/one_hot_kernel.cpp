@@ -17,7 +17,7 @@ limitations under the License. */
 #include "operators/kernel/one_hot_kernel.h"
 #include "framework/data_type.h"
 
-namespace paddle_mobile {
+namespace paddle_mobile_lens {
 namespace operators {
 
 template <typename InT>
@@ -56,6 +56,6 @@ void OnehotKernel<CPU, float>::Compute(const OnehotParam<CPU>& param) {
 }
 
 }  // namespace operators
-}  // namespace paddle_mobile
+}  // namespace paddle_mobile_lens
 
 #endif  // ONE_HOT_OP
