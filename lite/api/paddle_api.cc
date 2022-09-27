@@ -321,6 +321,16 @@ void ConfigBase::set_opencl_tune(CLTuneMode tune_mode,
 #endif
 }
 
+void ConfigBase::set_use_fast_build(bool use_fast_build){
+  if (paddle::lite_api::IsOpenCLBackendValid()) {
+    paddle::lite::CLRuntime::Global()->set_use_fast_build(use_fast_build);
+  }
+#ifdef LITE_WITH_LOG
+    LOG(INFO) << "set_use_fast_build: "
+              << use_fast_build;
+#endif
+}
+
 void ConfigBase::set_opencl_precision(CLPrecisionType p) {
 #ifdef LITE_WITH_OPENCL
   if (paddle::lite_api::IsOpenCLBackendValid()) {

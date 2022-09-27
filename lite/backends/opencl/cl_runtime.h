@@ -216,6 +216,10 @@ class CLRuntime {
   void SetTunedLocalWorkSizeMap(const std::string& key,
                                 const std::vector<int>& tune_vct);
 
+  void set_use_fast_build(bool set_use_fast_build);
+
+  bool is_fast_build() const;
+
  private:
   CLRuntime() { Init(); }
   CLRuntime(const CLRuntime&) = delete;
@@ -341,6 +345,7 @@ class CLRuntime {
   bool have_tune_file_flag_{false};
   // magic number for cl flush judgement
   const int opencl_flush_period_ = 10;
+  bool use_fast_build_{false};
 };
 
 }  // namespace lite

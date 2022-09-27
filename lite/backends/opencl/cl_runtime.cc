@@ -18,6 +18,7 @@ limitations under the License. */
 #include "lite/core/version.h"
 #include "lite/utils/cp_logging.h"
 #include "lite/utils/io.h"
+#include "lite/utils/logging.h"
 #include "lite/utils/string.h"
 
 namespace paddle {
@@ -33,7 +34,7 @@ CLRuntime::~CLRuntime() {
 #ifdef LITE_WITH_LOG
   LOG(INFO) << "is_cl_runtime_initialized_:" << is_cl_runtime_initialized_;
 #endif
-  if (is_cl_runtime_initialized_ == false) {
+  if (!is_cl_runtime_initialized_) {
     return;
   }
 
@@ -150,16 +151,36 @@ cl::Program& CLRuntime::GetProgram(const std::string& file_name,
   VLOG(4) << "OpenCL build_option: " << build_option;
 #endif
 
+  ///////
+  // fast build hook //
+  if (use_fast_build_) {
+    // try to find spec
+    std::string tmp_key = local_filename;
+    tmp_key.replace(tmp_key.find("image/"), 6, "image/spec_");
+    VLOG(4) << "命中fast编译模式, " << local_filename;
+
+    if (opencl_kernels_files.find(tmp_key) != opencl_kernels_files.end()) {
+      local_filename = tmp_key;
+//      local_filename = "image/spec_all.cl";
+      VLOG(4) << "已找到快速资源,使用" << local_filename << "编译";
+    }else{
+      VLOG(4) << "没找到快速资源,使用" << local_filename << "编译";
+    }
+  }
+  /////
+
   STL::stringstream program_key_ss;
-  program_key_ss << file_name << build_option;
+  program_key_ss << local_filename << build_option;
   std::string program_key = program_key_ss.str();
 
   // Build flow: cache -> precompiled binary -> source
+  // 优先从内存缓存读取.
   bool ret = CheckFromCache(program_key);
   if (!ret) {
+    // 内存缓存额诶呦, 从预编译读取.
     ret = CheckFromPrecompiledBinary(program_key, build_option);
     if (!ret) {
-      ret = CheckFromSource(file_name, program_key, build_option);
+      ret = CheckFromSource(local_filename, program_key, build_option);
     }
   }
 
@@ -900,6 +921,10 @@ double CLRuntime::GetSubmitTime(const cl::Event& event) {
           event.getProfilingInfo<CL_PROFILING_COMMAND_SUBMIT>()) /
          1000000.0;
 }
+void CLRuntime::set_use_fast_build(bool set_use_fast_build) {
+  use_fast_build_ = set_use_fast_build;
+}
+bool CLRuntime::is_fast_build() const { return use_fast_build_; }
 
 }  // namespace lite
 }  // namespace paddle

@@ -189,6 +189,9 @@ class LITE_API ConfigBase {
                        const std::string& name = "",
                        size_t lws_repeats = 4);
 
+  // set GPU opencl tune
+  void set_use_fast_build(bool use_fast_build = true);
+
   // set GPU opencl precision
   void set_opencl_precision(CLPrecisionType p = CL_PRECISION_AUTO);
   // set subgraph_model_dir
