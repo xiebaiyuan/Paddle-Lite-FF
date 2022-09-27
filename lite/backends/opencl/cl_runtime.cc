@@ -137,6 +137,8 @@ cl::CommandQueue& CLRuntime::command_queue() {
 
 cl::Program& CLRuntime::GetProgram(const std::string& file_name,
                                    const std::string& options) {
+
+  std::string local_filename = file_name;
   /* -I +CLRuntime::Global()->cl_path() + "/cl_kernel"*/
   std::string build_option = options + " -cl-fast-relaxed-math -cl-mad-enable";
   if (build_option.find("CL_DTYPE_") == std::string::npos) {
