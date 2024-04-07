@@ -34,6 +34,7 @@ void GatherCompute<DataType, IndexType, PType>::Run() {
   auto out = param.Out;
   if (out->numel() == 0) {
     out->set_target(TARGET(kXPU));
+    out->template mutable_data<DataType>(TARGET(kXPU));
     return;
   }
   int axis = 0;
@@ -42,6 +43,8 @@ void GatherCompute<DataType, IndexType, PType>::Run() {
         << " xpu only support axis int32 type";
     auto* axis_data = param.Axis->template data<int>();
     axis = axis_data[0];
+  } else if (param.axis != -1) {
+    axis = param.axis;
   }
   std::vector<int> x_dims(x->dims().data().begin(), x->dims().data().end());
   if (axis < 0) {

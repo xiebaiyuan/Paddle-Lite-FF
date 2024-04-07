@@ -241,7 +241,7 @@ class ElementwiseComputeTester : public arena::TestCase {
 #endif
   }
 
-  void PrepareOpDesc(cpp::OpDesc* op_desc) {
+  void PrepareOpDesc(cpp::OpDesc* op_desc) override {
     std::string op_type = "elementwise_" + elt_type_;
     if (!act_type_.empty()) {
       op_type = "fusion_" + op_type + "_activation";
@@ -324,12 +324,24 @@ void TestEltTypes(Place place, float abs_error) {
   }
 
   if (place.target == TARGET(kARM)) {
-    Place arm_int32_place(TARGET(kARM), PRECISION(kInt32));
-    TestElt<int32_t>(
-        arm_int32_place, abs_error, "floordiv", {2, 3, 4, 5}, {2, 3, 4, 5}, 0);
-    Place arm_int64_place(TARGET(kARM), PRECISION(kInt64));
-    TestElt<int64_t>(
-        arm_int64_place, abs_error, "floordiv", {2, 3, 4, 5}, {3}, 1);
+    Place arm_int32_place(TARGET(kARM), PRECISION(kFloat));
+    TestElt<int32_t>(arm_int32_place,
+                     abs_error,
+                     "floordiv",
+                     {2, 3, 4, 5},
+                     {2, 3, 4, 5},
+                     0,
+                     "",
+                     "int32");
+    Place arm_int64_place(TARGET(kARM), PRECISION(kFloat));
+    TestElt<int64_t>(arm_int64_place,
+                     abs_error,
+                     "floordiv",
+                     {2, 3, 4, 5},
+                     {3},
+                     1,
+                     "",
+                     "int64");
   }
 
   if (place.target == TARGET(kX86)) {
@@ -395,24 +407,58 @@ void TestEltFuseActFloat(Place place, float abs_error) {
 
 #ifdef ENABLE_ARM_FP16
 void TestFp16EltDims(Place place, float abs_error, std::string test_operator) {
+  TestElt<float16_t>(place,
+                     abs_error,
+                     test_operator,
+                     {1, 40, 40, 40},
+                     {1, 40, 40, 40},
+                     0,
+                     "",
+                     "def_fp16");
+  TestElt<float16_t>(place,
+                     abs_error,
+                     test_operator,
+                     {2, 3, 4, 5},
+                     {2, 3, 4, 5},
+                     0,
+                     "",
+                     "def_fp16");
   TestElt<float16_t>(
-      place, abs_error, test_operator, {1, 40, 40, 40}, {1, 40, 40, 40}, 0);
+      place, abs_error, test_operator, {2, 3, 4}, {2, 3, 4}, 0, "", "def_fp16");
+  TestElt<float16_t>(place,
+                     abs_error,
+                     test_operator,
+                     {1, 40, 40, 40},
+                     {1, 40, 1, 1},
+                     0,
+                     "",
+                     "def_fp16");
   TestElt<float16_t>(
-      place, abs_error, test_operator, {2, 3, 4, 5}, {2, 3, 4, 5}, 0);
-  TestElt<float16_t>(place, abs_error, test_operator, {2, 3, 4}, {2, 3, 4}, 0);
+      place, abs_error, test_operator, {2, 3, 4}, {2, 3}, 0, "", "def_fp16");
   TestElt<float16_t>(
-      place, abs_error, test_operator, {1, 40, 40, 40}, {1, 40, 1, 1}, 0);
-  TestElt<float16_t>(place, abs_error, test_operator, {2, 3, 4}, {2, 3}, 0);
-  TestElt<float16_t>(place, abs_error, test_operator, {2, 3}, {2}, 0);
-  TestElt<float16_t>(place, abs_error, test_operator, {2, 3, 4, 5}, {3, 4}, 1);
-  TestElt<float16_t>(place, abs_error, test_operator, {2, 3, 4}, {3, 4}, 1);
-  TestElt<float16_t>(place, abs_error, test_operator, {2, 3}, {3}, 1);
-  TestElt<float16_t>(place, abs_error, test_operator, {2, 3, 4, 5}, {4, 5}, 2);
-  TestElt<float16_t>(place, abs_error, test_operator, {2, 3, 4}, {4}, 2);
-  TestElt<float16_t>(place, abs_error, test_operator, {2, 3, 4, 5}, {5}, 3);
+      place, abs_error, test_operator, {2, 3}, {2}, 0, "", "def_fp16");
   TestElt<float16_t>(
-      place, abs_error, test_operator, {2, 3, 4, 5}, {3, 4, 5}, -1);
-  TestElt<float16_t>(place, abs_error, test_operator, {2, 3, 4}, {3, 4}, -1);
+      place, abs_error, test_operator, {2, 3, 4, 5}, {3, 4}, 1, "", "def_fp16");
+  TestElt<float16_t>(
+      place, abs_error, test_operator, {2, 3, 4}, {3, 4}, 1, "", "def_fp16");
+  TestElt<float16_t>(
+      place, abs_error, test_operator, {2, 3}, {3}, 1, "", "def_fp16");
+  TestElt<float16_t>(
+      place, abs_error, test_operator, {2, 3, 4, 5}, {4, 5}, 2, "", "def_fp16");
+  TestElt<float16_t>(
+      place, abs_error, test_operator, {2, 3, 4}, {4}, 2, "", "def_fp16");
+  TestElt<float16_t>(
+      place, abs_error, test_operator, {2, 3, 4, 5}, {5}, 3, "", "def_fp16");
+  TestElt<float16_t>(place,
+                     abs_error,
+                     test_operator,
+                     {2, 3, 4, 5},
+                     {3, 4, 5},
+                     -1,
+                     "",
+                     "def_fp16");
+  TestElt<float16_t>(
+      place, abs_error, test_operator, {2, 3, 4}, {3, 4}, -1, "", "def_fp16");
 }
 
 void TestFp16EltFuseAct(Place place,
@@ -424,29 +470,86 @@ void TestFp16EltFuseAct(Place place,
                      {1, 40, 40, 40},
                      {1, 40, 1, 1},
                      0,
-                     "relu");
+                     "relu",
+                     "def_fp16");
+  TestElt<float16_t>(place,
+                     abs_error,
+                     test_operator,
+                     {2, 3, 4, 5},
+                     {2, 3, 4, 5},
+                     0,
+                     "relu",
+                     "def_fp16");
+  TestElt<float16_t>(place,
+                     abs_error,
+                     test_operator,
+                     {2, 3, 4},
+                     {2, 3, 4},
+                     0,
+                     "relu",
+                     "def_fp16");
+  TestElt<float16_t>(place,
+                     abs_error,
+                     test_operator,
+                     {2, 3, 4},
+                     {2, 3},
+                     0,
+                     "relu",
+                     "def_fp16");
   TestElt<float16_t>(
-      place, abs_error, test_operator, {2, 3, 4, 5}, {2, 3, 4, 5}, 0, "relu");
+      place, abs_error, test_operator, {2, 3}, {2}, 0, "relu", "def_fp16");
+  TestElt<float16_t>(place,
+                     abs_error,
+                     test_operator,
+                     {2, 3, 4, 5},
+                     {3, 4},
+                     1,
+                     "relu",
+                     "def_fp16");
+  TestElt<float16_t>(place,
+                     abs_error,
+                     test_operator,
+                     {2, 3, 4},
+                     {3, 4},
+                     1,
+                     "relu",
+                     "def_fp16");
   TestElt<float16_t>(
-      place, abs_error, test_operator, {2, 3, 4}, {2, 3, 4}, 0, "relu");
+      place, abs_error, test_operator, {2, 3}, {3}, 1, "relu", "def_fp16");
+  TestElt<float16_t>(place,
+                     abs_error,
+                     test_operator,
+                     {2, 3, 4, 5},
+                     {4, 5},
+                     2,
+                     "relu",
+                     "def_fp16");
   TestElt<float16_t>(
-      place, abs_error, test_operator, {2, 3, 4}, {2, 3}, 0, "relu");
-  TestElt<float16_t>(place, abs_error, test_operator, {2, 3}, {2}, 0, "relu");
-  TestElt<float16_t>(
-      place, abs_error, test_operator, {2, 3, 4, 5}, {3, 4}, 1, "relu");
-  TestElt<float16_t>(
-      place, abs_error, test_operator, {2, 3, 4}, {3, 4}, 1, "relu");
-  TestElt<float16_t>(place, abs_error, test_operator, {2, 3}, {3}, 1, "relu");
-  TestElt<float16_t>(
-      place, abs_error, test_operator, {2, 3, 4, 5}, {4, 5}, 2, "relu");
-  TestElt<float16_t>(
-      place, abs_error, test_operator, {2, 3, 4}, {4}, 2, "relu");
-  TestElt<float16_t>(
-      place, abs_error, test_operator, {2, 3, 4, 5}, {5}, 3, "relu");
-  TestElt<float16_t>(
-      place, abs_error, test_operator, {2, 3, 4, 5}, {3, 4, 5}, -1, "relu");
-  TestElt<float16_t>(
-      place, abs_error, test_operator, {2, 3, 4}, {3, 4}, -1, "relu");
+      place, abs_error, test_operator, {2, 3, 4}, {4}, 2, "relu", "def_fp16");
+  TestElt<float16_t>(place,
+                     abs_error,
+                     test_operator,
+                     {2, 3, 4, 5},
+                     {5},
+                     3,
+                     "relu",
+                     "def_fp16");
+  TestElt<float16_t>(place,
+                     abs_error,
+                     test_operator,
+                     {2, 3, 4, 5},
+                     {3, 4, 5},
+                     -1,
+                     "relu",
+                     "def_fp16");
+  TestElt<float16_t>(place,
+                     abs_error,
+                     test_operator,
+                     {2, 3, 4},
+                     {3, 4},
+                     -1,
+                     "relu",
+                     "def_fp16");
 }
 #endif
 
@@ -462,6 +565,20 @@ TEST(Elementwise, precision) {
   abs_error = 1e-2;
 #elif defined(NNADAPTER_WITH_INTEL_OPENVINO)
   abs_error = 1e-5;
+#elif defined(NNADAPTER_WITH_VERISILICON_TIMVX)
+  abs_error = 1e-2;
+  TestEltDims(place, abs_error);
+  for (auto elt_type : std::vector<std::string>{
+           "add", "sub", "mul", "div", "floordiv", "max", "min", "pow"}) {
+    TestElt(place, abs_error, elt_type, {2, 3, 4, 5}, {2, 3, 4, 5}, 0);
+    TestElt(place, abs_error, elt_type, {2, 3, 4, 5}, {3}, 1);
+  }
+  for (auto elt_type : std::vector<std::string>{
+           "add", "sub", "mul", "div", "floordiv", "max", "min", "pow"}) {
+    TestElt(place, abs_error, elt_type, {2, 3, 4, 5}, {2, 3, 4, 5}, 0, "relu");
+    TestElt(place, abs_error, elt_type, {2, 3, 4, 5}, {3}, 1, "relu");
+  }
+  return;
 #elif defined(NNADAPTER_WITH_QUALCOMM_QNN)
   abs_error = 1e-1;
   for (auto elt_type : std::vector<std::string>{
@@ -472,16 +589,8 @@ TEST(Elementwise, precision) {
 #else
   return;
 #endif
-#elif defined(LITE_WITH_NPU)
-  place = TARGET(kNPU);
-  abs_error = 1e-2;  // use fp16 in npu
 #elif defined(LITE_WITH_ARM)
   place = TARGET(kARM);
-#elif defined(LITE_WITH_X86)
-  place = TARGET(kX86);
-#else
-  return;
-#endif
 #ifdef ENABLE_ARM_FP16
   Place place1(TARGET(kARM), PRECISION(kFP16));
   TestFp16EltDims(place1, abs_error, "add");
@@ -493,13 +602,15 @@ TEST(Elementwise, precision) {
   TestFp16EltDims(place1, abs_error, "div");
   TestFp16EltFuseAct(place1, abs_error, "div");
 #endif
-
+#elif defined(LITE_WITH_X86)
+  place = TARGET(kX86);
+  TestEltFuseActFloat(place, abs_error);
+#else
+  return;
+#endif
   TestEltDims(place, abs_error);
   TestEltTypes(place, abs_error);
   TestEltFuseAct(place, abs_error);
-#ifdef LITE_WITH_X86
-  TestEltFuseActFloat(place, abs_error);
-#endif
 }
 
 }  // namespace lite

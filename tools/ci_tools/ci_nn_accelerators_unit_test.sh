@@ -8,7 +8,7 @@ LITE_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../" && pwd)"
 
 # url that stores third-party tar.gz file to accelerate third-party lib installation
 readonly THIRDPARTY_URL=https://paddlelite-data.bj.bcebos.com/third_party_libs/
-readonly THIRDPARTY_TAR=third-party-91a9ab3.tar.gz
+readonly THIRDPARTY_TAR=third-party-651c7c4.tar.gz
 readonly workspace=$PWD
 
 NUM_CORES_FOR_COMPILE=${LITE_BUILD_THREADS:-8}
@@ -427,9 +427,7 @@ function android_cpu_build_target() {
     prepare_workspace $ROOT_DIR $BUILD_DIR
 
     cmake .. \
-        -DWITH_GPU=OFF \
         -DWITH_MKL=OFF \
-        -DLITE_WITH_CUDA=OFF \
         -DLITE_WITH_X86=OFF \
         -DLITE_WITH_ARM=ON \
         -DWITH_ARM_DOTPROD=ON \
@@ -486,9 +484,7 @@ function armlinux_cpu_build_target() {
     prepare_workspace $ROOT_DIR $BUILD_DIR
 
     cmake .. \
-        -DWITH_GPU=OFF \
         -DWITH_MKL=OFF \
-        -DLITE_WITH_CUDA=OFF \
         -DLITE_WITH_X86=OFF \
         -DLITE_WITH_ARM=ON \
         -DWITH_ARM_DOTPROD=ON \
@@ -548,9 +544,7 @@ function builtin_device_build_target() {
     cd $BUILD_DIR
     prepare_workspace $ROOT_DIR $BUILD_DIR
     cmake .. \
-        -DWITH_GPU=OFF \
         -DWITH_MKL=OFF \
-        -DLITE_WITH_CUDA=OFF \
         -DLITE_WITH_X86=OFF \
         -DLITE_WITH_ARM=ON \
         -DWITH_ARM_DOTPROD=ON \
@@ -635,9 +629,7 @@ function huawei_kirin_npu_build_target() {
     prepare_workspace $ROOT_DIR $BUILD_DIR
 
     cmake .. \
-        -DWITH_GPU=OFF \
         -DWITH_MKL=OFF \
-        -DLITE_WITH_CUDA=OFF \
         -DLITE_WITH_X86=OFF \
         -DLITE_WITH_ARM=ON \
         -DWITH_ARM_DOTPROD=ON \
@@ -689,7 +681,6 @@ function huawei_ascend_npu_build_and_test() {
             -DARM_TARGET_LANG=$toolchain \
             -DWITH_PYTHON=OFF \
             -DWITH_TESTING=ON \
-            -DWITH_GPU=OFF \
             -DWITH_MKLDNN=OFF \
             -DWITH_MKL=ON \
             -DLITE_BUILD_EXTRA=ON \
@@ -767,7 +758,6 @@ function qualcomm_qnn_build_and_test() {
             -DARM_TARGET_LANG=$toolchain \
             -DWITH_PYTHON=OFF \
             -DWITH_TESTING=ON \
-            -DWITH_GPU=OFF \
             -DWITH_MKLDNN=OFF \
             -DWITH_MKL=ON \
             -DLITE_BUILD_EXTRA=ON \
@@ -844,7 +834,6 @@ function nvidia_tensorrt_build_and_test() {
             -DARM_TARGET_LANG=$toolchain \
             -DWITH_PYTHON=OFF \
             -DWITH_TESTING=ON \
-            -DWITH_GPU=OFF \
             -DWITH_MKLDNN=OFF \
             -DWITH_MKL=ON \
             -DLITE_BUILD_EXTRA=ON \
@@ -911,7 +900,6 @@ function intel_openvino_build_and_test() {
             -DARM_TARGET_LANG=$toolchain \
             -DWITH_PYTHON=OFF \
             -DWITH_TESTING=ON \
-            -DWITH_GPU=OFF \
             -DWITH_MKLDNN=OFF \
             -DWITH_MKL=ON \
             -DLITE_BUILD_EXTRA=ON \
@@ -1013,9 +1001,7 @@ function rockchip_npu_build_target() {
     cd $BUILD_DIR
     prepare_workspace $ROOT_DIR $BUILD_DIR
     cmake .. \
-        -DWITH_GPU=OFF \
         -DWITH_MKL=OFF \
-        -DLITE_WITH_CUDA=OFF \
         -DLITE_WITH_X86=OFF \
         -DLITE_WITH_ARM=ON \
         -DWITH_ARM_DOTPROD=ON \
@@ -1069,22 +1055,22 @@ function mediatek_apu_prepare_device() {
     $remote_device_run $remote_device_name push "$nnadapter_runtime_lib_path" "$remote_device_work_dir"
     $remote_device_run $remote_device_name push "$nnadapter_device_lib_path" "$remote_device_work_dir"
 
-    # Use high performance mode
+    # Use high performance mode. Only some devices are supported, so it is disabled by default.
     $remote_device_run $remote_device_name root
     if [[ $? -ne 0 ]]; then
         echo "$remote_device_name hasn't the root permission!"
         exit 1
     fi
-    $remote_device_run $remote_device_name shell "echo performance > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor"
-    $remote_device_run $remote_device_name shell "echo performance > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor"
-    $remote_device_run $remote_device_name shell "echo performance > /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor"
-    $remote_device_run $remote_device_name shell "echo performance > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor"
-    $remote_device_run $remote_device_name shell "cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq"
-    $remote_device_run $remote_device_name shell "echo 800000 > /proc/gpufreq/gpufreq_opp_freq"
-    $remote_device_run $remote_device_name shell "echo dvfs_debug 0 > /sys/kernel/debug/vpu/power"
-    $remote_device_run $remote_device_name shell "echo 0 > /sys/devices/platform/soc/10012000.dvfsrc/helio-dvfsrc/dvfsrc_force_vcore_dvfs_opp"
-    $remote_device_run $remote_device_name shell "echo 0 > /sys/module/mmdvfs_pmqos/parameters/force_step"
-    $remote_device_run $remote_device_name shell "echo 0 > /proc/sys/kernel/printk"
+    #$remote_device_run $remote_device_name shell "echo performance > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor"
+    #$remote_device_run $remote_device_name shell "echo performance > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor"
+    #$remote_device_run $remote_device_name shell "echo performance > /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor"
+    #$remote_device_run $remote_device_name shell "echo performance > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor"
+    #$remote_device_run $remote_device_name shell "cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq"
+    #$remote_device_run $remote_device_name shell "echo 800000 > /proc/gpufreq/gpufreq_opp_freq"
+    #$remote_device_run $remote_device_name shell "echo dvfs_debug 0 > /sys/kernel/debug/vpu/power"
+    #$remote_device_run $remote_device_name shell "echo 0 > /sys/devices/platform/soc/10012000.dvfsrc/helio-dvfsrc/dvfsrc_force_vcore_dvfs_opp"
+    #$remote_device_run $remote_device_name shell "echo 0 > /sys/module/mmdvfs_pmqos/parameters/force_step"
+    #$remote_device_run $remote_device_name shell "echo 0 > /proc/sys/kernel/printk"
 }
 
 function mediatek_apu_build_target() {
@@ -1099,9 +1085,7 @@ function mediatek_apu_build_target() {
     cd $BUILD_DIR
     prepare_workspace $ROOT_DIR $BUILD_DIR
     cmake .. \
-        -DWITH_GPU=OFF \
         -DWITH_MKL=OFF \
-        -DLITE_WITH_CUDA=OFF \
         -DLITE_WITH_X86=OFF \
         -DLITE_WITH_ARM=ON \
         -DWITH_ARM_DOTPROD=ON \
@@ -1173,9 +1157,7 @@ function imagination_nna_build_target() {
     cd $BUILD_DIR
     prepare_workspace $ROOT_DIR $BUILD_DIR
     cmake .. \
-        -DWITH_GPU=OFF \
         -DWITH_MKL=OFF \
-        -DLITE_WITH_CUDA=OFF \
         -DLITE_WITH_X86=OFF \
         -DLITE_WITH_ARM=ON \
         -DWITH_ARM_DOTPROD=ON \
@@ -1254,9 +1236,7 @@ function amlogic_npu_build_target() {
     cd $BUILD_DIR
     prepare_workspace $ROOT_DIR $BUILD_DIR
     cmake .. \
-        -DWITH_GPU=OFF \
         -DWITH_MKL=OFF \
-        -DLITE_WITH_CUDA=OFF \
         -DLITE_WITH_X86=OFF \
         -DLITE_WITH_ARM=ON \
         -DWITH_ARM_DOTPROD=ON \
@@ -1323,9 +1303,7 @@ function verisilicon_timvx_build_target() {
     cd $BUILD_DIR
     prepare_workspace $ROOT_DIR $BUILD_DIR
     cmake .. \
-        -DWITH_GPU=OFF \
         -DWITH_MKL=OFF \
-        -DLITE_WITH_CUDA=OFF \
         -DLITE_WITH_X86=OFF \
         -DLITE_WITH_ARM=ON \
         -DWITH_ARM_DOTPROD=ON \
@@ -1355,11 +1333,9 @@ function cambricon_mlu_build_and_test() {
     cd $BUILD_DIR
     prepare_workspace $ROOT_DIR $BUILD_DIR
     cmake .. \
-        -DWITH_GPU=OFF \
         -DWITH_MKLDNN=OFF \
         -DWITH_MKL=ON \
         -DWITH_PYTHON=OFF \
-        -DLITE_WITH_CUDA=OFF \
         -DLITE_WITH_X86=ON \
         -DLITE_WITH_ARM=OFF \
         -DWITH_ARM_DOTPROD=OFF \
@@ -1434,7 +1410,6 @@ function kunlunxin_xtcl_build_and_test() {
             -DARM_TARGET_LANG=$toolchain \
             -DWITH_PYTHON=OFF \
             -DWITH_TESTING=ON \
-            -DWITH_GPU=OFF \
             -DWITH_MKLDNN=OFF \
             -DWITH_MKL=ON \
             -DLITE_BUILD_EXTRA=ON \
@@ -1489,7 +1464,6 @@ function kunlunxin_xpu_build_and_test() {
         -DWITH_PYTHON=OFF \
         -DWITH_TESTING=ON \
         -DLITE_WITH_ARM=OFF \
-        -DWITH_GPU=OFF \
         -DWITH_MKLDNN=OFF \
         -DLITE_WITH_X86=ON \
         -DWITH_MKL=ON \
@@ -1574,9 +1548,7 @@ function android_nnapi_build_target() {
     cd $BUILD_DIR
     prepare_workspace $ROOT_DIR $BUILD_DIR
     cmake .. \
-        -DWITH_GPU=OFF \
         -DWITH_MKL=OFF \
-        -DLITE_WITH_CUDA=OFF \
         -DLITE_WITH_X86=OFF \
         -DLITE_WITH_ARM=ON \
         -DWITH_ARM_DOTPROD=ON \
@@ -1640,9 +1612,7 @@ function google_xnnpack_build_target() {
     cd $BUILD_DIR
     prepare_workspace $ROOT_DIR $BUILD_DIR
     cmake .. \
-        -DWITH_GPU=OFF \
         -DWITH_MKL=OFF \
-        -DLITE_WITH_CUDA=OFF \
         -DLITE_WITH_X86=OFF \
         -DLITE_WITH_ARM=ON \
         -DWITH_ARM_DOTPROD=ON \

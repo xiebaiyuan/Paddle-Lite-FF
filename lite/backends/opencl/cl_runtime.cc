@@ -174,6 +174,7 @@ cl::Program& CLRuntime::GetProgram(const std::string& file_name,
     return *(programs_[program_key]);
   } else {
     LOG(FATAL) << "GetProgram failed, program_key: " << program_key;
+    return *(programs_[program_key]);
   }
 }
 
@@ -342,7 +343,7 @@ std::unique_ptr<cl::Program> CLRuntime::CreateProgramFromSource(
   VLOG(4) << "Program source size: " << content.size();
 #endif
   CL_CHECK_FATAL_SOLID(status_);
-  return std::move(prog);
+  return prog;
 }
 
 bool CLRuntime::BuildProgram(cl::Program* program, const std::string& options) {
@@ -519,7 +520,7 @@ std::unique_ptr<cl::UserEvent> CLRuntime::CreateEvent(
   auto event =
       std::unique_ptr<cl::UserEvent>(new cl::UserEvent(context, &status_));
   CL_CHECK_FATAL_SOLID(status_);
-  return std::move(event);
+  return event;
 }
 
 bool CLRuntime::InitializePlatform() {
@@ -543,7 +544,9 @@ OpenCLVersion CLRuntime::ParseDeviceVersion(const std::string& device_version) {
   // OpenCL<space><major_version.minor_version><space>
   // <vendor-specific information>
   auto words = Split<std::string>(device_version, std::string{" "});
-  if (words[1] == "2.1") {
+  if (words[1] == "3.0") {
+    return OpenCLVersion::CL_VER_3_0;
+  } else if (words[1] == "2.1") {
     return OpenCLVersion::CL_VER_2_1;
   } else if (words[1] == "2.0") {
     return OpenCLVersion::CL_VER_2_0;

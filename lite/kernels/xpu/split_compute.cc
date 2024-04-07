@@ -62,8 +62,8 @@ REGISTER_LITE_KERNEL(split, kXPU, kFloat, kNCHW, split_float, def)
     .BindInput("X", {LiteType::GetTensorTy(TARGET(kXPU))})
     .BindInput("AxisTensor",
                {LiteType::GetTensorTy(TARGET(kHost), PRECISION(kInt32))})
-    .BindOutput("SectionsTensorList",
-                {LiteType::GetTensorTy(TARGET(kHost), PRECISION(kInt32))})
+    .BindInput("SectionsTensorList",
+               {LiteType::GetTensorTy(TARGET(kHost), PRECISION(kInt32))})
     .BindOutput("Out", {LiteType::GetTensorTy(TARGET(kXPU))})
     .Finalize();
 
@@ -73,7 +73,18 @@ REGISTER_LITE_KERNEL(split, kXPU, kFP16, kNCHW, split_fp16, fp16)
     .BindInput("X", {LiteType::GetTensorTy(TARGET(kXPU), PRECISION(kFP16))})
     .BindInput("AxisTensor",
                {LiteType::GetTensorTy(TARGET(kHost), PRECISION(kInt32))})
-    .BindOutput("SectionsTensorList",
-                {LiteType::GetTensorTy(TARGET(kHost), PRECISION(kInt32))})
+    .BindInput("SectionsTensorList",
+               {LiteType::GetTensorTy(TARGET(kHost), PRECISION(kInt32))})
     .BindOutput("Out", {LiteType::GetTensorTy(TARGET(kXPU), PRECISION(kFP16))})
+    .Finalize();
+
+using split_int8 =
+    paddle::lite::kernels::xpu::SplitCompute<int8_t, PRECISION(kInt8)>;
+REGISTER_LITE_KERNEL(split, kXPU, kInt8, kNCHW, split_int8, int8)
+    .BindInput("X", {LiteType::GetTensorTy(TARGET(kXPU), PRECISION(kInt8))})
+    .BindInput("AxisTensor",
+               {LiteType::GetTensorTy(TARGET(kHost), PRECISION(kInt32))})
+    .BindInput("SectionsTensorList",
+               {LiteType::GetTensorTy(TARGET(kHost), PRECISION(kInt32))})
+    .BindOutput("Out", {LiteType::GetTensorTy(TARGET(kXPU), PRECISION(kInt8))})
     .Finalize();

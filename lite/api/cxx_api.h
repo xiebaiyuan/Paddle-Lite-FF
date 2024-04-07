@@ -157,26 +157,7 @@ class LITE_API Predictor {
   void GenRuntimeProgram();
 
   // Run the predictor for a single batch of data.
-  void Run() {
-    if (!program_generated_) {
-      GenRuntimeProgram();
-    }
-    CheckInputValid();
-
-#ifdef LITE_WITH_XPU
-    std::vector<std::vector<int64_t>> query_shape;
-    for (size_t i = 0; i < input_names_.size(); i++) {
-      query_shape.push_back(std::vector<int64_t>(GetInput(i)->dims().data()));
-    }
-    lite::TargetWrapperXPU::MallocL3Cache(query_shape);
-#endif
-
-    program_->Run();
-
-#ifdef LITE_WITH_XPU
-    lite::TargetWrapperXPU::FreeL3Cache();
-#endif
-  }
+  void Run();
 
 #ifdef LITE_WITH_METAL
   void ConfigMetalContext(const lite_api::CxxConfig& config) {
@@ -237,6 +218,10 @@ class LITE_API Predictor {
   void CheckPaddleOpVersions(
       const std::shared_ptr<cpp::ProgramDesc>& program_desc);
 
+  void SetTargetConfigs(
+      const std::map<TargetType, std::shared_ptr<void>>& target_configs);
+  void SetStream(TargetType target, void* stream);
+
   // #ifdef LITE_WITH_TRAIN
   //   void Run(const std::vector<framework::Tensor>& tensors) {
   //     FeedVars(tensors);
@@ -252,11 +237,15 @@ class LITE_API Predictor {
 
   void ClearTensorArray(
       const std::shared_ptr<const cpp::ProgramDesc>& program_desc);
+#ifdef ENABLE_ARM_FP16
+  void WeightFP32ToFP16();
+#endif
 
  private:
+  std::map<TargetType, std::shared_ptr<void>> target_configs_;
   std::shared_ptr<cpp::ProgramDesc> program_desc_;
   std::shared_ptr<Scope> scope_;
-  Scope* exec_scope_;
+  Scope* exec_scope_{nullptr};
   std::shared_ptr<RuntimeProgram> program_;
   bool program_generated_{false};
   std::vector<std::string> input_names_;
@@ -320,6 +309,13 @@ class CxxPaddleApiImpl : public lite_api::PaddlePredictor {
       const std::string& model_dir,
       lite_api::LiteModelType model_type = lite_api::LiteModelType::kProtobuf,
       bool record_info = false) override;
+
+  void SetStream(TargetType target, void* stream) override;
+  void Synchronize() {
+#ifdef LITE_WITH_XPU
+    XPU_CALL(xpu_wait());
+#endif
+  }
 
  private:
   std::shared_ptr<Predictor> raw_predictor_;

@@ -283,16 +283,15 @@ class ReduceMaxComputeTester : public arena::TestCase {
     }
 
     std::stable_sort(dim_.begin(), dim_.end());
-    if (dim_.size() == 0) {
+    if (dim_.size() == 0 || x_rank == 0 || dim_.size() == x_rank) {
       reduce_all_ = true;
     }
     std::vector<int64_t> out_dims;
     if (reduce_all_) {
       if (keep_dim_) {
-        out_dims.push_back(x_rank);
-        out_dims.push_back(1);
+        out_dims = std::vector<int64_t>(x_rank, 1);
       } else {
-        out_dims.push_back(1);
+        out_dims = std::vector<int64_t>();
       }
     } else {
       for (size_t i = 0; i < x_dims_.size(); i++) {
@@ -313,8 +312,8 @@ class ReduceMaxComputeTester : public arena::TestCase {
       if (!keep_dim_ && out_dims.empty()) {
         out_dims.push_back(1);
       }
-      out->Resize(DDim(out_dims));
     }
+    out->Resize(DDim(out_dims));
 
     auto* out_data = out->mutable_data<float>();
 
@@ -384,7 +383,7 @@ class ReduceMaxComputeTester : public arena::TestCase {
     }
   }
 
-  void PrepareOpDesc(cpp::OpDesc* op_desc) {
+  void PrepareOpDesc(cpp::OpDesc* op_desc) override {
     op_desc->SetType("reduce_max");
     op_desc->SetInput("X", {input_});
     op_desc->SetOutput("Out", {output_});
@@ -410,6 +409,11 @@ void test_reduce_max_4d(Place place) {
         for (auto w : {1, 3}) {
           for (bool keep_dim : {false, true}) {
             for (auto dim : reduce_dim) {
+#ifdef NNADAPTER_WITH_QUALCOMM_QNN
+              if (std::find(dim.begin(), dim.end(), 0) == dim.end() &&
+                  !keep_dim)
+                continue;
+#endif
               auto x_dims = DDim(std::vector<int64_t>({n, c, h, w}));
               std::unique_ptr<arena::TestCase> tester(
                   new ReduceMaxComputeTester(
@@ -449,6 +453,7 @@ TEST(ReduceMax, precision) {
 #if defined(LITE_WITH_NNADAPTER)
   place = TARGET(kNNAdapter);
 #if defined(NNADAPTER_WITH_INTEL_OPENVINO)
+#elif defined(NNADAPTER_WITH_QUALCOMM_QNN)
 #else
   return;
 #endif

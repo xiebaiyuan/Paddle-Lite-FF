@@ -11,7 +11,7 @@
 
 ### 1.1 Python 单测
 
-Python 单测测试方法：通过 `sample_program_configs` 方法定义 OP 的输入 shape 和属性信息，并构建出一个网络；然后通过 `sample_predictor_configs` 方法确定运行后端的 config 信息；最好通过 `test` 方法，完成单测测试。精度对比方法：将 Paddle Lite 的输出结果和 PaddlePaddle 的输出结果进行比较，判断两者绝对误差和相对误差大小，以确定单测的正确性。
+Python 单测测试方法：通过 `sample_program_configs` 方法定义 OP 的输入 shape 和属性信息，并构建出一个网络；然后通过 `sample_predictor_configs` 方法确定运行后端的 config 信息；最后通过 `test` 方法，完成单测测试。精度对比方法：将 Paddle Lite 的输出结果和 PaddlePaddle 的输出结果进行比较，判断两者绝对误差和相对误差大小，以确定单测的正确性。
 
 在 Paddle-Lite/lite/tests/unittest_py/op 目录下新建 [test_arg_max_op.py](https://github.com/PaddlePaddle/Paddle-Lite/blob/develop/lite/tests/unittest_py/op/test_arg_max_op.py) 文件，定义 `TestArgMaxOp` 类，其继承自 `AutoScanTest`，重点介绍如下 4 个方法：
 

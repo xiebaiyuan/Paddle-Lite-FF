@@ -50,6 +50,14 @@ void CastCompute<InType>::Run() {
     auto* out_data = out->template mutable_data<int64_t>(TARGET(kXPU));
     r = xdnn::cast_v2<InType, int64_t>(
         ctx.GetRawContext(), in_data, out_data, numel);
+  } else if (out_dtype == 6) {
+    auto* out_data = out->template mutable_data<float>(TARGET(kXPU));
+    r = xdnn::cast_v2<InType, float>(
+        ctx.GetRawContext(), in_data, out_data, numel);
+  } else if (out_dtype == 0) {
+    auto* out_data = out->template mutable_data<bool>(TARGET(kXPU));
+    r = xdnn::cast_v2<InType, bool>(
+        ctx.GetRawContext(), in_data, out_data, numel);
   } else {
     LOG(FATAL) << "cast from in_type("
                << lite_api::PrecisionToStr(
@@ -99,7 +107,7 @@ REGISTER_LITE_KERNEL(cast,
                      kAny,
                      kNCHW,
                      paddle::lite::kernels::xpu::CastCompute<uint8_t>,
-                     DISABLE_XPU1_cast_uint8)
+                     cast_u8)
     .BindInput("X", {LiteType::GetTensorTy(TARGET(kXPU), PRECISION(kUInt8))})
     .BindOutput("Out", {LiteType::GetTensorTy(TARGET(kXPU), PRECISION(kAny))})
     .Finalize();
@@ -109,7 +117,17 @@ REGISTER_LITE_KERNEL(cast,
                      kAny,
                      kNCHW,
                      paddle::lite::kernels::xpu::CastCompute<int8_t>,
-                     DISABLE_XPU1_cast_int8)
+                     cast_i8)
     .BindInput("X", {LiteType::GetTensorTy(TARGET(kXPU), PRECISION(kInt8))})
+    .BindOutput("Out", {LiteType::GetTensorTy(TARGET(kXPU), PRECISION(kAny))})
+    .Finalize();
+
+REGISTER_LITE_KERNEL(cast,
+                     kXPU,
+                     kAny,
+                     kNCHW,
+                     paddle::lite::kernels::xpu::CastCompute<int8_t>,
+                     cast_bool)
+    .BindInput("X", {LiteType::GetTensorTy(TARGET(kXPU), PRECISION(kBool))})
     .BindOutput("Out", {LiteType::GetTensorTy(TARGET(kXPU), PRECISION(kAny))})
     .Finalize();

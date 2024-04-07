@@ -32,13 +32,12 @@ BUILD_ARM82_FP16=OFF
 # controls whether to support SVE2 instructions, default is OFF
 WITH_ARM8_SVE2=OFF
 WITH_ARM_DOTPROD=ON
+# controls whether to block temporary 0dim pass, default is OFF
+SKIP_SUPPORT_0_DIM_TENSOR_PASS=OFF
 # options of striping lib according to input model.
 OPTMODEL_DIR=""
 WITH_STRIP=OFF
 WITH_THREAD_POOL=OFF
-# options of compiling NPU lib.
-WITH_HUAWEI_KIRIN_NPU=OFF
-HUAWEI_KIRIN_NPU_SDK_ROOT="$(pwd)/ai_ddk_lib/" # Download HiAI DDK from https://developer.huawei.com/consumer/cn/hiai/
 # options of compiling APU lib.
 WITH_MEDIATEK_APU=OFF
 MEDIATEK_APU_SDK_ROOT="$(pwd)/apu_ddk" # Download APU SDK from https://paddlelite-demo.bj.bcebos.com/devices/mediatek/apu_ddk.tar.gz
@@ -74,6 +73,8 @@ WITH_PRECISION_PROFILE=OFF
 WITH_BENCHMARK=OFF
 # option of convert_to_ssa_graph
 WITH_CONVERT_TO_SSA=ON
+# use Arm DNN library instead of built-in math library, defaults to OFF.
+WITH_ARM_DNN_LIBRARY=OFF
 # num of threads used during compiling..
 readonly NUM_PROC=${LITE_BUILD_THREADS:-4}
 #####################################################################################################
@@ -86,13 +87,11 @@ readonly NUM_PROC=${LITE_BUILD_THREADS:-4}
 #####################################################################################################
 # url that stores third-party tar.gz file to accelerate third-party lib installation
 readonly THIRDPARTY_URL=https://paddlelite-data.bj.bcebos.com/third_party_libs/
-readonly THIRDPARTY_TAR=third-party-801f670.tar.gz
+readonly THIRDPARTY_TAR=third-party-651c7c4.tar.gz
 # absolute path of Paddle-Lite.
 readonly workspace=$PWD/$(dirname $0)/../../
 # basic options for android compiling.
-readonly CMAKE_COMMON_OPTIONS="-DWITH_LITE=ON \
-                               -DLITE_WITH_ARM=ON \
-                               -DLITE_WITH_LIGHT_WEIGHT_FRAMEWORK=ON \
+readonly CMAKE_COMMON_OPTIONS="-DLITE_WITH_ARM=ON \
                                -DLITE_WITH_X86=OFF \
                                -DWITH_TESTING=OFF \
                                -DARM_TARGET_OS=android"
@@ -207,9 +206,6 @@ function make_tiny_publish_so {
 
   # Step1. Create directory for compiling.
   build_dir=$workspace/build.lite.android.$ARCH.$TOOLCHAIN
-  if [ "${WITH_npu}" == "ON" ]; then
-      build_dir=${build_dir}.npu
-  fi
   if [ -d $build_dir ]; then
       rm -rf $build_dir
   fi
@@ -249,8 +245,6 @@ function make_tiny_publish_so {
       -DLITE_WITH_JAVA=$WITH_JAVA \
       -DLITE_WITH_STATIC_LIB=$WITH_STATIC_LIB \
       -DLITE_WITH_CV=$WITH_CV \
-      -DLITE_WITH_NPU=$WITH_HUAWEI_KIRIN_NPU \
-      -DNPU_DDK_ROOT=$HUAWEI_KIRIN_NPU_SDK_ROOT \
       -DLITE_WITH_APU=$WITH_MEDIATEK_APU \
       -DAPU_DDK_ROOT=$MEDIATEK_APU_SDK_ROOT \
       -DLITE_WITH_NNADAPTER=$WITH_NNADAPTER \
@@ -280,7 +274,9 @@ function make_tiny_publish_so {
       -DWITH_ARM_DOTPROD=$WITH_ARM_DOTPROD \
       -DANDROID_STL_TYPE=$ANDROID_STL \
       -DLITE_THREAD_POOL=$WITH_THREAD_POOL \
-      -DWITH_CONVERT_TO_SSA=$WITH_CONVERT_TO_SSA"
+      -DWITH_CONVERT_TO_SSA=$WITH_CONVERT_TO_SSA \
+      -DLITE_SKIP_SUPPORT_0_DIM_TENSOR_PASS=$SKIP_SUPPORT_0_DIM_TENSOR_PASS \
+      -DLITE_WITH_ARM_DNN_LIBRARY=$WITH_ARM_DNN_LIBRARY"
 
   cmake $workspace \
       ${CMAKE_COMMON_OPTIONS} \
@@ -345,8 +341,6 @@ function make_full_publish_so {
       -DLITE_WITH_JAVA=$WITH_JAVA \
       -DLITE_WITH_STATIC_LIB=$WITH_STATIC_LIB \
       -DLITE_WITH_CV=$WITH_CV \
-      -DLITE_WITH_NPU=$WITH_HUAWEI_KIRIN_NPU \
-      -DNPU_DDK_ROOT=$HUAWEI_KIRIN_NPU_SDK_ROOT \
       -DLITE_WITH_APU=$WITH_MEDIATEK_APU \
       -DAPU_DDK_ROOT=$MEDIATEK_APU_SDK_ROOT \
       -DLITE_WITH_NNADAPTER=$WITH_NNADAPTER \
@@ -378,7 +372,9 @@ function make_full_publish_so {
       -DWITH_ARM_DOTPROD=$WITH_ARM_DOTPROD \
       -DLITE_WITH_PRECISION_PROFILE=$WITH_PRECISION_PROFILE \
       -DANDROID_STL_TYPE=$ANDROID_STL \
-      -DWITH_CONVERT_TO_SSA=$WITH_CONVERT_TO_SSA"
+      -DWITH_CONVERT_TO_SSA=$WITH_CONVERT_TO_SSA \
+      -DLITE_SKIP_SUPPORT_0_DIM_TENSOR_PASS=$SKIP_SUPPORT_0_DIM_TENSOR_PASS \
+      -DLITE_WITH_ARM_DNN_LIBRARY=$WITH_ARM_DNN_LIBRARY"
 
   cmake $workspace \
       ${CMAKE_COMMON_OPTIONS} \
@@ -437,13 +433,6 @@ function print_usage {
     echo -e "|     --with_strip: (OFF|ON); controls whether to strip lib accrding to input model, default is OFF                                    |"
     echo -e "|     --opt_model_dir: (absolute path to optimized model dir) required when compiling striped library                                  |"
     echo -e "|  detailed information about striping lib:  https://paddle-lite.readthedocs.io/zh/latest/user_guides/library_tailoring.html           |"
-    echo -e "|                                                                                                                                      |"
-    echo -e "|  arguments of npu library compiling:(armv8, gcc, c++_static)                                                                         |"
-    echo -e "|     ./lite/tools/build_android.sh --with_huawei_kirin_npu=ON --huawei_kirin_npu_sdk_root=YourNpuSdkPath                              |"
-    echo -e "|     --with_huawei_kirin_npu: (OFF|ON); controls whether to compile lib for huawei_kirin_npu, default is OFF                          |"
-    echo -e "|     --huawei_kirin_npu_sdk_root: (path to huawei HiAi DDK file) required when compiling npu library                                  |"
-    echo -e "|             you can download huawei HiAi DDK from:  https://developer.huawei.com/consumer/cn/hiai/                                   |"
-    echo -e "|  detailed information about Paddle-Lite NPU:  https://paddle-lite.readthedocs.io/zh/latest/demo_guides/npu.html                      |"
     echo -e "|                                                                                                                                      |"
     echo -e "|  arguments of apu library compiling:(armv8, gcc, c++_static)                                                                         |"
     echo -e "|     ./lite/tools/build_android.sh --with_mediatek_apu=ON --mediatek_apu_sdk_root=YourApuSdkPath                                      |"
@@ -544,24 +533,6 @@ function main {
             # compiling lib which can operate on opencl and cpu.
             --with_opencl=*)
                 WITH_OPENCL="${i#*=}"
-                shift
-                ;;
-            # compiling lib which can operate on huawei npu.
-            --with_huawei_kirin_npu=*)
-                WITH_HUAWEI_KIRIN_NPU="${i#*=}"
-                shift
-                ;;
-            --huawei_kirin_npu_sdk_root=*)
-                HUAWEI_KIRIN_NPU_SDK_ROOT="${i#*=}"
-                shift
-                ;;
-            # compiling lib which can operate on mediatek apu.
-            --with_mediatek_apu=*)
-                WITH_MEDIATEK_APU="${i#*=}"
-                shift
-                ;;
-            --mediatek_apu_sdk_root=*)
-                MEDIATEK_APU_SDK_ROOT="${i#*=}"
                 shift
                 ;;
             # compiling lib which can operate on nnadapter.
@@ -666,6 +637,10 @@ function main {
                 WITH_BENCHMARK="${i#*=}"
                 shift
                 ;;
+            --skip_support_0_dim_tensor_pass=*)
+                SKIP_SUPPORT_0_DIM_TENSOR_PASS="${i#*=}"
+                shift
+                ;;
             # controls whether to include FP16 kernels, default is OFF
             --with_arm82_fp16=*)
                 BUILD_ARM82_FP16="${i#*=}"
@@ -686,6 +661,11 @@ function main {
                 ;;
             --with_arm_dotprod=*)
                 WITH_ARM_DOTPROD="${i#*=}"
+                shift
+                ;;
+             # use Arm DNN library
+            --with_arm_dnn_library=*)
+                WITH_ARM_DNN_LIBRARY="${i#*=}"
                 shift
                 ;;
             help)
