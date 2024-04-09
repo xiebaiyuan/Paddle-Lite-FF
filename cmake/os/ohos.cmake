@@ -12,50 +12,54 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include(${OHOS_SDK}/native/build/cmake/ohos.toolchain.cmake)
-#if(LITE_WITH_OPENMP)
-#    set(OpenMP_C_FLAGS "-fopenmp")
-#    set(OpenMP_C_LIB_NAMES "omp")
-#    set(OpenMP_CXX_FLAGS "-fopenmp")
-#    set(OpenMP_CXX_LIB_NAMES "omp")
-#    set(OpenMP_omp_LIBRARY omp)
-#    set(OpenMP_C_FLAGS_WORK "-fopenmp")
-#    set(OpenMP_C_LIB_NAMES_WORK "omp")
-#    set(OpenMP_CXX_FLAGS_WORK "-fopenmp")
-#    set(OpenMP_CXX_LIB_NAMES_WORK "omp")
-#endif()
+if (NOT DEFINED OHOS_SDK)
+    set(OHOS_SDK $ENV{OHOS_SDK})
+    if (NOT OHOS_SDK)
+        message(FATAL_ERROR "Must set OHOS_SDK")
+    endif ()
+endif ()
+message(STATUS "Build with OHOS")
 
 # Definitions
 add_definitions(-DLITE_WITH_LINUX)
 add_definitions(-DLITE_WITH_OHOS)
+set(OHOS_PLATFORM "OHOS")
+#set(OHOS_ARM_NEON ON)
+set(ARM_TARGET_OS "ohos")
+#-DCMAKE_CXX_FLAGS="-mfloat-abi=softfp -Wno-error=register -Wno-unused-but-set-variable $extracflags" \
+#-DCMAKE_C_FLAGS="-mfloat-abi=softfp $extracflags" \
 
-if(ARM_TARGET_ARCH_ABI STREQUAL "armv7")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}-Wno-error=register -Wno-unused-but-set-variable")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
+set(CMAKE_CXX_STANDARD 14)
+
+
+
+if (ARM_TARGET_ARCH_ABI STREQUAL "armv7")
     set(OHOS_ARCH "armeabi-v7a")
-endif()
+endif ()
 
-if(ARM_TARGET_ARCH_ABI STREQUAL "armv8")
+
+
+if (ARM_TARGET_ARCH_ABI STREQUAL "armv8")
     set(OHOS_ARCH "arm64-v8a")
-endif()
+endif ()
 
-#
-#if(ARM_TARGET_LANG STREQUAL "clang")
-#    set(CMAKE_C_COMPILER clang)
-#    set(CMAKE_CXX_COMPILER clang++)
-#    message(STATUS "CMAKE_CXX_COMPILER_TARGET: ${CMAKE_CXX_COMPILER_TARGET}")
-#endif()
 
-if(OHOS)
-    message(STATUS "Build with OHOS")
-    set(CROSS_COMPILE_CMAKE_ARGS ${CROSS_COMPILE_CMAKE_ARGS}
-        "-DCMAKE_SYSTEM_PROCESSOR=${CMAKE_SYSTEM_PROCESSOR}"
-        "-DCMAKE_CXX_STANDARD=11"
-        "-DCMAKE_TOOLCHAIN_FILE=${OHOS_SDK}/native/build/cmake/ohos.toolchain.cmake"
-        "-DARM_TARGET_ARCH_ABI=${ARM_TARGET_ARCH_ABI}"
-        "-DOHOS_ARCH=${OHOS_ARCH}"
-        "-DOHOS_TOOLCHAIN=${ARM_TARGET_LANG}"
-        "-DCMAKE_EXE_LINKER_FLAGS=${CMAKE_EXE_LINKER_FLAGS}"
-        "-DCMAKE_SHARED_LINKER_FLAGS=${CMAKE_SHARED_LINKER_FLAGS}"
-        "-DARM_NEON=ON"
-        )
-endif()
+if (NOT DEFINED OHOS_ARCH)
+    message(STATUS "OHOS_ARCH not defined, use arm64-v8a")
+    set(OHOS_ARCH "arm64-v8a")
+endif ()
 
+if (NOT DEFINED OHOS_STL)
+    message(STATUS "OHOS_STL not defined, use c++_shared")
+    set(OHOS_STL "c++_shared")
+endif ()
+
+
+# print all config
+message(STATUS "OHOS_SDK: ${OHOS_SDK}")
+message(STATUS "OHOS_ARCH: ${OHOS_ARCH}")
+message(STATUS "OHOS_STL: ${OHOS_STL}")
+message(STATUS "OHOS_PLATFORM: ${OHOS_PLATFORM}")
+message(STATUS "OHOS_TOOLCHAIN: ${OHOS_TOOLCHAIN}")

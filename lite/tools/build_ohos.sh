@@ -4,9 +4,9 @@ set +x
 #####################################################################################################
 # 1. global variables, you can change them according to your requirements
 #####################################################################################################
-export CMAKE_PATH=/opt/HarmonyOS/sdk/packages/ohos-sdk/darwin/native/build-tools/cmake/
-export PATH=$CMAKE_PATH/bin:$PATH
-export OHOS_SDK=/opt/HarmonyOS/sdk/packages/ohos-sdk/darwin/
+#export CMAKE_PATH=/opt/HarmonyOS/sdk/packages/ohos-sdk/darwin/native/build-tools/cmake/
+#export PATH=$CMAKE_PATH/bin:$PATH
+export OHOS_SDK=/Users/xiebaiyuan/Library/Huawei/Sdk/openharmony/9/
 export PATH=$OHOS_SDK/bin:$PATH
 
 # armv7 or armv8, default armv8.
@@ -223,6 +223,7 @@ function make_tiny_publish_so {
 #  fi
 
   local cmake_mutable_options="
+      -DLITE_WITH_OHOS=ON \
       -DLITE_BUILD_EXTRA=$WITH_EXTRA \
       -DLITE_WITH_LOG=$WITH_LOG \
       -DLITE_WITH_EXCEPTION=$WITH_EXCEPTION \
@@ -239,14 +240,17 @@ function make_tiny_publish_so {
       -DLITE_WITH_ARM8_SVE2=$WITH_ARM8_SVE2 \
       -DWITH_ARM_DOTPROD=$WITH_ARM_DOTPROD \
       -DOHOS_STL=$OHOS_STL \
+      -DWITH_MKL=OFF \
       -DLITE_THREAD_POOL=$WITH_THREAD_POOL \
       -DWITH_CONVERT_TO_SSA=$WITH_CONVERT_TO_SSA \
+      -DCMAKE_TOOLCHAIN_FILE="$OHOS_SDK/native/build/cmake/ohos.toolchain.cmake" \
       -DOHOS_SDK=${OHOS_SDK} "
 
-  cmake $workspace \
+  $OHOS_SDK/native/build-tools/cmake/bin/cmake $workspace \
       ${CMAKE_COMMON_OPTIONS} \
       ${cmake_mutable_options}  \
-      -DLITE_ON_TINY_PUBLISH=ON
+      -DLITE_ON_TINY_PUBLISH=ON \
+      -L
 
   # Step4. Compile libs: cxx_lib, java_lib
   make publish_inference -j$NUM_PROC
