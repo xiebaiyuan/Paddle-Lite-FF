@@ -40,7 +40,6 @@ if (ARM_TARGET_ARCH_ABI STREQUAL "armv7")
 endif ()
 
 
-
 if (ARM_TARGET_ARCH_ABI STREQUAL "armv8")
     set(OHOS_ARCH "arm64-v8a")
 endif ()
