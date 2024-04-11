@@ -177,7 +177,7 @@ if (LITE_WITH_OHOS)
 endif ()
 
 
-if(LITE_WITH_OPENMP)
+if(OFF)
     if (ARM_TARGET_LANG STREQUAL "gcc")
         set(OpenMP_C_FLAGS "-fopenmp")
         set(OpenMP_C_LIB_NAMES "omp")

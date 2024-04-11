@@ -223,6 +223,7 @@ function make_tiny_publish_so {
 #  fi
 
   local cmake_mutable_options="
+      -DLITE_WITH_ARM=ON \
       -DLITE_WITH_OHOS=ON \
       -DLITE_BUILD_EXTRA=$WITH_EXTRA \
       -DLITE_WITH_LOG=$WITH_LOG \
