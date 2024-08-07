@@ -30,9 +30,6 @@ bool PixelUnShuffleOpLite::CheckShape() const {
   // check input tensor dims size
   CHECK_EQ_OR_FALSE(x_dims.size(), 4);
 
-  // check if the channel can be divided by downscale_factor * downscale_factor
-  CHECK_EQ_OR_FALSE(x_dims[1] % (downscale_factor * downscale_factor), 0);
-
   // check if the height and width can be divided by downscale_factor
   CHECK_EQ_OR_FALSE(x_dims[2] % downscale_factor, 0);
   CHECK_EQ_OR_FALSE(x_dims[3] % downscale_factor, 0);
