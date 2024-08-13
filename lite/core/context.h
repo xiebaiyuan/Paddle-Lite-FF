@@ -369,7 +369,7 @@ class Context<TargetType::kOpenCL> {
   CLContext* cl_context() { return cl_context_.get(); }
 
   void InitOnce() {
-    if (CLRuntime::Global()->IsInitSuccess() == false) {
+    if (!CLRuntime::Global()->IsInitSuccess()) {
       // gpu is not support , can use cpu instead . do not fatal..
       LOG(ERROR) << "OpenCL runtime init failed";
     }
