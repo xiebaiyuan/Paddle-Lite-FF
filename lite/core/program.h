@@ -234,8 +234,6 @@ class LITE_API RuntimeProgram {
         // mark has opencl kernel
         has_opencl_kernel_ = true;
 
-        // auto enable when opencl kernel is found.
-        ClGlobalDelegate::Global().SetUseOpenCL(true);
         // init opencl runtime when first find opencl kernel.
         // when unique_opencl_ctx_ not init. init it
         if (!unique_opencl_ctx_) {
@@ -243,6 +241,8 @@ class LITE_API RuntimeProgram {
 #ifdef LITE_WITH_LOG
           VLOG(4) << "INIT OPENCL ON KERNEL";
 #endif
+          // auto enable when opencl kernel is found.
+          ClGlobalDelegate::Global().SetUseOpenCL(true);
           opencl_valid_ = paddle::lite::CLWrapper::Global()->OpenclLibFound() &&
                           paddle::lite::CLWrapper::Global()->DlsymSuccess() &&
                           CLRuntime::Global()->OpenCLAvaliableForDevice();
