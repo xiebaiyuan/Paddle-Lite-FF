@@ -1,0 +1,105 @@
+// Copyright (c) 2024 PaddlePaddle Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#pragma once
+
+namespace paddle {
+namespace lite {
+/**
+ * When LITE_WITH_OPENCL is enabled, Paddle-Lite will interact with the
+ * OpenCL-related environment. Currently, when Paddle-Lite interacts with the
+ * OpenCL runtime environment, it directly interacts through CLRuntime and
+ * ClWrapper. CLContext actually serves as a part of the Kernel, carrying the
+ * clKernel built for each runtime Kernel. In the process of using paddle_api or
+ * program, the OpenCL environment has to be initialized. However, in practice,
+ * sometimes the model is not an OpenCL model. Initializing the OpenCL
+ * environment in such cases is a waste of memory, especially in environments
+ * where there is a clear intention to avoid initializing the OpenCL
+ * environment. Therefore, a method to isolate the OpenCL environment is
+ * provided. When interacting with the framework, this proxy is uniformly
+ * adopted.
+ */
+class ClGlobalDelegate {
+ public:
+  static ClGlobalDelegate& Global() {
+    static ClGlobalDelegate x;
+    return x;
+  }
+  /**
+   * @brief set use opencl
+   * @param use_opencl
+   */
+  void SetUseOpenCL(bool use_opencl) {
+    use_opencl_ = use_opencl;
+    LOG(INFO) << "set opencl softly : opencl "
+              << (use_opencl_ ? "enable" : "disable");
+  }
+  /**
+   * @brief get use opencl
+   * @return
+   */
+  bool UseOpenCL() const { return use_opencl_; }
+
+  /**
+   * @brief check opencl backend valid
+   * @param check_fp16_valid
+   * @return
+   */
+  bool IsOpenCLBackendValid(bool check_fp16_valid) const {
+    LOG(INFO) << "delegete opencl valid check";
+    if (!UseOpenCL()) {
+      LOG(INFO) << "opencl disable due to softly close";
+      return false;
+    }
+    bool opencl_valid = false;
+
+#ifdef LITE_WITH_OPENCL
+    bool opencl_lib_found = paddle::lite::CLWrapper::Global()->OpenclLibFound();
+#ifdef LITE_WITH_LOG
+    LOG(INFO) << "Found opencl library:" << opencl_lib_found;
+#endif
+    if (!opencl_lib_found) return false;
+
+    bool dlsym_success = paddle::lite::CLWrapper::Global()->DlsymSuccess();
+#ifdef LITE_WITH_LOG
+    LOG(INFO) << "dlsym_success:" << dlsym_success;
+#endif
+    if (!dlsym_success) return false;
+    opencl_valid = paddle::lite::CLRuntime::Global()->OpenCLAvaliableForDevice(
+        check_fp16_valid);
+#ifdef LITE_WITH_LOG
+    LOG(INFO) << "opencl_valid:" << opencl_valid;
+#endif
+#endif
+    return opencl_valid;
+  }
+
+  /**
+   * @brief get opencl device type
+   * @return
+   */
+  int GetOpenCLDeviceType() const {
+    if (this->IsOpenCLBackendValid(false)) {
+      return paddle::lite::CLRuntime::Global()->GetGpuType();
+    }
+    return -1;
+  }
+
+ private:
+  ClGlobalDelegate() = default;
+  // if user do not set this flag, as old ways.
+  bool use_opencl_{true};
+};
+}  // namespace lite
+}  // namespace paddle
