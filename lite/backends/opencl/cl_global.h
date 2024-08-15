@@ -56,12 +56,10 @@ class ClGlobalDelegate {
    * @param check_fp16_valid
    * @return
    */
-  bool IsOpenCLBackendValid(bool check_fp16_valid) const {
+  bool IsOpenCLBackendValid(bool check_fp16_valid) {
     LOG(INFO) << "delegete opencl valid check";
-    if (!UseOpenCL()) {
-      LOG(INFO) << "opencl disable due to softly close";
-      return false;
-    }
+    // use attempt to use opencl , enable it.
+    SetUseOpenCL(true);
     bool opencl_valid = false;
 
 #ifdef LITE_WITH_OPENCL
@@ -89,7 +87,7 @@ class ClGlobalDelegate {
    * @brief get opencl device type
    * @return
    */
-  int GetOpenCLDeviceType() const {
+  int GetOpenCLDeviceType() {
     if (this->IsOpenCLBackendValid(false)) {
       return paddle::lite::CLRuntime::Global()->GetGpuType();
     }
@@ -99,7 +97,7 @@ class ClGlobalDelegate {
  private:
   ClGlobalDelegate() = default;
   // if user do not set this flag, as old ways.
-  bool use_opencl_{true};
+  bool use_opencl_{false};
 };
 }  // namespace lite
 }  // namespace paddle

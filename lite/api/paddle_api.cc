@@ -29,7 +29,7 @@
 #endif
 
 #ifdef LITE_WITH_OPENCL
-#include "lite/backends/opencl/cl_global_config.h"
+#include "lite/backends/opencl/cl_global.h"
 #include "lite/backends/opencl/cl_runtime.h"
 #endif
 
