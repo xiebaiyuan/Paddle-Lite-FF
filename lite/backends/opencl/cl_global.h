@@ -97,7 +97,7 @@ class ClGlobalDelegate {
  private:
   ClGlobalDelegate() = default;
   // if user do not set this flag, as old ways.
-  bool use_opencl_{false};
+  bool use_opencl_{true};
 };
 }  // namespace lite
 }  // namespace paddle

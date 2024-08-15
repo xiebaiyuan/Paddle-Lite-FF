@@ -40,6 +40,15 @@
 namespace paddle {
 namespace lite_api {
 
+bool SetOpenCLEnable(bool enable) {
+  LOG(INFO) << "External SetOpenCLEnable : " << enable;
+#ifdef LITE_WITH_OPENCL
+  paddle::lite::ClGlobalDelegate::Global().SetUseOpenCL(enable);
+  return enable;
+#endif
+  return enable;
+}
+
 bool IsOpenCLBackendValid(bool check_fp16_valid) {
 #ifdef LITE_WITH_LOG
   LOG(INFO) << "need to check fp16 valid:" << check_fp16_valid;
