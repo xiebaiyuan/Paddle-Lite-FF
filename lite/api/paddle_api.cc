@@ -50,9 +50,6 @@ bool EnableOpenCLBackend(bool enable) {
 }
 
 bool IsOpenCLBackendValid(bool check_fp16_valid) {
-#ifdef LITE_WITH_LOG
-  LOG(INFO) << "need to check fp16 valid:" << check_fp16_valid;
-#endif
 #ifdef LITE_WITH_OPENCL
   return paddle::lite::ClGlobalDelegate::Global().IsOpenCLBackendValid(
       check_fp16_valid);

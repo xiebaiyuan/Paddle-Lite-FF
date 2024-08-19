@@ -503,9 +503,6 @@ class ContextScheduler {
  private:
   template <TargetType Type, typename ContextT>
   void InitContext() {
-#ifdef LITE_WITH_LOG
-    VLOG(4) << "context init kernel ...";
-#endif
     kernel_contexts_[Type].As<ContextT>().InitOnce();
   }
 
