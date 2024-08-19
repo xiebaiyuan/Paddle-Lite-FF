@@ -40,8 +40,8 @@
 namespace paddle {
 namespace lite_api {
 
-bool SetOpenCLEnable(bool enable) {
-  LOG(INFO) << "External SetOpenCLEnable : " << enable;
+bool EnableOpenCLBackend(bool enable) {
+  VLOG(4) << "External EnableOpenCLBackend : " << enable;
 #ifdef LITE_WITH_OPENCL
   paddle::lite::ClGlobalDelegate::Global().SetUseOpenCL(enable);
   return enable;

@@ -224,9 +224,6 @@ class LITE_API RuntimeProgram {
 #ifdef LITE_WITH_PROFILE
     set_profiler();
 #endif
-#ifdef LITE_WITH_LOG
-    VLOG(4) << "program loop insts ......";
-#endif
     for (auto& inst : instructions_[kRootBlockIdx]) {
       KernelBase* kernel = inst.mutable_kernel();
       if (kernel->target() == TARGET(kOpenCL)) {
@@ -237,10 +234,6 @@ class LITE_API RuntimeProgram {
         // init opencl runtime when first find opencl kernel.
         // when unique_opencl_ctx_ not init. init it
         if (!unique_opencl_ctx_) {
-// check opencl env valid.
-#ifdef LITE_WITH_LOG
-          VLOG(4) << "INIT OPENCL ON KERNEL";
-#endif
           // auto enable when opencl kernel is found.
           ClGlobalDelegate::Global().SetUseOpenCL(true);
           opencl_valid_ = paddle::lite::CLWrapper::Global()->OpenclLibFound() &&

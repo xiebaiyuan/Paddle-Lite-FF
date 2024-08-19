@@ -28,9 +28,7 @@ namespace lite {
 class CLContext {
  public:
   ~CLContext() {
-#ifdef LITE_WITH_LOG
-    VLOG(4) << "CLContext destructor";
-#endif
+    VLOG(4) << "Call Of CLContext destructor";
     GetCommandQueue().finish();
     for (size_t kidx = 0; kidx < kernels_.size(); ++kidx) {
       // Note(ysh329): Don't need `clReleaseKernel`

@@ -369,12 +369,7 @@ class Context<TargetType::kOpenCL> {
  public:
   CLContext* cl_context() { return cl_context_.get(); }
 
-  void InitOnce() {
-#ifdef LITE_WITH_LOG
-    VLOG(4) << "OpenCL InitOnce ";
-#endif
-    AttemptCreateClContext();
-  }
+  void InitOnce() { AttemptCreateClContext(); }
 
   void AttemptCreateClContext() {
     if (!ClGlobalDelegate::Global().UseOpenCL()) {

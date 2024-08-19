@@ -57,7 +57,8 @@ class ClGlobalDelegate {
    * @return
    */
   bool IsOpenCLBackendValid(bool check_fp16_valid) {
-    LOG(INFO) << "delegete opencl valid check";
+    VLOG(3) << "Delegete opencl valid check, check_fp16_valid: "
+            << check_fp16_valid << ", use_opencl_:" << use_opencl_;
     // use attempt to use opencl , enable it.
     SetUseOpenCL(true);
     bool opencl_valid = false;
