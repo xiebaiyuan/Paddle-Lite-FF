@@ -373,12 +373,12 @@ class Context<TargetType::kOpenCL> {
 
   void AttemptCreateClContext() {
     if (!ClGlobalDelegate::Global().UseOpenCL()) {
-      LOG(INFO) << "force close opencl,  so return";
+      LOG(INFO) << "Force close opencl,  so return";
       return;
     }
 
     if (cl_context_ != nullptr) {
-      LOG(INFO) << "cl_context_ already created";
+      LOG(INFO) << "Cl_context has already created, so return";
       return;
     }
 
