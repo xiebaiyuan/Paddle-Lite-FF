@@ -219,7 +219,7 @@ class LITE_API RuntimeProgram {
 
   void Init() {
     if (instructions_.empty()) {
-      LOG(FATAL) << "no instructions";
+      LOG(FATAL) << "No instructions";
     }
 #ifdef LITE_WITH_PROFILE
     set_profiler();
@@ -247,7 +247,7 @@ class LITE_API RuntimeProgram {
             unique_opencl_ctx_ = std::move(unique_opencl_ctx);
             (*unique_opencl_ctx_).As<OpenCLContext>().InitOnce();
           } else {
-            LOG(FATAL) << "check opencl env failed. opencl_valid:"
+            LOG(FATAL) << "Check opencl env failed. opencl_valid:"
                        << opencl_valid_;
           }
         }
@@ -261,7 +261,7 @@ class LITE_API RuntimeProgram {
           kernel->SetContext(std::move(ctx));
         } else {
           // if gpu not support , fatal when user init gpu model.
-          LOG(FATAL) << "opencl_valid:" << opencl_valid_;
+          LOG(FATAL) << "OpenCl Valid: " << opencl_valid_;
         }
 #endif
       } else if (kernel->target() == TARGET(kMetal)) {

@@ -65,15 +65,15 @@ class ClGlobalDelegate {
 
 #ifdef LITE_WITH_OPENCL
     bool opencl_lib_found = paddle::lite::CLWrapper::Global()->OpenclLibFound();
-    LOG(INFO) << "Found opencl library:" << opencl_lib_found;
+    LOG(INFO) << "Found opencl library: " << opencl_lib_found;
     if (!opencl_lib_found) return false;
 
     bool dlsym_success = paddle::lite::CLWrapper::Global()->DlsymSuccess();
-    LOG(INFO) << "dlsym_success:" << dlsym_success;
+    LOG(INFO) << "Dlsym Success: " << dlsym_success;
     if (!dlsym_success) return false;
     opencl_valid = paddle::lite::CLRuntime::Global()->OpenCLAvaliableForDevice(
         check_fp16_valid);
-    LOG(INFO) << "opencl_valid:" << opencl_valid;
+    LOG(INFO) << "Opencl Valid: " << opencl_valid;
 #endif
     return opencl_valid;
   }
