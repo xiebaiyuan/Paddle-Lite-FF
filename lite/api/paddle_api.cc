@@ -61,9 +61,6 @@ bool IsOpenCLBackendValid(bool check_fp16_valid) {
 }
 
 int GetOpenCLDeviceType() {
-#ifdef LITE_WITH_LOG
-  LOG(INFO) << "GetOpenCLDeviceType";
-#endif
 #ifdef LITE_WITH_OPENCL
   return paddle::lite::ClGlobalDelegate::Global().GetOpenCLDeviceType();
 #endif
