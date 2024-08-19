@@ -518,9 +518,7 @@ class ContextScheduler {
     InitContext<TargetType::kARM, ARMContext>();
 #endif
 #ifdef LITE_WITH_OPENCL
-#ifdef LITE_WITH_LOG
     VLOG(4) << "ContextScheduler init opencl context ";
-#endif
     InitContext<TargetType::kOpenCL, OpenCLContext>();
 #endif
 #ifdef LITE_WITH_METAL
