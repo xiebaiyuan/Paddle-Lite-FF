@@ -42,8 +42,8 @@ class ClGlobalDelegate {
    */
   void SetUseOpenCL(bool use_opencl) {
     use_opencl_ = use_opencl;
-    LOG(INFO) << "set opencl softly : opencl "
-              << (use_opencl_ ? "enable" : "disable");
+    VLOG(4) << "Set opencl softly , use_opencl: "
+            << (use_opencl_ ? "enable" : "disable");
   }
   /**
    * @brief get use opencl
