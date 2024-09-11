@@ -275,7 +275,7 @@ CLContext::DefaultLocalWorkSize(const cl::NDRange &gws,
 }
 
 bool CLContext::IsArmMali() {
-  return CLRuntime::Global()->GetGpuType() == GpuType::ARM_MALI;
+  return CLRuntime::Global()->GetGpuType() == GpuType::ARM_MALI || CLRuntime::Global()->GetGpuType() == GpuType::MALELOON;
 }
 
 bool CLContext::IsAppleM1() {

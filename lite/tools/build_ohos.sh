@@ -6,18 +6,13 @@ set +x
 #####################################################################################################
 #export CMAKE_PATH=/opt/HarmonyOS/sdk/packages/ohos-sdk/darwin/native/build-tools/cmake/
 #export PATH=$CMAKE_PATH/bin:$PATH
-export OHOS_SDK=/Users/xiebaiyuan/Library/Huawei/Sdk/openharmony/9/
+export OHOS_SDK=/Users/xiebaiyuan/Library/OpenHarmony/Sdk/12/
 export PATH=$OHOS_SDK/bin:$PATH
 
 # armv7 or armv8, default armv8.
 ARCH=armv8
 # c++_static or c++_shared, default c++_static.
 OHOS_STL=c++_shared
-# min android api level
-#MIN_ANDROID_API_LEVEL_ARMV7=16
-#MIN_ANDROID_API_LEVEL_ARMV8=21
-# android api level, which can also be set to a specific number
-#ANDROID_API_LEVEL="Default"
 # gcc or clang, default gcc.
 TOOLCHAIN=clang
 # ON or OFF, default OFF.
@@ -58,7 +53,6 @@ NNADAPTER_WITH_VERISILICON_TIMVX=OFF
 NNADAPTER_VERISILICON_TIMVX_SRC_GIT_TAG="main"
 NNADAPTER_VERISILICON_TIMVX_VIV_SDK_ROOT=""
 NNADAPTER_VERISILICON_TIMVX_VIV_SDK_URL="http://paddlelite-demo.bj.bcebos.com/devices/verisilicon/sdk/viv_sdk_android_9_armeabi_v7a_6_4_4_3_generic.tgz"
-NNADAPTER_WITH_ANDROID_NNAPI=OFF
 NNADAPTER_WITH_FAKE_DEVICE=OFF
 NNADAPTER_FAKE_DEVICE_SDK_ROOT=""
 NNADAPTER_WITH_GOOGLE_XNNPACK=OFF
@@ -95,7 +89,7 @@ readonly THIRDPARTY_URL=https://paddlelite-data.bj.bcebos.com/third_party_libs/
 readonly THIRDPARTY_TAR=third-party-651c7c4.tar.gz
 # absolute path of Paddle-Lite.
 readonly workspace=$PWD/$(dirname $0)/../../
-# basic options for android compiling.
+# basic options for ohos compiling.
 readonly CMAKE_COMMON_OPTIONS="-DLITE_WITH_ARM=ON \
                                -DLITE_WITH_X86=OFF \
                                -DWITH_TESTING=OFF \
@@ -195,6 +189,15 @@ function make_tiny_publish_so {
 
   # Step1. Create directory for compiling.
   build_dir=$workspace/build.lite.ohos.$ARCH.$TOOLCHAIN
+
+  echo "opencl status: "${WITH_OPENCL}
+  if [ "${WITH_OPENCL}" = "ON" ]; then
+      build_dir=$workspace/build.lite.ohos.$ARCH.$TOOLCHAIN.opencl
+  fi
+
+
+
+  echo "build_dir:"${build_dir}
   if [ -d $build_dir ]; then
       rm -rf $build_dir
   fi
@@ -215,7 +218,7 @@ function make_tiny_publish_so {
   fi
 
 #  if [ "$NDK_ROOT" ]; then
-#      NDK_NAME=$(echo $NDK_ROOT | egrep -o "android-ndk-r[0-9]{2}")
+#      NDK_NAME=$(echo $NDK_ROOT | egrep -o "ohos-ndk-r[0-9]{2}")
 #      NDK_VERSION=$(echo $NDK_NAME | egrep -o "[0-9]{2}")
 #      if [ "$NDK_VERSION" -gt 17 ]; then
 #          TOOLCHAIN=clang
@@ -251,10 +254,10 @@ function make_tiny_publish_so {
       ${CMAKE_COMMON_OPTIONS} \
       ${cmake_mutable_options}  \
       -DLITE_ON_TINY_PUBLISH=ON \
-      -L
+      -G Ninja
 
   # Step4. Compile libs: cxx_lib, java_lib
-  make publish_inference -j$NUM_PROC
+  $OHOS_SDK/native/build-tools/cmake/bin/ninja publish_inference
   cd - > /dev/null
 }
 
@@ -290,14 +293,6 @@ function make_full_publish_so {
       TOOLCHAIN=clang
   fi
 
-#  if [ "$NDK_ROOT" ]; then
-#      NDK_NAME=$(echo $NDK_ROOT | egrep -o "ohos-ndk-r[0-9]{2}")
-#      NDK_VERSION=$(echo $NDK_NAME | egrep -o "[0-9]{2}")
-#      if [ "$NDK_VERSION" -gt 17 ]; then
-#          TOOLCHAIN=clang
-#      fi
-#  fi
-
 
   local cmake_mutable_options="
       -DLITE_BUILD_EXTRA=$WITH_EXTRA \
@@ -321,7 +316,6 @@ function make_full_publish_so {
       -DNNADAPTER_VERISILICON_TIMVX_SRC_GIT_TAG=$NNADAPTER_VERISILICON_TIMVX_SRC_GIT_TAG \
       -DNNADAPTER_VERISILICON_TIMVX_VIV_SDK_ROOT=$NNADAPTER_VERISILICON_TIMVX_VIV_SDK_ROOT \
       -DNNADAPTER_VERISILICON_TIMVX_VIV_SDK_URL=$NNADAPTER_VERISILICON_TIMVX_VIV_SDK_URL \
-      -DNNADAPTER_WITH_ANDROID_NNAPI=$NNADAPTER_WITH_ANDROID_NNAPI \
       -DNNADAPTER_WITH_FAKE_DEVICE=$NNADAPTER_WITH_FAKE_DEVICE \
       -DNNADAPTER_FAKE_DEVICE_SDK_ROOT=$NNADAPTER_FAKE_DEVICE_SDK_ROOT \
       -DNNADAPTER_WITH_GOOGLE_XNNPACK=$NNADAPTER_WITH_GOOGLE_XNNPACK \
@@ -359,12 +353,12 @@ function make_full_publish_so {
 # 4.3 function of print help information
 function print_usage {
     echo "----------------------------------------------------------------------------------------------------------------------------------------"
-    echo -e "| Methods of compiling Padddle-Lite Android library:                                                                                   |"
+    echo -e "| Methods of compiling Padddle-Lite OHOS library:                                                                                   |"
     echo "----------------------------------------------------------------------------------------------------------------------------------------"
-    echo -e "|  compile android library: (armv8, gcc, c++_static)                                                                                   |"
-    echo -e "|     ./lite/tools/build_android.sh                                                                                                    |"
+    echo -e "|  compile ohos library: (armv8, gcc, c++_static)                                                                                   |"
+    echo -e "|     ./lite/tools/build_ohos.sh                                                                                                    |"
     echo -e "|  print help information:                                                                                                             |"
-    echo -e "|     ./lite/tools/build_android.sh help                                                                                               |"
+    echo -e "|     ./lite/tools/build_ohos.sh help                                                                                               |"
     echo -e "|                                                                                                                                      |"
     echo -e "|  optional argument:                                                                                                                  |"
     echo -e "|     --arch: (armv8|armv7), default is armv8                                                                                          |"
@@ -382,33 +376,27 @@ function print_usage {
     echo -e "|     --with_arm82_fp16: (OFF|ON); controls whether to include FP16 kernels, default is OFF                                            |"
     echo -e "|                                  warning: when --with_arm82_fp16=ON, toolchain will be set as clang, arch will be set as armv8.      |"
     echo -e "|     --with_arm8_sve2: (OFF|ON); controls whether to include SVE2 kernels, default is OFF                                             |"
-    echo -e "|                                  warning: when --with_arm8_sve2=ON, NDK version need >= r23, arch will be set as armv8.              |"
-    echo -e "|     --android_api_level: (16~27); control android api level, default is 16 on armv7 and 21 on armv8. You could set a specific        |"
-    echo -e "|             android_api_level as you need.                                                                                           |"
-    echo -e "|                       | Paddle-Lite Requird / ARM ABI      | armv7 | armv8 |                                                         |"
-    echo -e "|                       |------------------------------------|-------|-------|                                                         |"
-    echo -e "|                       |Supported Minimum Android API Level |  16   |  21   |                                                         |"
-    echo -e "|                       |Supported Minimum Android Version   |  4.1  |  5.0  |                                                         |"
+    echo -e "|                                  warning: when --with_arm8_sve2=ON, NDK version need >= r23, arch will be set as armv8.              |" 
     echo -e "|     --with_benchmark: (OFF|ON); controls whether to compile benchmark binary, default is OFF                                         |"
     echo -e "|                                                                                                                                      |"
     echo -e "|  arguments of benchmark binary compiling:(armv8, gcc, c++_static)                                                                    |"
-    echo -e "|     ./lite/tools/build_android.sh --with_benchmark=ON full_publish                                                                   |"
+    echo -e "|     ./lite/tools/build_ohos.sh --with_benchmark=ON full_publish                                                                   |"
     echo -e "|                                                                                                                                      |"
     echo -e "|  arguments of striping lib according to input model:(armv8, gcc, c++_static)                                                         |"
-    echo -e "|     ./lite/tools/build_android.sh --with_strip=ON --opt_model_dir=YourOptimizedModelDir                                              |"
+    echo -e "|     ./lite/tools/build_ohos.sh --with_strip=ON --opt_model_dir=YourOptimizedModelDir                                              |"
     echo -e "|     --with_strip: (OFF|ON); controls whether to strip lib accrding to input model, default is OFF                                    |"
     echo -e "|     --opt_model_dir: (absolute path to optimized model dir) required when compiling striped library                                  |"
     echo -e "|  detailed information about striping lib:  https://paddle-lite.readthedocs.io/zh/latest/user_guides/library_tailoring.html           |"
     echo -e "|                                                                                                                                      |"
     echo -e "|  arguments of apu library compiling:(armv8, gcc, c++_static)                                                                         |"
-    echo -e "|     ./lite/tools/build_android.sh --with_mediatek_apu=ON --mediatek_apu_sdk_root=YourApuSdkPath                                      |"
+    echo -e "|     ./lite/tools/build_ohos.sh --with_mediatek_apu=ON --mediatek_apu_sdk_root=YourApuSdkPath                                      |"
     echo -e "|     --with_mediatek_apu: (OFF|ON); controls whether to compile lib for mediatek_apu, default is OFF                                  |"
     echo -e "|     --mediatek_apu_sdk_root: (path to mediatek APU SDK file) required when compiling apu library                                     |"
     echo -e "|             you can download mediatek APU SDK from:  https://paddlelite-demo.bj.bcebos.com/devices/mediatek/apu_ddk.tar.gz           |"
     echo -e "|  detailed information about Paddle-Lite APU:  https://paddle-lite.readthedocs.io/zh/latest/demo_guides/mediatek_apu.html             |"
     echo -e "|                                                                                                                                      |"
     echo -e "|  arguments of opencl library compiling:(armv8, gcc, c++_static)                                                                      |"
-    echo -e "|     ./lite/tools/build_android.sh --with_opencl=ON                                                                                   |"
+    echo -e "|     ./lite/tools/build_ohos.sh --with_opencl=ON                                                                                   |"
     echo -e "|     --with_opencl: (OFF|ON); controls whether to compile lib for opencl, default is OFF                                              |"
     echo "----------------------------------------------------------------------------------------------------------------------------------------"
     echo
@@ -445,8 +433,8 @@ function main {
                 OHOS_STL="${i#*=}"
                 shift
                 ;;
-#            --android_api_level=*)
-#                ANDROID_API_LEVEL="${i#*=}"
+#            --ohos_api_level=*)
+#                ohos_API_LEVEL="${i#*=}"
 #                shift
 #                ;;
             # ON or OFF, default OFF
