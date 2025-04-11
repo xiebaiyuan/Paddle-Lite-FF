@@ -87,9 +87,18 @@ void ConvElementwiseFuser::InsertNewNode(SSAGraph* graph,
       elementwise_add_bias_t->Get<lite::Tensor>().dims();
   auto groups = conv_op_desc->GetAttr<int>("groups");
 
-  if (elementwise_add_bias_dims.size() != 1) {
+  // Check if the bias tensor is in the expected channel-wise shape [1, C, 1,
+  // 1],
+  // reshape it to [C] and make can be brocast.
+  if (elementwise_add_bias_dims.size() == 4 &&
+      elementwise_add_bias_dims[0] == 1 && elementwise_add_bias_dims[2] == 1 &&
+      elementwise_add_bias_dims[3] == 1) {
+    // Reshape [1, C, 1, 1] to [C]
+    auto* tensor = elementwise_add_bias_t->GetMutable<lite::Tensor>();
+    tensor->Resize({elementwise_add_bias_dims[1]});
+  } else if (elementwise_add_bias_dims.size() != 1) {
     nodes_.erase(nodes_.begin(), nodes_.end());
-    LOG(WARNING) << "elementwise_add_bias_dims not equal to 1, fusion failed";
+    LOG(WARNING) << "Unsupported elementwise_add_bias_dims, fusion failed";
     return;
   }
   auto conv_filter_var =
