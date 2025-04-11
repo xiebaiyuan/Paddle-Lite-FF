@@ -47,8 +47,23 @@ class StaticKernelPickPass : public mir::StmtPass {
   core::KernelPickFactor* mutable_kernel_pick_factors() {
     return &kernel_pick_factors_;
   }
+  void SetForceARMMode(bool enable) { force_arm_mode_ = enable; }
+  void DetectPattern(const lite::mir::Node* node);
 
  private:
+  // 用于检测特定模式的状态机
+  enum class PatternState {
+    INIT,
+    FOUND_SPLIT,
+    FOUND_RESHAPE,  // 原来是FOUND_TRANSPOSE，现在改为FOUND_RESHAPE
+    PATTERN_MATCHED  // 完整匹配到模式
+  };
+
+  PatternState pattern_state_{PatternState::INIT};
+  bool force_arm_mode_{false};  // 是否启用强制使用ARM模式
+  bool after_pattern_{false};   // 是否已经匹配到模式并处于"之后"状态
+
+
   // Score the kernel.
   size_t KernelGrade(lite::mir::Node* node,
                      const lite::KernelBase& kernel,

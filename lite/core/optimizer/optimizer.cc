@@ -76,6 +76,9 @@ void Optimizer::SpecifyKernelPickTactic(core::KernelPickFactor factor) {
 
   CHECK(pass);
 
+  // 设置强制使用ARM模式
+  pass->SetForceARMMode(true);
+
   *pass->mutable_kernel_pick_factors() = factor;
 }
 
@@ -166,6 +169,7 @@ std::unique_ptr<RuntimeProgram> RunDefaultOptimizer(
        // want to insert a pass in the above passes.
        "remove_scale1_pass",
        "adaptive_1x1_pool2d_convert_global_pass",  //
+        "silu_to_swish_pass",
        "lite_unsqueeze2_pad3d_squeeze2_fuse_pass",
        "lite_conv_elementwise_fuse_pass",  // conv-elemwise-bn
        "lite_conv_bn_fuse_pass",           //
