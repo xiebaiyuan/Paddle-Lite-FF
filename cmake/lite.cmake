@@ -87,7 +87,7 @@ function (lite_deps TARGET)
       set(deps ${deps} ${var})
     endforeach(var)
   endif()
-  
+
   if (LITE_WITH_INTEL_FPGA)
     foreach(var ${lite_deps_INTEL_FPGA_DEPS})
       set(deps ${deps} ${var})
@@ -276,6 +276,15 @@ function(lite_cc_binary TARGET)
 
 
     # link to dynamic runtime lib
+    if(LITE_WITH_METAL)
+        target_link_libraries(${TARGET} ${METAL_LIBRARY} ${GRAPHIC} ${MPS_LIBRARY} ${FOUNDATION_LIBRARY})
+    endif()
+
+
+    if (LITE_WITH_LOG)
+        target_link_libraries(${TARGET} ${OHOS_LINKED_LIBS})
+    endif ()
+
     if(LITE_WITH_XPU)
         target_link_libraries(${TARGET} ${xpu_builder_libs} ${xpu_runtime_libs})
     endif()
@@ -314,7 +323,7 @@ function(lite_cc_binary TARGET)
     endif()
 endfunction()
 
-#only for windows 
+#only for windows
 function(create_static_lib TARGET_NAME)
   set(libs ${ARGN})
   list(REMOVE_DUPLICATES libs)
@@ -381,13 +390,13 @@ function(bundle_static_library tgt_name bundled_tgt_name fake_target)
     ${CMAKE_BINARY_DIR}/${CMAKE_STATIC_LIBRARY_PREFIX}${bundled_tgt_name}${CMAKE_STATIC_LIBRARY_SUFFIX})
 
   message(STATUS "bundled_tgt_full_name:  ${CMAKE_BINARY_DIR}/${CMAKE_STATIC_LIBRARY_PREFIX}${bundled_tgt_name}${CMAKE_STATIC_LIBRARY_SUFFIX}")
-  
+
   if(WIN32)
     set(dummy_tgt_name dummy_${bundled_tgt_name})
     create_static_lib(${bundled_tgt_name} ${static_libs})
     add_custom_target(${fake_target} ALL DEPENDS ${bundled_tgt_name})
     add_dependencies(${fake_target} ${tgt_name})
-  
+
     add_library(${dummy_tgt_name} STATIC IMPORTED)
     set_target_properties(${dummy_tgt_name}
       PROPERTIES

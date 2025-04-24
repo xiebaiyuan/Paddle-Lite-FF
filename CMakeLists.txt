@@ -139,7 +139,7 @@ lite_option(LITE_WITH_ARM82_INT8_SDOT  "when compile with arm v8.2 int8, it's ON
 lite_option(LITE_WITH_CODE_META_INFO  "include git version in the header file." ON)
 
 # TODO(Superjomn) Remove WITH_ANAKIN option if not needed latter.
-if(ANDROID OR IOS OR ARMLINUX OR ARMMACOS)
+if(ANDROID OR IOS OR ARMLINUX OR ARMMACOS OR OHOS)
     set(WITH_GPU OFF CACHE STRING
             "Disable GPU when cross-compiling for Android and iOS" FORCE)
     set(WITH_DSO OFF CACHE STRING
@@ -152,7 +152,7 @@ if(ANDROID OR IOS OR ARMLINUX OR ARMMACOS)
             "Disable MKL when cross-compiling for Android and iOS" FORCE)
 endif()
 
-if(ANDROID OR IOS)
+if(ANDROID OR IOS OR OHOS)
     set(LITE_WITH_PYTHON OFF CACHE STRING
             "Disable PYTHON when cross-compiling for Android and iOS" FORCE)
 endif()

@@ -27,7 +27,9 @@ typedef enum {
   QUALCOMM_ADRENO = 1,
   ARM_MALI = 2,
   IMAGINATION_POWERVR = 3,
-  OTHERS = 4,
+  APPLE_M1 = 4,
+  MALELOON = 5,
+  OTHERS = 6,
 } GpuType;
 
 typedef enum {

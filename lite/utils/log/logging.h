@@ -66,6 +66,10 @@ static int gettimeofday(struct timeval* tp, void* tzp) {
   __android_log_print(ANDROID_LOG_FATAL, ANDROID_LOG_TAG, "%s", msg)
 #endif
 
+#if defined(__OHOS__) && defined(LITE_WITH_LOG)
+#include "lite/utils/log/ohos_log.h"
+#endif
+
 // LOG SYSTEM
 #ifndef LITE_WITH_LOG
 #define LOG(status) LOG_##status
@@ -168,6 +172,10 @@ class LogMessage {
       assert(false);
     }
 #endif
+
+#if defined(__OHOS__) && defined(LITE_WITH_LOG)
+    ohos::log(log_stream_.str());
+#endif
     fprintf(stderr, "%s", log_stream_.str().c_str());
   }
 
@@ -198,6 +206,9 @@ class LogMessageFatal : public LogMessage {
     log_stream_ << '\n';
 #ifdef LITE_WITH_ANDROID
     ANDROID_LOG_F(log_stream_.str().c_str());
+#endif
+#if defined(__OHOS__) && defined(LITE_WITH_LOG)
+    ohos::log(log_stream_.str());
 #endif
     fprintf(stderr, "%s", log_stream_.str().c_str());
 
@@ -239,6 +250,10 @@ class VLogMessage {
     log_stream_ << '\n';
 #ifdef LITE_WITH_ANDROID
     ANDROID_LOG_I(log_stream_.str().c_str());
+#endif
+
+#if defined(__OHOS__) && defined(LITE_WITH_LOG)
+    ohos::log(log_stream_.str());
 #endif
     fprintf(stderr, "%s", log_stream_.str().c_str());
   }
