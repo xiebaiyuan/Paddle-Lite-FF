@@ -171,8 +171,7 @@ void sgemv_trans(const int M,
                  ARMContext *ctx) {
   // Add safety checks to prevent SEGV_MAPERR
   if (!A || !x || !y || !ctx) {
-    LOG(FATAL) << "sgemv_trans: null pointer detected - A:" << A 
-               << " x:" << x << " y:" << y << " ctx:" << ctx;
+    LOG(FATAL) << "sgemv_trans: null pointer detected";
     return;
   }
   if (M <= 0 || N <= 0) {
@@ -202,10 +201,7 @@ void sgemv_trans(const int M,
   size_t x_buf_size = static_cast<size_t>(valid_block) * valid_ths;
   
   if (y_buf_size > 1e8 || x_buf_size > 1e8 || M > 1e6) {
-    LOG(FATAL) << "sgemv_trans: excessive memory allocation requested - "
-               << "y_buf_size:" << y_buf_size 
-               << " x_buf_size:" << x_buf_size 
-               << " M:" << M;
+    LOG(FATAL) << "sgemv_trans: excessive memory allocation requested";
     return;
   }
   
