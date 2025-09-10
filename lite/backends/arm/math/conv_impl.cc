@@ -538,6 +538,35 @@ void conv1x1s1_gemm(const float* i_data,
                     const float* bias,
                     const operators::ConvParam& param,
                     ARMContext* ctx) {
+  // Add comprehensive safety checks for conv1x1s1_gemm
+  if (!i_data || !o_data || !weights || !ctx) {
+    // Use CHECK instead of LOG(FATAL) to avoid compilation issues
+    CHECK(i_data) << "conv1x1s1_gemm: i_data is null";
+    CHECK(o_data) << "conv1x1s1_gemm: o_data is null";
+    CHECK(weights) << "conv1x1s1_gemm: weights is null";
+    CHECK(ctx) << "conv1x1s1_gemm: ctx is null";
+    return;
+  }
+  
+  if (num <= 0 || oc <= 0 || oh <= 0 || ow <= 0 || 
+      ic <= 0 || ih <= 0 || win <= 0) {
+    CHECK(false) << "conv1x1s1_gemm: invalid dimensions - "
+                 << "num:" << num << " oc:" << oc << " oh:" << oh 
+                 << " ow:" << ow << " ic:" << ic << " ih:" << ih 
+                 << " win:" << win;
+    return;
+  }
+  
+  // Check for potential overflow in size calculations
+  size_t channel_size_out_check = static_cast<size_t>(ow) * oh;
+  size_t channel_size_in_check = static_cast<size_t>(win) * ih;
+  if (channel_size_out_check > 1e8 || channel_size_in_check > 1e8) {
+    CHECK(false) << "conv1x1s1_gemm: excessive channel sizes - "
+                 << "channel_size_out:" << channel_size_out_check
+                 << " channel_size_in:" << channel_size_in_check;
+    return;
+  }
+  
   int channel_size_out = ow * oh;
   int channel_size_in = win * ih;
 
@@ -570,6 +599,16 @@ void conv1x1s1_gemm(const float* i_data,
       const float* bias_group = static_cast<const float*>(bias) + g * m;
 
       if (n == 1) {
+        // Additional safety check before calling sgemv
+        if (!weights_group || !din_group || !dout_group) {
+          LOG(FATAL) << "conv1x1s1_gemm: null group pointers detected in n==1 case";
+          return;
+        }
+        if (m <= 0 || k <= 0) {
+          LOG(FATAL) << "conv1x1s1_gemm: invalid sgemv dimensions m=" << m << " k=" << k;
+          return;
+        }
+        
         sgemv(weights_group,
               din_group,
               dout_group,
@@ -582,6 +621,16 @@ void conv1x1s1_gemm(const float* i_data,
               act_param,
               ctx);
       } else if (m == 1) {
+        // Additional safety check before calling sgemv transpose
+        if (!weights_group || !din_group || !dout_group) {
+          LOG(FATAL) << "conv1x1s1_gemm: null group pointers detected in m==1 case";
+          return;
+        }
+        if (n <= 0 || k <= 0) {
+          LOG(FATAL) << "conv1x1s1_gemm: invalid sgemv_trans dimensions n=" << n << " k=" << k;
+          return;
+        }
+        
 #ifdef TARGET_IOS
         float* bias_ptr = new float[n];
 #else

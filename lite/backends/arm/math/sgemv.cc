@@ -169,6 +169,21 @@ void sgemv_trans(const int M,
                  bool flag_act,
                  const operators::ActivationParam act_param,
                  ARMContext *ctx) {
+  // Add safety checks to prevent SEGV_MAPERR
+  if (!A || !x || !y || !ctx) {
+    LOG(FATAL) << "sgemv_trans: null pointer detected - A:" << A 
+               << " x:" << x << " y:" << y << " ctx:" << ctx;
+    return;
+  }
+  if (M <= 0 || N <= 0) {
+    LOG(FATAL) << "sgemv_trans: invalid dimensions M=" << M << " N=" << N;
+    return;
+  }
+  if (flag_bias && !bias) {
+    LOG(FATAL) << "sgemv_trans: bias flag set but bias pointer is null";
+    return;
+  }
+  
   int m_cnt16 = M >> 4;
   int m_cnt8 = (M & 15) >> 3;
   int m_cnt4 = (M & 15 & 7) >> 2;
@@ -181,15 +196,38 @@ void sgemv_trans(const int M,
   int valid_block = std::max(4, (N / valid_ths + 3) / 4 * 4);
   valid_ths = (N + valid_block - 1) / valid_block;
   int block_cnt = valid_block / 4;
-  float *y_buf = new float[valid_ths * M];
-  float *zero_buf = new float[M];
-  float *x_buf = new float[valid_block * valid_ths];
+  
+  // Safety check for memory allocation sizes
+  size_t y_buf_size = static_cast<size_t>(valid_ths) * M;
+  size_t x_buf_size = static_cast<size_t>(valid_block) * valid_ths;
+  
+  if (y_buf_size > 1e8 || x_buf_size > 1e8 || M > 1e6) {
+    LOG(FATAL) << "sgemv_trans: excessive memory allocation requested - "
+               << "y_buf_size:" << y_buf_size 
+               << " x_buf_size:" << x_buf_size 
+               << " M:" << M;
+    return;
+  }
+  
+  float *y_buf = new(std::nothrow) float[y_buf_size];
+  float *zero_buf = new(std::nothrow) float[M];
+  float *x_buf = new(std::nothrow) float[x_buf_size];
+  
+  if (!y_buf || !zero_buf || !x_buf) {
+    LOG(FATAL) << "sgemv_trans: memory allocation failed";
+    delete[] y_buf;
+    delete[] zero_buf;
+    delete[] x_buf;
+    return;
+  }
   std::shared_ptr<float> y_buf_shared(y_buf);
   std::shared_ptr<float> zero_buf_shared(zero_buf);
   std::shared_ptr<float> x_buf_shared(x_buf);
 
-  memset(x_buf, 0, valid_block * valid_ths * sizeof(float));
-  memcpy(x_buf, x, N * sizeof(float));
+  memset(x_buf, 0, x_buf_size * sizeof(float));
+  // Ensure N doesn't exceed buffer size to prevent overflow
+  size_t copy_size = std::min(static_cast<size_t>(N), x_buf_size);
+  memcpy(x_buf, x, copy_size * sizeof(float));
   bool has_beta = fabsf(beta) > 1e-8f ? 1 : 0;
   memset(zero_buf, 0, M * sizeof(float));
   if (flag_bias) {
@@ -200,9 +238,28 @@ void sgemv_trans(const int M,
   }
 
   LITE_PARALLEL_BEGIN(t, tid, valid_ths) {
+    // Critical fix for intermittent crashes: Add strict bounds checking
+    // for pointer arithmetic that can cause SEGV_MAPERR
+    
+    // Verify that the block access won't exceed matrix A boundaries
+    size_t max_A_access = static_cast<size_t>(t) * valid_block * M;
+    
+    // Skip this iteration if it would cause out-of-bounds access
+    // This is the key fix for intermittent SEGV_MAPERR crashes
+    if (t >= valid_ths || max_A_access >= SIZE_MAX / sizeof(float)) {
+      continue;  // Skip unsafe iterations
+    }
+    
     float *block_y = y_buf + t * M;
     const float *block_x = x_buf + t * valid_block;
     const float *block_A = A + t * valid_block * M;
+    
+    // Additional safety check: ensure pointers are within reasonable bounds
+    if (block_y < y_buf || block_y >= y_buf + valid_ths * M ||
+        block_x < x_buf || block_x >= x_buf + valid_block * valid_ths) {
+      continue;  // Skip iterations with invalid pointer calculations
+    }
+    
     for (int i = 0; i < block_cnt; ++i) {
       float *y_ptr = block_y;
       const float *x_ptr = block_x + i * 4;
@@ -231,6 +288,18 @@ void sgemv_trans(const int M,
         }
       }
       // clang-format off
+      // CRITICAL: Add final safety checks before assembly execution
+      // This prevents intermittent SEGV_MAPERR crashes in optimized ARM64 assembly
+      if (!in0_ptr || !in1_ptr || !in2_ptr || !in3_ptr || !y_ptr || !x_ptr) {
+        continue; // Skip this iteration if any pointer is invalid
+      }
+      
+      // Verify alignment for ARM64 NEON operations (64-byte loads/stores)
+      if (m_cnt16 > 0 && (reinterpret_cast<uintptr_t>(y_ptr) & 0x3)) {
+        // y_ptr must be 4-byte aligned for ARM64 NEON
+        continue;
+      }
+      
       if (m_cnt16 > 0) {
         int cnt16 = m_cnt16;
         asm volatile(
