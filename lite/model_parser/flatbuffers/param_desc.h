@@ -46,8 +46,8 @@ class ParamDescView : public ParamDescReadAPI {
   void Init() {
     CHECK(desc_);
     CHECK(desc_->variable_type() ==
-          proto::ParamDesc_::VariableDesc_LoDTensorDesc);
-    tensor_desc_ = desc_->variable_as<proto::ParamDesc_::LoDTensorDesc>();
+          proto::ParamDesc_::VariableDesc_DenseTensorDesc);
+    tensor_desc_ = desc_->variable_as<proto::ParamDesc_::DenseTensorDesc>();
     CHECK(tensor_desc_);
     CHECK(tensor_desc_->data());
   }
@@ -79,7 +79,7 @@ class ParamDescView : public ParamDescReadAPI {
 
  private:
   proto::ParamDesc const* desc_;
-  proto::ParamDesc_::LoDTensorDesc const* tensor_desc_;
+  proto::ParamDesc_::DenseTensorDesc const* tensor_desc_;
 };
 
 class CombinedParamsDescView : public CombinedParamsDescReadAPI {
@@ -128,43 +128,43 @@ class CombinedParamsDescView : public CombinedParamsDescReadAPI {
 class ParamDesc : public ParamDescAPI {
  public:
   ParamDesc() : owned_(true), desc_(new proto::ParamDescT()) {
-    desc_->variable.Set(proto::ParamDesc_::LoDTensorDescT());
-    lod_tensor_ = desc_->variable.AsLoDTensorDesc();
-    CHECK(lod_tensor_);
+    desc_->variable.Set(proto::ParamDesc_::DenseTensorDescT());
+    dense_tensor_ = desc_->variable.AsDenseTensorDesc();
+    CHECK(dense_tensor_);
   }
 
   explicit ParamDesc(proto::ParamDescT* desc) : desc_(desc) {
     if (desc_->variable.type == proto::ParamDesc_::VariableDesc_NONE) {
-      desc_->variable.Set(proto::ParamDesc_::LoDTensorDescT());
+      desc_->variable.Set(proto::ParamDesc_::DenseTensorDescT());
     }
     CHECK(desc_->variable.type ==
-          proto::ParamDesc_::VariableDesc_LoDTensorDesc);
-    lod_tensor_ = desc_->variable.AsLoDTensorDesc();
-    CHECK(lod_tensor_);
+          proto::ParamDesc_::VariableDesc_DenseTensorDesc);
+    dense_tensor_ = desc_->variable.AsDenseTensorDesc();
+    CHECK(dense_tensor_);
   }
 
   std::string Name() const override { return desc_->name; }
   void SetName(const std::string& name) override { desc_->name = name; }
 
-  std::vector<int64_t> Dim() const override { return lod_tensor_->dim; }
+  std::vector<int64_t> Dim() const override { return dense_tensor_->dim; }
   void SetDim(const std::vector<int64_t>& dim) override {
-    lod_tensor_->dim = dim;
+    dense_tensor_->dim = dim;
   }
 
   VarDataType GetDataType() const override {
-    return ConvertVarType(lod_tensor_->data_type);
+    return ConvertVarType(dense_tensor_->data_type);
   }
   void SetDataType(VarDataType data_type) override {
-    lod_tensor_->data_type = ConvertVarType(data_type);
+    dense_tensor_->data_type = ConvertVarType(data_type);
   }
 
-  const void* GetData() const override { return lod_tensor_->data.data(); }
+  const void* GetData() const override { return dense_tensor_->data.data(); }
 
-  size_t byte_size() const override { return lod_tensor_->data.size(); }
+  size_t byte_size() const override { return dense_tensor_->data.size(); }
 
   void SetData(const void* data, size_t byte_size) override {
-    lod_tensor_->data.resize(byte_size);
-    model_parser::memcpy(lod_tensor_->data.data(), data, byte_size);
+    dense_tensor_->data.resize(byte_size);
+    model_parser::memcpy(dense_tensor_->data.data(), data, byte_size);
   }
 
   const proto::ParamDescT* raw_desc() const { return desc_; }
@@ -195,7 +195,7 @@ class ParamDesc : public ParamDescAPI {
  private:
   bool owned_{false};
   proto::ParamDescT* desc_{nullptr};
-  proto::ParamDesc_::LoDTensorDescT* lod_tensor_{nullptr};
+  proto::ParamDesc_::DenseTensorDescT* dense_tensor_{nullptr};
   flatbuffers::DetachedBuffer buf_;
   flatbuffers::FlatBufferBuilder fbb_;
 };

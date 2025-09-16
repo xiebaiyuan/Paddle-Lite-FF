@@ -18,6 +18,7 @@
 #include "lite/backends/metal/metal_common.h"
 #include "lite/backends/metal/metal_half.h"
 #include "lite/core/dim.h"
+#include <cassert>
 
 namespace paddle {
 namespace lite {

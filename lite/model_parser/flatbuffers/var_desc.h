@@ -39,7 +39,7 @@ class VarDescView : public VarDescAPI {
   bool Persistable() const override { return desc_->persistable(); }
 
   std::vector<int64_t> GetShape() const override {
-    const auto& dims = desc_->type()->lod_tensor()->tensor()->dims();
+    const auto& dims = desc_->type()->dense_tensor()->tensor()->dims();
     std::vector<int64_t> dims_vec;
     dims_vec.resize(dims->size());
     for (size_t i = 0; i < dims->size(); ++i) {
@@ -49,8 +49,8 @@ class VarDescView : public VarDescAPI {
   }
 
   VarDescAPI::Type GetDataType() const {
-    CHECK(GetType() == VarDescAPI::Type::LOD_TENSOR);
-    return ConvertVarType(desc_->type()->lod_tensor()->tensor()->data_type());
+    CHECK(GetType() == VarDescAPI::Type::DENSE_TENSOR);
+    return ConvertVarType(desc_->type()->dense_tensor()->tensor()->data_type());
   }
 
  private:
@@ -94,11 +94,11 @@ class VarDesc : public VarDescAPI {
   void SetType(Type type) override { type_->type = ConvertVarType(type); }
 
   void SetDataType(Type type) {
-    type_->lod_tensor->tensor->data_type = ConvertVarType(type);
+    type_->dense_tensor->tensor->data_type = ConvertVarType(type);
   }
 
   Type GetDataType() const {
-    return ConvertVarType(type_->lod_tensor->tensor->data_type);
+    return ConvertVarType(type_->dense_tensor->tensor->data_type);
   }
 
   bool Persistable() const override { return desc_->persistable; }
@@ -108,11 +108,11 @@ class VarDesc : public VarDescAPI {
   }
 
   std::vector<int64_t> GetShape() const override {
-    return type_->lod_tensor->tensor->dims;
+    return type_->dense_tensor->tensor->dims;
   }
 
   void SetShape(const std::vector<int64_t>& dims) override {
-    type_->lod_tensor->tensor->dims = dims;
+    type_->dense_tensor->tensor->dims = dims;
   }
 
   proto::VarDescT* raw_desc() { return desc_; }
@@ -127,10 +127,10 @@ class VarDesc : public VarDescAPI {
   void InitType() {
     if (!desc_->type) {
       desc_->type = std::unique_ptr<proto::VarTypeT>(new proto::VarTypeT());
-      desc_->type->lod_tensor =
-          std::unique_ptr<proto::VarType_::LoDTensorDescT>(
-              new proto::VarType_::LoDTensorDescT());
-      desc_->type->lod_tensor->tensor =
+      desc_->type->dense_tensor =
+          std::unique_ptr<proto::VarType_::DenseTensorDescT>(
+              new proto::VarType_::DenseTensorDescT());
+      desc_->type->dense_tensor->tensor =
           std::unique_ptr<proto::VarType_::TensorDescT>(
               new proto::VarType_::TensorDescT());
     }

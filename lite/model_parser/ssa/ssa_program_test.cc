@@ -119,7 +119,7 @@ class ProgramDescGenerator {
     CHECK(block_desc);
     auto* var = block_desc->AddVar<general::VarDesc>();
     var->SetName(name);
-    var->SetType(lite::VarDescAPI::Type::LOD_TENSOR);
+    var->SetType(lite::VarDescAPI::Type::DENSE_TENSOR);
   }
   general::ProgramDesc program_desc_;
   int block_idx_{0};
@@ -325,7 +325,7 @@ TEST(SSAProgramTest_2, test) {
           block->GetVar<lite::general::VarDesc>(var_idx);
       if (var->Name() == "array_0.out")
         const_cast<lite::general::VarDesc*>(var)->SetType(
-            lite::VarDescAPI::Type::LOD_TENSOR_ARRAY);
+            lite::VarDescAPI::Type::DENSE_TENSOR_ARRAY);
     }
   }
   ssa::PlainProgramDesc plain_program(cpp_desc);

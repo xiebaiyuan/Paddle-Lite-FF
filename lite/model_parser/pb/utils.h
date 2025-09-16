@@ -29,7 +29,7 @@ lite::VarDataType ConvertVarType(
 
 inline bool IsParamVarDesc(const paddle::framework::proto::VarDesc& var) {
   return var.type().type() ==
-             paddle::framework::proto::VarType_Type_LOD_TENSOR &&
+             paddle::framework::proto::VarType_Type_DENSE_TENSOR &&
          var.persistable();
 }
 

@@ -98,13 +98,13 @@ enum VarDataType {
   INT8,
 
   // Other types that may need additional descriptions
-  LOD_TENSOR,
+  DENSE_TENSOR,
   SELECTED_ROWS,
   FEED_MINIBATCH,
   FETCH_LIST,
   STEP_SCOPES,
   LOD_RANK_TABLE,
-  LOD_TENSOR_ARRAY,
+  DENSE_TENSOR_ARRAY,
   PLACE_LIST,
   READER,
   // Any runtime decided variable type is raw
@@ -124,17 +124,17 @@ class TensorDesc : public StructBuilder {
   }
 };
 
-class LoDTensorDesc : public StructBuilder {
+class DenseTensorDesc : public StructBuilder {
  public:
-  explicit LoDTensorDesc(BinaryTable* table) : StructBuilder(table) {
+  explicit DenseTensorDesc(BinaryTable* table) : StructBuilder(table) {
     New<TensorDesc>("tensor");
     NewInt32("lod_level", 0);
   }
 };
 
-class LoDTensorArrayDesc : public StructBuilder {
+class DenseTensorArrayDesc : public StructBuilder {
  public:
-  explicit LoDTensorArrayDesc(BinaryTable* table) : StructBuilder(table) {
+  explicit DenseTensorArrayDesc(BinaryTable* table) : StructBuilder(table) {
     New<TensorDesc>("tensor");
     NewInt32("lod_level", 0);
   }
@@ -144,14 +144,14 @@ class VarType : public StructBuilder {
  public:
   using Type = VarDataType;
   using enum_builder = EnumBuilder<Type>;
-  using ReaderDesc = ListBuilder<LoDTensorDesc>;
+  using ReaderDesc = ListBuilder<DenseTensorDesc>;
   using Tuple = ListBuilder<enum_builder>;
 
   explicit VarType(BinaryTable* table) : StructBuilder(table) {
     New<enum_builder>("type");
     New<TensorDesc>("selected_rows");
-    New<LoDTensorDesc>("lod_tensor");
-    New<LoDTensorArrayDesc>("tensor_array");
+    New<DenseTensorDesc>("dense_tensor");
+    New<DenseTensorArrayDesc>("tensor_array");
     New<ReaderDesc>("reader");
     New<Tuple>("tuple");
   }

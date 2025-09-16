@@ -170,7 +170,8 @@ class StaticKernelPickPass : public mir::StmtPass {
           std::string argname;
           instruct.op_info()->GetInputArgname(in->AsArg().name, &argname);
           VLOG(5) << "intput var name : " << in->AsArg().name;
-          // only when datatype is LOD_TENSOR, LOD_TENSOR_ARRAY, STEP_SCOPES,
+          // only when datatype is DENSE_TENSOR, DENSE_TENSOR_ARRAY,
+          // STEP_SCOPES,
           // the type pointer is not null;
           if (in->AsArg().type) {
             VLOG(5) << "input datatype : "

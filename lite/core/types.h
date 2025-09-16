@@ -63,13 +63,13 @@ enum class FluidType {
   INT8 = 21,
 
   // Other types that may need additional descriptions
-  LOD_TENSOR = 7,
+  DENSE_TENSOR = 7,
   SELECTED_ROWS = 8,
   FEED_MINIBATCH = 9,
   FETCH_LIST = 10,
   STEP_SCOPES = 11,
   LOD_RANK_TABLE = 12,
-  LOD_TENSOR_ARRAY = 13,
+  DENSE_TENSOR_ARRAY = 13,
   PLACE_LIST = 14,
   READER = 15,
   // Any runtime decided variable type is raw

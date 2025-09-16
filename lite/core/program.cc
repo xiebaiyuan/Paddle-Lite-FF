@@ -70,7 +70,7 @@ void UpdatePersistableVarDesc(cpp::VarDesc* var,
                               Scope* scope) {
   var->SetType(previous_var_desc.GetType());
   var->SetPersistable(previous_var_desc.Persistable());
-  if (previous_var_desc.GetType() == cpp::VarDesc::Type::LOD_TENSOR) {
+  if (previous_var_desc.GetType() == cpp::VarDesc::Type::DENSE_TENSOR) {
     if (var != nullptr) {
       auto tensor = scope->FindVar(var_name)->GetMutable<Tensor>();
       if (tensor != nullptr && tensor->persistable()) {
@@ -89,7 +89,7 @@ void UpdateVarDescFromTensorInfo(cpp::VarDesc* var,
                                  const std::string& var_name,
                                  const std::string& op_type,
                                  Scope* scope) {
-  var->SetType(cpp::VarDesc::Type::LOD_TENSOR);
+  var->SetType(cpp::VarDesc::Type::DENSE_TENSOR);
   auto tensor = scope->FindVar(var_name)->GetMutable<Tensor>();
   var->SetPersistable(tensor->persistable());
   // Move the persistable var from exec scope to the root scope
@@ -135,7 +135,7 @@ void UpdateVarDescFromTensorListInfo(cpp::VarDesc* var,
                                      const std::string& var_name,
                                      const std::string& op_type,
                                      Scope* scope) {
-  var->SetType(cpp::VarDesc::Type::LOD_TENSOR_ARRAY);
+  var->SetType(cpp::VarDesc::Type::DENSE_TENSOR_ARRAY);
   var->SetPersistable(false);
 }
 
@@ -724,7 +724,7 @@ void Program::PrepareWorkspace(
         } else {
           var = exec_scope_->Var(var_name);
         }
-        if (var_type == lite::VarDescAPI::Type::LOD_TENSOR) {
+        if (var_type == lite::VarDescAPI::Type::DENSE_TENSOR) {
           const auto& var_data_type =
               VarDescType2PrecisionType(var_desc->GetDataType());
           if (var_data_type != PRECISION(kUnk)) {
@@ -744,7 +744,7 @@ void Program::PrepareWorkspace(
           }
           tensor->set_precision(var_data_type);
           tensor->set_persistable(var_desc->Persistable());
-        } else if (var_type == lite::VarDescAPI::Type::LOD_TENSOR_ARRAY) {
+        } else if (var_type == lite::VarDescAPI::Type::DENSE_TENSOR_ARRAY) {
           var_type_map_[var_name] = LiteType::GetTensorListTy(
               TARGET(kUnk), PRECISION(kUnk), DATALAYOUT(kUnk));
           auto* tensor_array = var->GetMutable<std::vector<lite::Tensor>>();
@@ -753,7 +753,7 @@ void Program::PrepareWorkspace(
           var->GetMutable<std::vector<lite::Scope*>>();
         }
       } else {
-        if (var_type == lite::VarDescAPI::Type::LOD_TENSOR) {
+        if (var_type == lite::VarDescAPI::Type::DENSE_TENSOR) {
           const auto& var_data_type =
               VarDescType2PrecisionType(var_desc->GetDataType());
           if (var_data_type != PRECISION(kUnk)) {
@@ -761,7 +761,7 @@ void Program::PrepareWorkspace(
                 TARGET(kUnk), var_data_type, DATALAYOUT(kUnk));
           }
           VLOG(4) << " - data type " << static_cast<int>(var_data_type);
-        } else if (var_type == lite::VarDescAPI::Type::LOD_TENSOR_ARRAY) {
+        } else if (var_type == lite::VarDescAPI::Type::DENSE_TENSOR_ARRAY) {
           var_type_map_[var_name] = LiteType::GetTensorListTy(
               TARGET(kUnk), PRECISION(kUnk), DATALAYOUT(kUnk));
         }

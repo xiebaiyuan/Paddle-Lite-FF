@@ -31,7 +31,7 @@ std::weak_ptr<VarDesc> VarDesc::latest() {
 
 std::weak_ptr<VarDesc> VarDesc::Read(const OpDescBase& op_desc) {
   targets_.push_back(&op_desc);
-  if (GetType() == VarDataType::LOD_TENSOR_ARRAY) {
+  if (GetType() == VarDataType::DENSE_TENSOR_ARRAY) {
     if (mutable_) mutable_ = !mutable_;
   }
   return latest();
@@ -48,8 +48,8 @@ std::weak_ptr<VarDesc> VarDesc::NewDescendant() {
 
 std::weak_ptr<VarDesc> VarDesc::Written(const OpDescBase& op_desc) {
   std::weak_ptr<VarDesc> desc;
-  if (GetType() == VarDataType::LOD_TENSOR ||
-      GetType() == VarDataType::LOD_TENSOR_ARRAY) {
+  if (GetType() == VarDataType::DENSE_TENSOR ||
+      GetType() == VarDataType::DENSE_TENSOR_ARRAY) {
     if (mutable_) {
       mutable_ = !mutable_;
       desc = shared_from_this();
@@ -106,10 +106,10 @@ RootVarScope::RootVarScope(const general::BlockDesc& current,
     AddRootVar(current.Idx(), *raw_var);
     // Add accompanying variables indicating dependencies for the lod tensor
     // array type, both of which are located on the same level of scope.
-    if (raw_var->GetType() == VarDescAPI::Type::LOD_TENSOR_ARRAY) {
+    if (raw_var->GetType() == VarDescAPI::Type::DENSE_TENSOR_ARRAY) {
       const std::string asso_var_name{raw_var->Name() + ".AssociatedVar"};
       general::VarDesc asso_var(asso_var_name);
-      asso_var.SetType(VarDescAPI::Type::LOD_TENSOR);
+      asso_var.SetType(VarDescAPI::Type::DENSE_TENSOR);
       asso_var.SetPersistable(false);
       AddRootVar(current.Idx(), std::move(asso_var));
     }

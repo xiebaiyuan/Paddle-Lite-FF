@@ -163,6 +163,10 @@ struct PixelShuffleMetalParam {
     int upscale_factor;
 };
 
+struct PixelUnShuffleMetalParam {
+    int downscale_factor;
+};
+
 struct ShuffleChannelMetalParam {
     uint32_t group;
     uint32_t channel_per_group;

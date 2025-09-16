@@ -16,6 +16,7 @@ limitations under the License. */
 #include <memory>
 #include <string>
 #include <vector>
+
 #include "lite/api/paddle_place.h"
 #include "lite/backends/opencl/cl_include.h"
 #include "lite/backends/opencl/cl_utility.h"
@@ -28,7 +29,8 @@ typedef enum {
   ARM_MALI = 2,
   IMAGINATION_POWERVR = 3,
   APPLE_M1 = 4,
-  OTHERS = 5,
+  MALELOON = 5,
+  OTHERS = 6,
 } GpuType;
 
 typedef enum {
@@ -220,12 +222,14 @@ class CLRuntime {
   void SetTunedLocalWorkSizeMap(const std::string& key,
                                 const std::vector<int>& tune_vct);
 
- private:
-  CLRuntime() { Init(); }
   CLRuntime(const CLRuntime&) = delete;
   CLRuntime(const CLRuntime&&) = delete;
   CLRuntime& operator=(const CLRuntime&) = delete;
   CLRuntime& operator=(const CLRuntime&&) = delete;
+
+ private:
+  CLRuntime() { Init(); }
+
   ~CLRuntime();
 
   bool InitializePlatform();

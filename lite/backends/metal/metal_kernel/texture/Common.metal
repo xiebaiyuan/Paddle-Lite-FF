@@ -163,6 +163,10 @@ struct PixelShuffleParam {
     int32_t upscale_factor;
 };
 
+struct PixelUnShuffleParam {
+    int32_t downscale_factor;
+};
+
 struct ExpandParam {
     ushort fast;
     ushort c;

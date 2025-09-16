@@ -60,7 +60,7 @@ class VarDescAPI : public VarDescReadAPI, public VarDescWriteAPI {
 };
 
 inline bool IsParamVarDesc(const VarDescReadAPI& var) {
-  return var.GetType() == VarDataType::LOD_TENSOR && var.Persistable();
+  return var.GetType() == VarDataType::DENSE_TENSOR && var.Persistable();
 }
 
 }  // namespace lite

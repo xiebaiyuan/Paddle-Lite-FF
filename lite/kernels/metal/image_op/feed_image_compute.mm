@@ -44,6 +44,7 @@ void FeedImageCompute::ReInitWhenNeeded() {
     if (last_input_dims_ != input_dims) {
         release_memory();
         init_memory();
+        setup_pipeline();
     }
 }
 

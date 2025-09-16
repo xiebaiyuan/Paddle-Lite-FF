@@ -74,7 +74,7 @@ TEST(NaiveBufferWrapper, VarDesc) {
   // Set VarDesc
   nb_desc0.SetName("a");
   nb_desc0.SetPersistable(true);
-  nb_desc0.SetType(VarDescAPI::VarDataType::LOD_TENSOR);
+  nb_desc0.SetType(VarDescAPI::VarDataType::DENSE_TENSOR);
 
   // Save model
   pt_desc0.Save();
@@ -88,7 +88,7 @@ TEST(NaiveBufferWrapper, VarDesc) {
   VarDesc nb_desc1(&pt_desc1);
 
   ASSERT_EQ(nb_desc1.Name(), "a");
-  ASSERT_EQ(nb_desc1.GetType(), VarDescAPI::VarDataType::LOD_TENSOR);
+  ASSERT_EQ(nb_desc1.GetType(), VarDescAPI::VarDataType::DENSE_TENSOR);
   ASSERT_TRUE(nb_desc1.Persistable());
 }
 
@@ -227,7 +227,7 @@ TEST(NaiveBufferWrapper, BlockDesc) {
   VarDesc var0_0(nb_desc0.AddVar<proto::VarDesc>());
   var0_0.SetName("a");
   var0_0.SetPersistable(true);
-  var0_0.SetType(VarDescAPI::VarDataType::LOD_TENSOR);
+  var0_0.SetType(VarDescAPI::VarDataType::DENSE_TENSOR);
   VarDesc var0_1(nb_desc0.AddVar<proto::VarDesc>());
   var0_1.SetName("b");
   var0_1.SetPersistable(false);
@@ -258,7 +258,7 @@ TEST(NaiveBufferWrapper, BlockDesc) {
   ASSERT_EQ(nb_desc1.VarsSize(), 2);
   VarDesc var1_0(nb_desc1.GetVar<proto::VarDesc>(0));
   ASSERT_EQ(var1_0.Name(), "a");
-  ASSERT_EQ(var1_0.GetType(), VarDescAPI::VarDataType::LOD_TENSOR);
+  ASSERT_EQ(var1_0.GetType(), VarDescAPI::VarDataType::DENSE_TENSOR);
   ASSERT_TRUE(var1_0.Persistable());
   VarDesc var1_1(nb_desc1.GetVar<proto::VarDesc>(1));
   ASSERT_EQ(var1_1.Name(), "b");

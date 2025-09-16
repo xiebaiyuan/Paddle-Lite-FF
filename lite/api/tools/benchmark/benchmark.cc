@@ -105,6 +105,47 @@ void RunImpl(std::shared_ptr<PaddlePredictor> predictor,
   perf_data->set_post_process_time(timer.Stop());
 }
 #endif
+template <typename T>
+void outputIdxTensor(const Tensor* output_tensor,
+                     std::stringstream& out_ss,
+                     size_t tidx) {
+  auto out_shape = output_tensor->shape();
+  auto out_data = output_tensor->data<T>();
+  auto ele_num = lite::ShapeProduction(out_shape);
+  auto out_mean = lite::compute_mean<T>(out_data, ele_num);
+  auto out_std_dev =
+      lite::compute_standard_deviation<T>(out_data, ele_num, true, out_mean);
+
+  out_ss << "output shape(NCHW): " << lite::ShapePrint(out_shape) << std::endl;
+  out_ss << "output tensor " << tidx << " elem num: " << ele_num << std::endl;
+  out_ss << "output tensor " << tidx << " mean value: " << out_mean
+         << std::endl;
+  out_ss << "output tensor " << tidx << " standard deviation: " << out_std_dev
+         << std::endl;
+
+  if (FLAGS_show_output_elem) {
+    for (int i = 0; i < ele_num; ++i) {
+      out_ss << "out[" << tidx << "][" << i
+             << "]:" << output_tensor->data<T>()[i] << std::endl;
+    }
+  }
+
+  // TODO(sprouteer): Only support float for now, add more types if needed.
+  if (!FLAGS_output_data_path.empty()) {
+    std::stringstream out_data;
+    auto output_path = lite::Split(FLAGS_output_data_path, ":");
+    if (output_path.size() <= tidx) {
+      std::cerr << "Fail to write output tensor to file, tensor_output_path "
+                   "not matching output tensor number. "
+                << std::endl;
+    } else {
+      for (int i = 0; i < ele_num; ++i) {
+        out_data << output_tensor->data<T>()[i] << std::endl;
+      }
+      StoreOutputTensor(out_data, output_path[tidx]);
+    }
+  }
+}
 
 void Run(const std::string& model_file,
          const std::vector<std::vector<int64_t>>& input_shapes) {
@@ -225,42 +266,19 @@ void Run(const std::string& model_file,
   for (size_t tidx = 0; tidx < output_tensor_num; ++tidx) {
     std::unique_ptr<const Tensor> output_tensor = predictor->GetOutput(tidx);
     out_ss << "\n--- output tensor " << tidx << " ---\n";
-    auto out_shape = output_tensor->shape();
-    auto out_data = output_tensor->data<float>();
-    auto ele_num = lite::ShapeProduction(out_shape);
-    auto out_mean = lite::compute_mean<float>(out_data, ele_num);
-    auto out_std_dev = lite::compute_standard_deviation<float>(
-        out_data, ele_num, true, out_mean);
-
-    out_ss << "output shape(NCHW): " << lite::ShapePrint(out_shape)
-           << std::endl;
-    out_ss << "output tensor " << tidx << " elem num: " << ele_num << std::endl;
-    out_ss << "output tensor " << tidx << " mean value: " << out_mean
-           << std::endl;
-    out_ss << "output tensor " << tidx << " standard deviation: " << out_std_dev
-           << std::endl;
-
-    if (FLAGS_show_output_elem) {
-      for (int i = 0; i < ele_num; ++i) {
-        out_ss << "out[" << tidx << "][" << i
-               << "]:" << output_tensor->data<float>()[i] << std::endl;
-      }
-    }
-
-    // TODO(sprouteer): Only support float for now, add more types if needed.
-    if (!FLAGS_output_data_path.empty()) {
-      std::stringstream out_data;
-      auto output_path = lite::Split(FLAGS_output_data_path, ":");
-      if (output_path.size() <= tidx) {
-        std::cerr << "Fail to write output tensor to file, tensor_output_path "
-                     "not matching output tensor number. "
-                  << std::endl;
-      } else {
-        for (int i = 0; i < ele_num; ++i) {
-          out_data << output_tensor->data<float>()[i] << std::endl;
-        }
-        StoreOutputTensor(out_data, output_path[tidx]);
-      }
+    switch (output_tensor->precision()) {
+      case PRECISION(kFloat):
+        outputIdxTensor<float>(output_tensor.get(), out_ss, tidx);
+        break;
+      case PRECISION(kInt32):
+        outputIdxTensor<int32_t>(output_tensor.get(), out_ss, tidx);
+        break;
+      case PRECISION(kInt64):
+        outputIdxTensor<int64_t>(output_tensor.get(), out_ss, tidx);
+        break;
+      default:
+        LOG(FATAL) << "outputIdxTensor unsupported precision type: "
+                   << static_cast<int>(output_tensor->precision());
     }
   }
 

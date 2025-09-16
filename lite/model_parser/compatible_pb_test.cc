@@ -34,7 +34,7 @@ template <typename VarDescType>
 void SetVarDesc(VarDescType* desc) {
   desc->SetName("X");
   desc->SetPersistable(true);
-  desc->SetType(VarDescAPI::Type::LOD_TENSOR);
+  desc->SetType(VarDescAPI::Type::DENSE_TENSOR);
   desc->SetShape({1, 3, 224, 224});
   desc->SetDataType(VarDescAPI::VarDataType::FP32);
 }
@@ -52,7 +52,7 @@ template <typename VarDescType>
 void CheckVarDesc(const VarDescType& desc) {
   ASSERT_EQ(desc.Name(), "X");
   ASSERT_TRUE(desc.Persistable());
-  ASSERT_EQ(desc.GetType(), VarDescAPI::Type::LOD_TENSOR);
+  ASSERT_EQ(desc.GetType(), VarDescAPI::Type::DENSE_TENSOR);
 }
 
 template <typename VarDescType>

@@ -27,10 +27,12 @@ class XPUFcFuser : public FuseBase {
  public:
   explicit XPUFcFuser(bool with_bias,
                       const std::string& act_type,
-                      const std::string& mul_type) {
+                      const std::string& mul_type,
+                      bool with_bn) {
     with_bias_ = with_bias;
     act_type_ = act_type;
     mul_type_ = mul_type;
+    with_bn_ = with_bn;
   }
 
   void BuildPattern() override {
@@ -63,6 +65,18 @@ class XPUFcFuser : public FuseBase {
     PMNode* add_out = nullptr;
     PMNode* act = nullptr;
     PMNode* act_out = nullptr;
+
+    PMNode* bn_bias = nullptr;
+    PMNode* bn_mean = nullptr;
+    PMNode* bn_scale = nullptr;
+    PMNode* bn_var = nullptr;
+    PMNode* bn = nullptr;
+    PMNode* bn_out = nullptr;
+    PMNode* bn_mean_out = nullptr;
+    PMNode* bn_saved_mean = nullptr;
+    PMNode* bn_var_out = nullptr;
+    PMNode* bn_saved_var = nullptr;
+
     if (with_bias_) {
       mul_out->assert_is_op_input("elementwise_add", "X");
       bias = VarNode("bias")
@@ -77,6 +91,39 @@ class XPUFcFuser : public FuseBase {
       act = OpNode("act", act_type_)->AsIntermediate();
       act_out = VarNode("act_out")->assert_is_op_output(act_type_, "Out");
     }
+    if (with_bn_) {
+      bn_bias = VarNode("bn_bias")
+                    ->assert_is_op_input("batch_norm", "Bias")
+                    ->assert_only_one_output()
+                    ->AsIntermediate();
+      bn_mean = VarNode("bn_mean")
+                    ->assert_is_op_input("batch_norm", "Mean")
+                    ->assert_only_one_output()
+                    ->AsIntermediate();
+      bn_scale = VarNode("bn_scale")
+                     ->assert_is_op_input("batch_norm", "Scale")
+                     ->assert_only_one_output()
+                     ->AsIntermediate();
+      bn_var = VarNode("bn_variance")
+                   ->assert_is_op_input("batch_norm", "Variance")
+                   ->assert_only_one_output()
+                   ->AsIntermediate();
+      bn = OpNode("bn", "batch_norm")->AsIntermediate();
+      bn_out = VarNode("bn_out")->assert_is_op_output("batch_norm", "Y");
+      bn_mean_out = VarNode("bn_mean_out")
+                        ->assert_is_op_output("batch_norm", "MeanOut")
+                        ->AsIntermediate();
+      bn_saved_mean = VarNode("bn_saved_mean")
+                          ->assert_is_op_output("batch_norm", "SavedMean")
+                          ->AsIntermediate();
+      bn_var_out = VarNode("bn_var_out")
+                       ->assert_is_op_output("batch_norm", "VarianceOut")
+                       ->AsIntermediate();
+      bn_saved_var = VarNode("bn_saved_var")
+                         ->assert_is_op_output("batch_norm", "SavedVariance")
+                         ->AsIntermediate();
+    }
+
     *x >> *mul >> *mul_out;
     if (with_bias_) {
       mul_out->AsIntermediate();
@@ -85,11 +132,26 @@ class XPUFcFuser : public FuseBase {
     } else {
       add_out = mul_out;
     }
-    if (act_type_ != "linear") {
-      add_out->assert_is_op_input(act_type_, "X")->AsIntermediate();
-      *add_out >> *act >> *act_out;
+    if (with_bn_) {
+      add_out->assert_is_op_input("batch_norm", "X")->AsIntermediate();
+      *add_out >> *bn >> *bn_out;
+      *bn_bias >> *bn;
+      *bn_mean >> *bn;
+      *bn_scale >> *bn;
+      *bn_var >> *bn;
+      *bn >> *bn_mean_out;
+      *bn >> *bn_saved_mean;
+      *bn >> *bn_saved_var;
+      *bn >> *bn_var_out;
     } else {
-      act_out = add_out;
+      bn_out = add_out;
+    }
+
+    if (act_type_ != "linear") {
+      bn_out->assert_is_op_input(act_type_, "X")->AsIntermediate();
+      *bn_out >> *act >> *act_out;
+    } else {
+      act_out = bn_out;
     }
     *W >> *mul;
     act_out->AsOutput();
@@ -103,15 +165,134 @@ class XPUFcFuser : public FuseBase {
     op_desc.mutable_outputs()->clear();
     op_desc.SetType("__xpu__fc");
     op_desc.SetInput("Input", {matched.at("x")->arg()->name});
-    op_desc.SetInput("Filter", {matched.at("W")->arg()->name});
-    if (with_bias_) {
-      op_desc.SetInput("Bias", {matched.at("bias")->arg()->name});
+
+    auto* op_info = matched.at("mul")->stmt()->op_info();
+
+    auto filter_name = matched.at("W")->arg()->name;
+    std::string fusion_bias_name = filter_name + "_fc_fusion_bias";
+    auto* fusion_bias_node = graph->NewArgumentNode(fusion_bias_name);
+    fusion_bias_node->arg()->is_weight = true;
+    fusion_bias_node->arg()->type = LiteType::GetTensorTy(
+        TARGET(kHost), PRECISION(kFloat), DATALAYOUT(kNCHW));
+    auto* fusion_bias_t = scope->MutableParent()->NewTensor(fusion_bias_name);
+    fusion_bias_t->set_precision(paddle::lite_api::PrecisionType::kFloat);
+    if (with_bn_) {
+      auto* filter_t = scope->FindMutableTensor(filter_name);
+      auto& f_dims = filter_t->dims();
+      fusion_bias_t->Resize({f_dims[1]});
+      float* fusion_bias_ptr = fusion_bias_t->mutable_data<float>();
+
+      auto ew_dim = f_dims[1];
+
+      if (with_bias_) {
+        auto ew_bias_add_y_name = matched.at("bias")->arg()->name;
+        auto* ew_bias_add_y_t = scope->FindMutableTensor(ew_bias_add_y_name);
+        float* ew_bias_add_y_on_host = ew_bias_add_y_t->mutable_data<float>();
+        auto ew_bias_add_y_size = ew_bias_add_y_t->numel();
+
+        CHECK_EQ(ew_dim, ew_bias_add_y_size)
+            << "Elements size of `elemwise_bias` and 'mul y dim1` "
+               "should be the same, but get size of `elemwise_bias` "
+               "is: "
+            << ew_bias_add_y_size << ", size of `mul y dim1` is: " << ew_dim;
+
+        for (int i = 0; i < ew_bias_add_y_size; ++i) {
+          fusion_bias_ptr[i] = ew_bias_add_y_on_host[i];
+        }
+      } else {
+        for (int i = 0; i < ew_dim; ++i) {
+          fusion_bias_ptr[i] = 0.0f;
+        }
+      }
+
+      auto scale_name = matched.at("bn_scale")->arg()->name;
+      auto bias_name = matched.at("bn_bias")->arg()->name;
+      auto mean_name = matched.at("bn_mean")->arg()->name;
+      auto var_name = matched.at("bn_variance")->arg()->name;
+
+      auto* scale_t = scope->FindMutableTensor(scale_name);
+      auto* bias_t = scope->FindMutableTensor(bias_name);
+      auto* mean_t = scope->FindMutableTensor(mean_name);
+      auto* var_t = scope->FindMutableTensor(var_name);
+
+      int mean_len = mean_t->numel();
+      int filter_len = filter_t->numel();
+      int filter_row_num = filter_len / mean_len;
+
+      float* scale_on_host = scale_t->mutable_data<float>();
+      float* bias_on_host = bias_t->mutable_data<float>();
+      float* mean_on_host = mean_t->mutable_data<float>();
+      float* var_on_host = var_t->mutable_data<float>();
+
+      float epsilon = 0.00001f;
+      if (matched.at("bn")->stmt()->op_info()->HasAttr("epsilon")) {
+        epsilon =
+            matched.at("bn")->stmt()->op_info()->GetAttr<float>("epsilon");
+      }
+
+      for (int i = 0; i < mean_len; ++i) {
+        scale_on_host[i] = scale_on_host[i] / sqrtf(var_on_host[i] + epsilon);
+      }
+
+      for (int i = 0; i < mean_len; ++i) {
+        bias_on_host[i] +=
+            (fusion_bias_ptr[i] - mean_on_host[i]) * scale_on_host[i];
+      }
+      memcpy(fusion_bias_ptr, bias_on_host, mean_len * sizeof(float));
+      fusion_bias_t->set_persistable(true);
+      op_desc.SetInput("Bias", {fusion_bias_name});
+
+      if (!(op_info->HasAttr("enable_int8") &&
+            op_info->GetAttr<bool>("enable_int8"))) {
+        float* filter_on_host = filter_t->mutable_data<float>();
+        for (int i = 0; i < mean_len; ++i) {
+          for (int j = 0; j < filter_row_num; ++j) {
+            filter_on_host[i + mean_len * j] *= scale_on_host[i];
+          }
+        }
+      }
+
+      if ((op_info->HasAttr("enable_int8") &&
+           op_info->GetAttr<bool>("enable_int8"))) {
+        auto max_y0_vector = op_info->GetAttr<std::vector<float>>("Y0_scale");
+        CHECK_EQ(max_y0_vector.size(), mean_len)
+            << "Weight max_scale size must equal batch_norm sacle/mean "
+               "size.";
+        for (int i = 0; i < mean_len; i++) {
+          max_y0_vector[i] *= fabs(scale_on_host[i]);
+        }
+        matched.at("mul")
+            ->stmt()
+            ->mutable_op_info()
+            ->SetAttr<std::vector<float>>("Y0_scale", max_y0_vector);
+
+        int8_t* filter_on_host = filter_t->mutable_data<int8_t>();
+        for (int i = 0; i < mean_len; i++) {
+          if (scale_on_host[i] < 0) {
+            for (int j = 0; j < filter_row_num; ++j) {
+              filter_on_host[i + mean_len * j] *= -1;
+            }
+          }
+        }
+      }
+
+      op_desc.SetInput("Filter", {filter_name});
+
+    } else {
+      if (with_bias_) {
+        op_desc.SetInput("Bias", {matched.at("bias")->arg()->name});
+      }
+      op_desc.SetInput("Filter", {matched.at("W")->arg()->name});
     }
-    op_desc.SetAttr<bool>("has_bias", with_bias_);
+
+    op_desc.SetAttr<bool>("has_bias", (with_bias_ || with_bn_));
     std::string output_name, output_node_name;
     if (act_type_ != "linear") {
       output_name = matched.at("act_out")->arg()->name;
       output_node_name = "act_out";
+    } else if (with_bn_) {
+      output_name = matched.at("bn_out")->arg()->name;
+      output_node_name = "bn_out";
     } else if (with_bias_) {
       output_name = matched.at("add_out")->arg()->name;
       output_node_name = "add_out";
@@ -121,7 +302,7 @@ class XPUFcFuser : public FuseBase {
     }
     bool per_channel = false;
     int weight_scale_size = 1;
-    auto* op_info = matched.at("mul")->stmt()->op_info();
+
     auto mul_input_y_name = op_info->Input("Y").front();
     auto mul_y_shape = scope->FindMutableTensor(mul_input_y_name)->dims();
     CHECK_EQ(mul_y_shape.size(), 2) << "mul_y_shape.size: "
@@ -265,7 +446,10 @@ class XPUFcFuser : public FuseBase {
 
     IR_NODE_LINK_TO(matched.at("W"), new_op_node);
     IR_NODE_LINK_TO(matched.at("x"), new_op_node);
-    if (with_bias_) {
+    if (with_bn_) {
+      IR_NODE_LINK_TO(fusion_bias_node, new_op_node);
+    }
+    if (with_bias_ && !with_bn_) {
       IR_NODE_LINK_TO(matched.at("bias"), new_op_node);
     }
     IR_NODE_LINK_TO(new_op_node, matched.at(output_node_name));
@@ -276,6 +460,7 @@ class XPUFcFuser : public FuseBase {
   bool with_bias_;
   std::string act_type_;
   std::string mul_type_;
+  bool with_bn_;
   bool IsPerTensorQuant(const std::vector<float>& weight_max) {
     bool per_tensor = true;
     CHECK_GT(weight_max.size(), 0) << "fc channel size: " << weight_max.size();
@@ -309,8 +494,10 @@ class XPUFcFusePass : public ProgramPass {
                             "relu6",*/
                             "linear"}) {
         for (auto mul_type : {"mul", "matmul", "matmul_v2"}) {
-          fusion::XPUFcFuser fuser(with_bias, act_type, mul_type);
-          fuser(graph.get());
+          for (auto with_bn : {true, false}) {
+            fusion::XPUFcFuser fuser(with_bias, act_type, mul_type, with_bn);
+            fuser(graph.get());
+          }
         }
       }
     }

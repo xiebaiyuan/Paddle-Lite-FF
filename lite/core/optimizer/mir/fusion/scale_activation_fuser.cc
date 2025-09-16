@@ -89,7 +89,10 @@ cpp::OpDesc ScaleActivationFuser::GenOpDesc(const key2nodes_t& matched) {
     auto prelu_mode = act_op_desc->GetAttr<std::string>("mode");
     op_desc.SetAttr("mode", prelu_mode);
   } else if (act_type_ == "swish") {
-    float scale = act_op_desc->GetAttr<float>("beta");
+    float scale = 1.0;
+    if (act_op_desc->HasAttr("beta")) {
+      scale = act_op_desc->GetAttr<float>("beta");
+    }
     op_desc.SetAttr("beta", scale);
   }
   auto& out_name = matched.at("output")->arg()->name;

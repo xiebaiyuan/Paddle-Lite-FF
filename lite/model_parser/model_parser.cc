@@ -192,7 +192,7 @@ void LoadNonCombinedParamsPb(const std::string &model_dir,
         model_parser::BinaryFileReader reader(model_dir + "/" + var->Name());
         model_parser::pb::LoDTensorDeserializer loader;
         switch (var->GetType()) {
-          case VarDescAPI::Type::LOD_TENSOR:
+          case VarDescAPI::Type::DENSE_TENSOR:
             LoadLoDTensor(&loader, &reader, scope->Var(var->Name()));
             break;
           default:
@@ -685,7 +685,7 @@ void LoadModelNaive(const std::string &model_dir,
       VLOG(4) << "reading weight " << var.Name();
 
       switch (var.GetType()) {
-        case VarDescAPI::Type::LOD_TENSOR:
+        case VarDescAPI::Type::DENSE_TENSOR:
           LoadParamNaive(file_path, scope, var.Name());
           break;
         default:

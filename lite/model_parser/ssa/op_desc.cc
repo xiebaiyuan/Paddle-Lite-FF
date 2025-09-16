@@ -115,21 +115,21 @@ WriteBackOp::WriteBackOp(const std::weak_ptr<VarDesc>& src,
                          int32_t block_idx,
                          bool tensor_array_copy) {
   if (!tensor_array_copy) {
-    CHECK(src.lock()->GetType() == VarDataType::LOD_TENSOR);
-    CHECK(dst.lock()->GetType() == VarDataType::LOD_TENSOR);
+    CHECK(src.lock()->GetType() == VarDataType::DENSE_TENSOR);
+    CHECK(dst.lock()->GetType() == VarDataType::DENSE_TENSOR);
     AddInput(input_src_, src, block_idx);
     AddInput(input_dst_, dst, block_idx);
   } else {
-    CHECK(src.lock()->GetType() == VarDataType::LOD_TENSOR_ARRAY);
-    CHECK(dst.lock()->GetType() == VarDataType::LOD_TENSOR_ARRAY);
+    CHECK(src.lock()->GetType() == VarDataType::DENSE_TENSOR_ARRAY);
+    CHECK(dst.lock()->GetType() == VarDataType::DENSE_TENSOR_ARRAY);
     AddInput(input_src_array_, src, block_idx);
     AddInput(input_dst_array_, dst, block_idx);
   }
   for (auto& op : dst.lock()->target_ops()) {
     for (auto& dep_var : ConvertToSet(op->outputs())) {
-      if (dep_var.lock()->GetType() == VarDataType::LOD_TENSOR) {
+      if (dep_var.lock()->GetType() == VarDataType::DENSE_TENSOR) {
         AddInput(input_lod_deps_, dep_var, block_idx);
-      } else if (dep_var.lock()->GetType() == VarDataType::LOD_TENSOR_ARRAY) {
+      } else if (dep_var.lock()->GetType() == VarDataType::DENSE_TENSOR_ARRAY) {
         AddInput(input_lod_array_deps_, dep_var, block_idx);
       } else {
         LOG(FATAL) << "unsupported dependency var: "

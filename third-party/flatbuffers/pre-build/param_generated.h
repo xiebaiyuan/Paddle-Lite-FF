@@ -17,9 +17,9 @@ struct CombinedParamsDescT;
 
 namespace ParamDesc_ {
 
-struct LoDTensorDesc;
-struct LoDTensorDescBuilder;
-struct LoDTensorDescT;
+struct DenseTensorDesc;
+struct DenseTensorDescBuilder;
+struct DenseTensorDescT;
 
 struct VersionDesc;
 struct VersionDescBuilder;
@@ -35,8 +35,8 @@ bool operator==(const CombinedParamsDescT &lhs, const CombinedParamsDescT &rhs);
 bool operator!=(const CombinedParamsDescT &lhs, const CombinedParamsDescT &rhs);
 namespace ParamDesc_ {
 
-bool operator==(const LoDTensorDescT &lhs, const LoDTensorDescT &rhs);
-bool operator!=(const LoDTensorDescT &lhs, const LoDTensorDescT &rhs);
+bool operator==(const DenseTensorDescT &lhs, const DenseTensorDescT &rhs);
+bool operator!=(const DenseTensorDescT &lhs, const DenseTensorDescT &rhs);
 bool operator==(const VersionDescT &lhs, const VersionDescT &rhs);
 bool operator!=(const VersionDescT &lhs, const VersionDescT &rhs);
 }  // namespace ParamDesc_
@@ -48,7 +48,7 @@ inline const flatbuffers::TypeTable *CombinedParamsDescTypeTable();
 
 namespace ParamDesc_ {
 
-inline const flatbuffers::TypeTable *LoDTensorDescTypeTable();
+inline const flatbuffers::TypeTable *DenseTensorDescTypeTable();
 
 inline const flatbuffers::TypeTable *VersionDescTypeTable();
 
@@ -60,15 +60,15 @@ namespace ParamDesc_ {
 
 enum VariableDesc {
   VariableDesc_NONE = 0,
-  VariableDesc_LoDTensorDesc = 1,
+  VariableDesc_DenseTensorDesc = 1,
   VariableDesc_MIN = VariableDesc_NONE,
-  VariableDesc_MAX = VariableDesc_LoDTensorDesc
+  VariableDesc_MAX = VariableDesc_DenseTensorDesc
 };
 
 inline const VariableDesc (&EnumValuesVariableDesc())[2] {
   static const VariableDesc values[] = {
     VariableDesc_NONE,
-    VariableDesc_LoDTensorDesc
+    VariableDesc_DenseTensorDesc
   };
   return values;
 }
@@ -76,14 +76,14 @@ inline const VariableDesc (&EnumValuesVariableDesc())[2] {
 inline const char * const *EnumNamesVariableDesc() {
   static const char * const names[3] = {
     "NONE",
-    "LoDTensorDesc",
+    "DenseTensorDesc",
     nullptr
   };
   return names;
 }
 
 inline const char *EnumNameVariableDesc(VariableDesc e) {
-  if (flatbuffers::IsOutRange(e, VariableDesc_NONE, VariableDesc_LoDTensorDesc)) return "";
+  if (flatbuffers::IsOutRange(e, VariableDesc_NONE, VariableDesc_DenseTensorDesc)) return "";
   const size_t index = static_cast<size_t>(e);
   return EnumNamesVariableDesc()[index];
 }
@@ -92,8 +92,8 @@ template<typename T> struct VariableDescTraits {
   static const VariableDesc enum_value = VariableDesc_NONE;
 };
 
-template<> struct VariableDescTraits<paddle::lite::fbs::proto::ParamDesc_::LoDTensorDesc> {
-  static const VariableDesc enum_value = VariableDesc_LoDTensorDesc;
+template<> struct VariableDescTraits<paddle::lite::fbs::proto::ParamDesc_::DenseTensorDesc> {
+  static const VariableDesc enum_value = VariableDesc_DenseTensorDesc;
 };
 
 struct VariableDescUnion {
@@ -128,13 +128,13 @@ struct VariableDescUnion {
   static void *UnPack(const void *obj, VariableDesc type, const flatbuffers::resolver_function_t *resolver);
   flatbuffers::Offset<void> Pack(flatbuffers::FlatBufferBuilder &_fbb, const flatbuffers::rehasher_function_t *_rehasher = nullptr) const;
 
-  paddle::lite::fbs::proto::ParamDesc_::LoDTensorDescT *AsLoDTensorDesc() {
-    return type == VariableDesc_LoDTensorDesc ?
-      reinterpret_cast<paddle::lite::fbs::proto::ParamDesc_::LoDTensorDescT *>(value) : nullptr;
+  paddle::lite::fbs::proto::ParamDesc_::DenseTensorDescT *AsDenseTensorDesc() {
+    return type == VariableDesc_DenseTensorDesc ?
+      reinterpret_cast<paddle::lite::fbs::proto::ParamDesc_::DenseTensorDescT *>(value) : nullptr;
   }
-  const paddle::lite::fbs::proto::ParamDesc_::LoDTensorDescT *AsLoDTensorDesc() const {
-    return type == VariableDesc_LoDTensorDesc ?
-      reinterpret_cast<const paddle::lite::fbs::proto::ParamDesc_::LoDTensorDescT *>(value) : nullptr;
+  const paddle::lite::fbs::proto::ParamDesc_::DenseTensorDescT *AsDenseTensorDesc() const {
+    return type == VariableDesc_DenseTensorDesc ?
+      reinterpret_cast<const paddle::lite::fbs::proto::ParamDesc_::DenseTensorDescT *>(value) : nullptr;
   }
 };
 
@@ -145,9 +145,9 @@ inline bool operator==(const VariableDescUnion &lhs, const VariableDescUnion &rh
     case VariableDesc_NONE: {
       return true;
     }
-    case VariableDesc_LoDTensorDesc: {
-      return *(reinterpret_cast<const paddle::lite::fbs::proto::ParamDesc_::LoDTensorDescT *>(lhs.value)) ==
-             *(reinterpret_cast<const paddle::lite::fbs::proto::ParamDesc_::LoDTensorDescT *>(rhs.value));
+    case VariableDesc_DenseTensorDesc: {
+      return *(reinterpret_cast<const paddle::lite::fbs::proto::ParamDesc_::DenseTensorDescT *>(lhs.value)) ==
+             *(reinterpret_cast<const paddle::lite::fbs::proto::ParamDesc_::DenseTensorDescT *>(rhs.value));
     }
     default: {
       return false;
@@ -248,20 +248,20 @@ flatbuffers::Offset<CombinedParamsDesc> CreateCombinedParamsDesc(flatbuffers::Fl
 
 namespace ParamDesc_ {
 
-struct LoDTensorDescT : public flatbuffers::NativeTable {
-  typedef LoDTensorDesc TableType;
+struct DenseTensorDescT : public flatbuffers::NativeTable {
+  typedef DenseTensorDesc TableType;
   int32_t lod_level;
   std::vector<int64_t> lod;
   std::vector<int64_t> dim;
   paddle::lite::fbs::proto::VarType_::Type data_type;
   std::vector<int8_t> data;
-  LoDTensorDescT()
+  DenseTensorDescT()
       : lod_level(0),
         data_type(paddle::lite::fbs::proto::VarType_::Type_BOOL) {
   }
 };
 
-inline bool operator==(const LoDTensorDescT &lhs, const LoDTensorDescT &rhs) {
+inline bool operator==(const DenseTensorDescT &lhs, const DenseTensorDescT &rhs) {
   return
       (lhs.lod_level == rhs.lod_level) &&
       (lhs.lod == rhs.lod) &&
@@ -270,16 +270,16 @@ inline bool operator==(const LoDTensorDescT &lhs, const LoDTensorDescT &rhs) {
       (lhs.data == rhs.data);
 }
 
-inline bool operator!=(const LoDTensorDescT &lhs, const LoDTensorDescT &rhs) {
+inline bool operator!=(const DenseTensorDescT &lhs, const DenseTensorDescT &rhs) {
     return !(lhs == rhs);
 }
 
 
-struct LoDTensorDesc FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
-  typedef LoDTensorDescT NativeTableType;
-  typedef LoDTensorDescBuilder Builder;
+struct DenseTensorDesc FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  typedef DenseTensorDescT NativeTableType;
+  typedef DenseTensorDescBuilder Builder;
   static const flatbuffers::TypeTable *MiniReflectTypeTable() {
-    return LoDTensorDescTypeTable();
+    return DenseTensorDescTypeTable();
   }
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_LOD_LEVEL = 4,
@@ -330,50 +330,50 @@ struct LoDTensorDesc FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            verifier.VerifyVector(data()) &&
            verifier.EndTable();
   }
-  LoDTensorDescT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  void UnPackTo(LoDTensorDescT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
-  static flatbuffers::Offset<LoDTensorDesc> Pack(flatbuffers::FlatBufferBuilder &_fbb, const LoDTensorDescT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+  DenseTensorDescT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  void UnPackTo(DenseTensorDescT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  static flatbuffers::Offset<DenseTensorDesc> Pack(flatbuffers::FlatBufferBuilder &_fbb, const DenseTensorDescT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
 };
 
-struct LoDTensorDescBuilder {
-  typedef LoDTensorDesc Table;
+struct DenseTensorDescBuilder {
+  typedef DenseTensorDesc Table;
   flatbuffers::FlatBufferBuilder &fbb_;
   flatbuffers::uoffset_t start_;
   void add_lod_level(int32_t lod_level) {
-    fbb_.AddElement<int32_t>(LoDTensorDesc::VT_LOD_LEVEL, lod_level, 0);
+    fbb_.AddElement<int32_t>(DenseTensorDesc::VT_LOD_LEVEL, lod_level, 0);
   }
   void add_lod(flatbuffers::Offset<flatbuffers::Vector<int64_t>> lod) {
-    fbb_.AddOffset(LoDTensorDesc::VT_LOD, lod);
+    fbb_.AddOffset(DenseTensorDesc::VT_LOD, lod);
   }
   void add_dim(flatbuffers::Offset<flatbuffers::Vector<int64_t>> dim) {
-    fbb_.AddOffset(LoDTensorDesc::VT_DIM, dim);
+    fbb_.AddOffset(DenseTensorDesc::VT_DIM, dim);
   }
   void add_data_type(paddle::lite::fbs::proto::VarType_::Type data_type) {
-    fbb_.AddElement<int32_t>(LoDTensorDesc::VT_DATA_TYPE, static_cast<int32_t>(data_type), 0);
+    fbb_.AddElement<int32_t>(DenseTensorDesc::VT_DATA_TYPE, static_cast<int32_t>(data_type), 0);
   }
   void add_data(flatbuffers::Offset<flatbuffers::Vector<int8_t>> data) {
-    fbb_.AddOffset(LoDTensorDesc::VT_DATA, data);
+    fbb_.AddOffset(DenseTensorDesc::VT_DATA, data);
   }
-  explicit LoDTensorDescBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit DenseTensorDescBuilder(flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  LoDTensorDescBuilder &operator=(const LoDTensorDescBuilder &);
-  flatbuffers::Offset<LoDTensorDesc> Finish() {
+  DenseTensorDescBuilder &operator=(const DenseTensorDescBuilder &);
+  flatbuffers::Offset<DenseTensorDesc> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<LoDTensorDesc>(end);
+    auto o = flatbuffers::Offset<DenseTensorDesc>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<LoDTensorDesc> CreateLoDTensorDesc(
+inline flatbuffers::Offset<DenseTensorDesc> CreateDenseTensorDesc(
     flatbuffers::FlatBufferBuilder &_fbb,
     int32_t lod_level = 0,
     flatbuffers::Offset<flatbuffers::Vector<int64_t>> lod = 0,
     flatbuffers::Offset<flatbuffers::Vector<int64_t>> dim = 0,
     paddle::lite::fbs::proto::VarType_::Type data_type = paddle::lite::fbs::proto::VarType_::Type_BOOL,
     flatbuffers::Offset<flatbuffers::Vector<int8_t>> data = 0) {
-  LoDTensorDescBuilder builder_(_fbb);
+  DenseTensorDescBuilder builder_(_fbb);
   builder_.add_data(data);
   builder_.add_data_type(data_type);
   builder_.add_dim(dim);
@@ -382,7 +382,7 @@ inline flatbuffers::Offset<LoDTensorDesc> CreateLoDTensorDesc(
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<LoDTensorDesc> CreateLoDTensorDescDirect(
+inline flatbuffers::Offset<DenseTensorDesc> CreateDenseTensorDescDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
     int32_t lod_level = 0,
     const std::vector<int64_t> *lod = nullptr,
@@ -392,7 +392,7 @@ inline flatbuffers::Offset<LoDTensorDesc> CreateLoDTensorDescDirect(
   auto lod__ = lod ? _fbb.CreateVector<int64_t>(*lod) : 0;
   auto dim__ = dim ? _fbb.CreateVector<int64_t>(*dim) : 0;
   auto data__ = data ? _fbb.CreateVector<int8_t>(*data) : 0;
-  return paddle::lite::fbs::proto::ParamDesc_::CreateLoDTensorDesc(
+  return paddle::lite::fbs::proto::ParamDesc_::CreateDenseTensorDesc(
       _fbb,
       lod_level,
       lod__,
@@ -401,7 +401,7 @@ inline flatbuffers::Offset<LoDTensorDesc> CreateLoDTensorDescDirect(
       data__);
 }
 
-flatbuffers::Offset<LoDTensorDesc> CreateLoDTensorDesc(flatbuffers::FlatBufferBuilder &_fbb, const LoDTensorDescT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+flatbuffers::Offset<DenseTensorDesc> CreateDenseTensorDesc(flatbuffers::FlatBufferBuilder &_fbb, const DenseTensorDescT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
 
 struct VersionDescT : public flatbuffers::NativeTable {
   typedef VersionDesc TableType;
@@ -551,8 +551,8 @@ struct ParamDesc FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return GetPointer<const void *>(VT_VARIABLE);
   }
   template<typename T> const T *variable_as() const;
-  const paddle::lite::fbs::proto::ParamDesc_::LoDTensorDesc *variable_as_LoDTensorDesc() const {
-    return variable_type() == paddle::lite::fbs::proto::ParamDesc_::VariableDesc_LoDTensorDesc ? static_cast<const paddle::lite::fbs::proto::ParamDesc_::LoDTensorDesc *>(variable()) : nullptr;
+  const paddle::lite::fbs::proto::ParamDesc_::DenseTensorDesc *variable_as_DenseTensorDesc() const {
+    return variable_type() == paddle::lite::fbs::proto::ParamDesc_::VariableDesc_DenseTensorDesc ? static_cast<const paddle::lite::fbs::proto::ParamDesc_::DenseTensorDesc *>(variable()) : nullptr;
   }
   void *mutable_variable() {
     return GetPointer<void *>(VT_VARIABLE);
@@ -573,8 +573,8 @@ struct ParamDesc FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   static flatbuffers::Offset<ParamDesc> Pack(flatbuffers::FlatBufferBuilder &_fbb, const ParamDescT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
 };
 
-template<> inline const paddle::lite::fbs::proto::ParamDesc_::LoDTensorDesc *ParamDesc::variable_as<paddle::lite::fbs::proto::ParamDesc_::LoDTensorDesc>() const {
-  return variable_as_LoDTensorDesc();
+template<> inline const paddle::lite::fbs::proto::ParamDesc_::DenseTensorDesc *ParamDesc::variable_as<paddle::lite::fbs::proto::ParamDesc_::DenseTensorDesc>() const {
+  return variable_as_DenseTensorDesc();
 }
 
 struct ParamDescBuilder {
@@ -665,13 +665,13 @@ inline flatbuffers::Offset<CombinedParamsDesc> CreateCombinedParamsDesc(flatbuff
 
 namespace ParamDesc_ {
 
-inline LoDTensorDescT *LoDTensorDesc::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
-  std::unique_ptr<paddle::lite::fbs::proto::ParamDesc_::LoDTensorDescT> _o = std::unique_ptr<paddle::lite::fbs::proto::ParamDesc_::LoDTensorDescT>(new LoDTensorDescT());
+inline DenseTensorDescT *DenseTensorDesc::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
+  std::unique_ptr<paddle::lite::fbs::proto::ParamDesc_::DenseTensorDescT> _o = std::unique_ptr<paddle::lite::fbs::proto::ParamDesc_::DenseTensorDescT>(new DenseTensorDescT());
   UnPackTo(_o.get(), _resolver);
   return _o.release();
 }
 
-inline void LoDTensorDesc::UnPackTo(LoDTensorDescT *_o, const flatbuffers::resolver_function_t *_resolver) const {
+inline void DenseTensorDesc::UnPackTo(DenseTensorDescT *_o, const flatbuffers::resolver_function_t *_resolver) const {
   (void)_o;
   (void)_resolver;
   { auto _e = lod_level(); _o->lod_level = _e; }
@@ -681,20 +681,20 @@ inline void LoDTensorDesc::UnPackTo(LoDTensorDescT *_o, const flatbuffers::resol
   { auto _e = data(); if (_e) { _o->data.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { _o->data[_i] = _e->Get(_i); } } }
 }
 
-inline flatbuffers::Offset<LoDTensorDesc> LoDTensorDesc::Pack(flatbuffers::FlatBufferBuilder &_fbb, const LoDTensorDescT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
-  return CreateLoDTensorDesc(_fbb, _o, _rehasher);
+inline flatbuffers::Offset<DenseTensorDesc> DenseTensorDesc::Pack(flatbuffers::FlatBufferBuilder &_fbb, const DenseTensorDescT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
+  return CreateDenseTensorDesc(_fbb, _o, _rehasher);
 }
 
-inline flatbuffers::Offset<LoDTensorDesc> CreateLoDTensorDesc(flatbuffers::FlatBufferBuilder &_fbb, const LoDTensorDescT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
+inline flatbuffers::Offset<DenseTensorDesc> CreateDenseTensorDesc(flatbuffers::FlatBufferBuilder &_fbb, const DenseTensorDescT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
   (void)_rehasher;
   (void)_o;
-  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const LoDTensorDescT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
+  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const DenseTensorDescT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
   auto _lod_level = _o->lod_level;
   auto _lod = _fbb.CreateVector(_o->lod);
   auto _dim = _fbb.CreateVector(_o->dim);
   auto _data_type = _o->data_type;
   auto _data = _fbb.CreateVector(_o->data);
-  return paddle::lite::fbs::proto::ParamDesc_::CreateLoDTensorDesc(
+  return paddle::lite::fbs::proto::ParamDesc_::CreateDenseTensorDesc(
       _fbb,
       _lod_level,
       _lod,
@@ -776,8 +776,8 @@ inline bool VerifyVariableDesc(flatbuffers::Verifier &verifier, const void *obj,
     case VariableDesc_NONE: {
       return true;
     }
-    case VariableDesc_LoDTensorDesc: {
-      auto ptr = reinterpret_cast<const paddle::lite::fbs::proto::ParamDesc_::LoDTensorDesc *>(obj);
+    case VariableDesc_DenseTensorDesc: {
+      auto ptr = reinterpret_cast<const paddle::lite::fbs::proto::ParamDesc_::DenseTensorDesc *>(obj);
       return verifier.VerifyTable(ptr);
     }
     default: return true;
@@ -798,8 +798,8 @@ inline bool VerifyVariableDescVector(flatbuffers::Verifier &verifier, const flat
 
 inline void *VariableDescUnion::UnPack(const void *obj, VariableDesc type, const flatbuffers::resolver_function_t *resolver) {
   switch (type) {
-    case VariableDesc_LoDTensorDesc: {
-      auto ptr = reinterpret_cast<const paddle::lite::fbs::proto::ParamDesc_::LoDTensorDesc *>(obj);
+    case VariableDesc_DenseTensorDesc: {
+      auto ptr = reinterpret_cast<const paddle::lite::fbs::proto::ParamDesc_::DenseTensorDesc *>(obj);
       return ptr->UnPack(resolver);
     }
     default: return nullptr;
@@ -808,9 +808,9 @@ inline void *VariableDescUnion::UnPack(const void *obj, VariableDesc type, const
 
 inline flatbuffers::Offset<void> VariableDescUnion::Pack(flatbuffers::FlatBufferBuilder &_fbb, const flatbuffers::rehasher_function_t *_rehasher) const {
   switch (type) {
-    case VariableDesc_LoDTensorDesc: {
-      auto ptr = reinterpret_cast<const paddle::lite::fbs::proto::ParamDesc_::LoDTensorDescT *>(value);
-      return CreateLoDTensorDesc(_fbb, ptr, _rehasher).Union();
+    case VariableDesc_DenseTensorDesc: {
+      auto ptr = reinterpret_cast<const paddle::lite::fbs::proto::ParamDesc_::DenseTensorDescT *>(value);
+      return CreateDenseTensorDesc(_fbb, ptr, _rehasher).Union();
     }
     default: return 0;
   }
@@ -818,8 +818,8 @@ inline flatbuffers::Offset<void> VariableDescUnion::Pack(flatbuffers::FlatBuffer
 
 inline VariableDescUnion::VariableDescUnion(const VariableDescUnion &u) : type(u.type), value(nullptr) {
   switch (type) {
-    case VariableDesc_LoDTensorDesc: {
-      value = new paddle::lite::fbs::proto::ParamDesc_::LoDTensorDescT(*reinterpret_cast<paddle::lite::fbs::proto::ParamDesc_::LoDTensorDescT *>(u.value));
+    case VariableDesc_DenseTensorDesc: {
+      value = new paddle::lite::fbs::proto::ParamDesc_::DenseTensorDescT(*reinterpret_cast<paddle::lite::fbs::proto::ParamDesc_::DenseTensorDescT *>(u.value));
       break;
     }
     default:
@@ -829,8 +829,8 @@ inline VariableDescUnion::VariableDescUnion(const VariableDescUnion &u) : type(u
 
 inline void VariableDescUnion::Reset() {
   switch (type) {
-    case VariableDesc_LoDTensorDesc: {
-      auto ptr = reinterpret_cast<paddle::lite::fbs::proto::ParamDesc_::LoDTensorDescT *>(value);
+    case VariableDesc_DenseTensorDesc: {
+      auto ptr = reinterpret_cast<paddle::lite::fbs::proto::ParamDesc_::DenseTensorDescT *>(value);
       delete ptr;
       break;
     }
@@ -846,11 +846,11 @@ inline const flatbuffers::TypeTable *VariableDescTypeTable() {
     { flatbuffers::ET_SEQUENCE, 0, 0 }
   };
   static const flatbuffers::TypeFunction type_refs[] = {
-    paddle::lite::fbs::proto::ParamDesc_::LoDTensorDescTypeTable
+    paddle::lite::fbs::proto::ParamDesc_::DenseTensorDescTypeTable
   };
   static const char * const names[] = {
     "NONE",
-    "LoDTensorDesc"
+    "DenseTensorDesc"
   };
   static const flatbuffers::TypeTable tt = {
     flatbuffers::ST_UNION, 2, type_codes, type_refs, nullptr, names
@@ -878,7 +878,7 @@ inline const flatbuffers::TypeTable *CombinedParamsDescTypeTable() {
 
 namespace ParamDesc_ {
 
-inline const flatbuffers::TypeTable *LoDTensorDescTypeTable() {
+inline const flatbuffers::TypeTable *DenseTensorDescTypeTable() {
   static const flatbuffers::TypeCode type_codes[] = {
     { flatbuffers::ET_INT, 0, -1 },
     { flatbuffers::ET_LONG, 1, -1 },

@@ -126,7 +126,10 @@ void ConvScaleFuser::InsertNewNode(SSAGraph* graph,
     } else if (activation_type == "tanh") {
       conv_op_desc->SetAttr("fuse_tanh", true);
     } else if (activation_type == "swish") {
-      float scale = scale_op_desc->GetAttr<float>("beta");
+      float scale = 1.0;
+      if (scale_op_desc->HasAttr("beta")) {
+        scale = scale_op_desc->GetAttr<float>("beta");
+      }
       conv_op_desc->SetAttr("swish_scale", scale);
       conv_op_desc->SetAttr("fuse_swish", true);
     } else if (activation_type == "abs") {

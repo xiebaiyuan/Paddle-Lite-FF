@@ -141,7 +141,7 @@ void PlainProgramDesc::InsertWriteBackOp(
     auto& pair = elem.second;
     if (!pair.first.expired() && !pair.second.expired()) {
       pair.second.lock()->ResetBlockIdx(pair.first.lock()->block_idx());
-      if (pair.second.lock()->GetType() == VarDataType::LOD_TENSOR_ARRAY) {
+      if (pair.second.lock()->GetType() == VarDataType::DENSE_TENSOR_ARRAY) {
         std::unique_ptr<OpDescBase> op{
             new WriteBackOp{pair.second, pair.first, block->idx(), true}};
         auto input_lod_deps =

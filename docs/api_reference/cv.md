@@ -109,7 +109,7 @@ ImagePreprocess::ImagePreprocess(ImageFormat srcFormat, ImageFormat dstFormat, T
         - param srcw: `ImagePreprocess` 类的成员变量 `transParam_` 结构体中的 `iw` 变量
         - param srch: `ImagePreprocess` 类的成员变量 `transParam_` 结构体中的 `ih` 变量
 
-    - 第二个`image_convert` 接口, 可以直接使用
+    - 第三个`image_convert` 接口, 可以直接使用
     
 ### 缩放 Resize
 

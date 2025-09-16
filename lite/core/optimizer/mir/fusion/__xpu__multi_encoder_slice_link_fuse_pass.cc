@@ -36,21 +36,22 @@ class XPUMultiEncoderSliceLinkFuser : public FuseBase {
     PMNode* layer_norm = nullptr;
     PMNode* layer_norm_out = nullptr;
 
-    auto* slice = OpNode("slice", "slice")
-                      ->assert_op_attr_satisfied<std::vector<int>>(
-                          "axes",
-                          [](const std::vector<int>& attr) {
-                            return attr.size() == 1 && attr[0] == 1;
-                          })
-                      ->assert_op_attr_satisfied<std::vector<int>>(
-                          "starts",
-                          [](const std::vector<int>& attr) {
-                            return attr.size() == 1 && attr[0] == 0;
-                          })
-                      ->assert_op_attr_satisfied<std::vector<int>>(
-                          "ends", [](const std::vector<int>& attr) {
-                            return attr.size() == 1 && attr[0] == 1;
-                          });
+    auto* slice =
+        OpNode("slice", "slice")
+            ->assert_op_attr_satisfied<std::vector<int>>(
+                "axes",
+                [](const std::vector<int>& attr) {
+                  return attr.size() == 1 && attr[0] == 1;
+                })
+            ->assert_op_attr_satisfied<std::vector<int>>(
+                "starts",
+                [](const std::vector<int>& attr) {
+                  return attr.size() == 1 && attr[0] == 0;
+                })
+            ->assert_op_attr_satisfied<std::vector<int>>(
+                "ends", [](const std::vector<int>& attr) {
+                  return attr.size() == 1 && attr[0] > 0 && attr[0] <= 20;
+                });
     if (pre_ln_) {
       xpu_encoder->assert_op_attr<bool>("norm_before", true);
       encoder_out->assert_is_op_input("layer_norm", "X");

@@ -250,7 +250,7 @@ void LightPredictor::BuildRuntimeProgram(
       auto var_desc = block_desc->GetVar<cpp::VarDesc>(var_idx);
       if (!var_desc->Persistable()) {
         auto* var = exe_scope->Var(var_desc->Name());
-        if (var_desc->GetType() == lite::VarDescAPI::Type::LOD_TENSOR) {
+        if (var_desc->GetType() == lite::VarDescAPI::Type::DENSE_TENSOR) {
           const auto var_data_type =
               ConvertPrecisionType(var_desc->GetDataType());
           auto* tensor = var->GetMutable<lite::Tensor>();

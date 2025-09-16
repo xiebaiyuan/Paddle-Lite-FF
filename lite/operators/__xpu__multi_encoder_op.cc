@@ -42,9 +42,11 @@ bool XPUMultiEncoderOp::InferShapeImpl() const {
     seq_len = param_.PadSeqLen->data<int>()[0];
   }
   if ((param_.slice_starts.size() > 0 && param_.slice_starts[0] == 0) &&
-      (param_.slice_ends.size() > 0 && param_.slice_ends[0] == 1) &&
+      (param_.slice_ends.size() > 0 && param_.slice_ends[0] > 0 &&
+       param_.slice_ends[0] <= 20) &&
       (param_.slice_axes.size() > 0 && param_.slice_axes[0] == 1)) {
-    DDim out_dims(std::vector<int64_t>({batch_size, 1, head_num}));
+    DDim out_dims(
+        std::vector<int64_t>({batch_size, param_.slice_ends[0], head_num}));
     if (param_.slice_decrease_axis.size() > 0) {
       std::vector<int64_t> new_out_shape;
       for (size_t i = 0; i < slice_decrease_axis.size(); ++i) {
@@ -65,7 +67,7 @@ bool XPUMultiEncoderOp::InferShapeImpl() const {
       out_dims = new_dims;
     }
     if (param_.norm_before) {
-      param_.output->Resize({batch_size, 1, head_num});
+      param_.output->Resize({batch_size, param_.slice_ends[0], head_num});
     } else {
       param_.output->Resize(out_dims);
     }

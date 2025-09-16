@@ -51,7 +51,11 @@ bool ActivationOp::AttachImpl(const cpp::OpDesc& opdesc, lite::Scope* scope) {
         scope->FindVar(prelu_alpha_name)->GetMutable<lite::Tensor>();
     param_.active_type = lite_api::ActivationType::kPRelu;
   } else if (opdesc.Type() == "swish") {
-    param_.Swish_beta = opdesc.GetAttr<float>("beta");
+    if (opdesc.HasAttr("beta")) {
+      param_.Swish_beta = opdesc.GetAttr<float>("beta");
+    } else {
+      param_.Swish_beta = 1.0f;
+    }
     param_.active_type = lite_api::ActivationType::kSwish;
   } else if (opdesc.Type() == "hard_sigmoid") {
     param_.active_type = lite_api::ActivationType::kHardSigmoid;

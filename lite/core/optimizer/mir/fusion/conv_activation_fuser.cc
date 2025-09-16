@@ -121,7 +121,10 @@ cpp::OpDesc ConvActivationFuser::GenOpDesc(const key2nodes_t& matched) {
   } else if (act_type_ == "tanh") {
     op_desc.SetAttr("fuse_tanh", true);
   } else if (act_type_ == "swish") {
-    float scale = act_op_desc.GetAttr<float>("beta");
+    float scale = 1.0f;
+    if (act_op_desc.HasAttr("beta")) {
+      scale = act_op_desc.GetAttr<float>("beta");
+    }
     op_desc.SetAttr("swish_scale", scale);
     op_desc.SetAttr("fuse_swish", true);
   } else if (act_type_ == "abs") {

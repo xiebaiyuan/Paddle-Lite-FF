@@ -62,13 +62,13 @@ enum class VarDataType {
   INT8,
 
   // Other types that may need additional descriptions
-  LOD_TENSOR,
+  DENSE_TENSOR,
   SELECTED_ROWS,
   FEED_MINIBATCH,
   FETCH_LIST,
   STEP_SCOPES,
   LOD_RANK_TABLE,
-  LOD_TENSOR_ARRAY,
+  DENSE_TENSOR_ARRAY,
   PLACE_LIST,
   READER,
   // Any runtime decided variable type is raw

@@ -136,7 +136,7 @@ def create_fake_model(program_config):
     index = 0
     for name, tensor_config in program_config.inputs.items():
         var_desc = main_block_desc.var(name.encode())
-        var_desc.set_type(core.VarDesc.VarType.LOD_TENSOR)
+        var_desc.set_type(core.VarDesc.VarType.DENSE_TENSOR)
         var_desc.set_dtype(convert_np_dtype_to_dtype_(tensor_config.dtype))
         var_desc.set_shape(tensor_config.shape)
         var_desc.set_need_check_feed(True)
@@ -152,7 +152,7 @@ def create_fake_model(program_config):
     save_var_map = {}
     for name, tensor_config in program_config.weights.items():
         var_desc = main_block_desc.var(name.encode())
-        var_desc.set_type(core.VarDesc.VarType.LOD_TENSOR)
+        var_desc.set_type(core.VarDesc.VarType.DENSE_TENSOR)
         var_desc.set_dtype(convert_np_dtype_to_dtype_(tensor_config.dtype))
         var_desc.set_shape(tensor_config.shape)
         var_desc.set_persistable(True)
@@ -160,7 +160,7 @@ def create_fake_model(program_config):
         save_var_map[name] = util_program.global_block().create_parameter(
             dtype=tensor_config.dtype,
             shape=tensor_config.shape,
-            type=core.VarDesc.VarType.LOD_TENSOR,
+            type=core.VarDesc.VarType.DENSE_TENSOR,
             name=name,
             initializer=paddle.nn.initializer.Assign(tensor_config.data))
     in_vars = []
@@ -187,7 +187,7 @@ def create_fake_model(program_config):
             op_desc.set_output(name, values)
             for v in values:
                 var_desc = main_block_desc.var(v.encode())
-                var_desc.set_type(core.VarDesc.VarType.LOD_TENSOR)
+                var_desc.set_type(core.VarDesc.VarType.DENSE_TENSOR)
                 var_desc.set_dtype(convert_np_dtype_to_dtype_(np.float32))
                 if op_config.outputs_dtype is not None and v in op_config.outputs_dtype.keys(
                 ):

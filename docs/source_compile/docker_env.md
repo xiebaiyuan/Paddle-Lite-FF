@@ -61,3 +61,40 @@ docker restart <container-name>
 # 删除 Docker 容器
 docker rm <container-name>
 ```
+
+### 升级 Docker 容器中 python 版本，使用 pre-commit 检查代码
+
+``` shell
+apt update
+apt install build-essential zlib1g-dev libbz2-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev wget libsqlite3-dev
+wget https://www.python.org/ftp/python/3.7.5/Python-3.7.5.tgz
+tar -xzvf Python-3.7.5.tgz
+cd Python-3.7.5
+./configure
+make
+make install
+rm -rf /usr/bin/python
+rm -rf /usr/bin/pip
+rm -rf /usr/bin/python3
+rm -rf /usr/bin/pip3
+rm -rf /usr/bin/python3.7
+rm -rf /usr/bin/pip3.7
+ln -s /usr/local/bin/python3.7 /usr/bin/python3.7
+ln -s /usr/local/bin/pip3.7 /usr/bin/pip3.7
+ln -s /usr/local/bin/python3.7 /usr/bin/python3
+ln -s /usr/local/bin/pip3.7 /usr/bin/pip3
+ln -s /usr/local/bin/python3.7 /usr/bin/python
+ln -s /usr/local/bin/pip3.7 /usr/bin/pip
+curl https://bootstrap.pypa.io/pip/3.7/get-pip.py -o get-pip.py
+python get-pip.py
+
+vim ~/.bashrc
+# 在最后加上
+export PATH=/usr/local/bin:${PATH}
+
+# 进入 Paddle-Lite 源码目录
+pip install wheel
+pip install pre-commit
+pre-commit run -a
+
+```

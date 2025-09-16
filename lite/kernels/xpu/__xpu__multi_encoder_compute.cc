@@ -239,9 +239,10 @@ void XPUMultiEncoderCompute::PrepareForRun() {
   }
   // prepare with sice
   if ((param.slice_starts.size() > 0 && param.slice_starts[0] == 0) &&
-      (param.slice_ends.size() > 0 && param.slice_ends[0] == 1) &&
+      (param.slice_ends.size() > 0 && param.slice_ends[0] > 0 &&
+       param.slice_ends[0] <= 20) &&
       (param.slice_axes.size() > 0 && param.slice_axes[0] == 1)) {
-    slice_idx = 0;
+    slice_idx = param.slice_ends[0] - 1;
   }
   // prepare input_cast and output_cast guard_
   cast_in_guard_ = TargetWrapperXPU::MallocScratchPad(4 * 1024 * 1024);

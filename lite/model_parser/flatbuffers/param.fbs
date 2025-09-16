@@ -8,7 +8,7 @@ table CombinedParamsDesc {
 
 namespace paddle.lite.fbs.proto.ParamDesc_;
 
-table LoDTensorDesc {
+table DenseTensorDesc {
   lod_level:int;
   lod:[long];
   dim:[long];
@@ -22,7 +22,7 @@ table VersionDesc {
 }
 
 union VariableDesc {
-  LoDTensorDesc
+  DenseTensorDesc
 }
 
 namespace paddle.lite.fbs.proto;

@@ -43,7 +43,6 @@ Welcome to Paddle-Lite's documentation!
   source_compile/macos_compile_macos
   source_compile/macos_compile_ios
   source_compile/macos_compile_android
-  source_compile/windows_compile_windows
   source_compile/compile_options
   source_compile/library_tailoring
 
@@ -73,19 +72,6 @@ Welcome to Paddle-Lite's documentation!
   demo_guides/arm_cpu
   demo_guides/x86
   demo_guides/opencl
-  demo_guides/metal
-  demo_guides/huawei_kirin_npu
-  demo_guides/huawei_ascend_npu
-  demo_guides/kunlunxin_xpu
-  demo_guides/kunlunxin_xtcl
-  demo_guides/qualcomm_qnn
-  demo_guides/cambricon_mlu
-  demo_guides/verisilicon_timvx
-  demo_guides/android_nnapi
-  demo_guides/mediatek_apu
-  demo_guides/imagination_nna
-  demo_guides/intel_openvino
-  demo_guides/eeasytech_npu
 
 .. toctree::
   :maxdepth: 1
