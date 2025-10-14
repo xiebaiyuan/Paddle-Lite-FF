@@ -96,6 +96,7 @@ readonly workspace=$PWD/$(dirname $0)/../../
 # basic options for ohos compiling.
 readonly CMAKE_COMMON_OPTIONS="-DLITE_WITH_ARM=ON \
                                -DLITE_WITH_X86=OFF \
+                               -DLITE_WITH_LIGHT_WEIGHT_FRAMEWORK=ON \
                                -DWITH_TESTING=OFF \
                                -DARM_TARGET_OS=ohos"
 # on mac environment, we should expand the maximum file num to compile successfully
