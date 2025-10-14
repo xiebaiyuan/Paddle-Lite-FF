@@ -121,7 +121,7 @@ lite_option(LITE_WITH_PRECISION_PROFILE "Enable precision profile in profile mod
 lite_option(LITE_WITH_LOG       "Enable log printing or not." ON)
 lite_option(LITE_WITH_EXCEPTION "Enable throwing the exception when error occurs in lite" OFF)
 lite_option(LITE_WITH_NVTX      "Enable nvtx or not, please enable LITE_WITH_CUDA first." OFF)
-lite_option(LITE_ON_TINY_PUBLISH "Publish tiny predictor lib." OFF)
+lite_option(LITE_ON_TINY_PUBLISH "Publish tiny predictor lib." ON)
 lite_option(LITE_ON_MODEL_OPTIMIZE_TOOL "Build the model optimize tool" OFF)
 lite_option(LITE_WITH_BENCHMARK_TEST "Build benchmark test cases" OFF)
 lite_option(LITE_THREAD_POOL    "Enable thread pool in lite" OFF)
