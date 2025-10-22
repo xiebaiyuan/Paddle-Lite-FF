@@ -162,9 +162,9 @@ void ConvCompute::GemmlikeConv2d() {
   }
 
   auto& context = ctx_->As<OpenCLContext>();
-  std::stringstream kernel_key;
-  kernel_key << kernel_func_names_[0] << build_options_[0] << time_stamp_;
-  auto img2col_kernel = context.cl_context()->GetKernel(kernel_key.str());
+  // Use direct string concatenation instead of stringstream for better NDK compatibility
+  std::string kernel_key = kernel_func_names_[0] + build_options_[0] + time_stamp_;
+  auto img2col_kernel = context.cl_context()->GetKernel(kernel_key);
 
   int n_threads = c_in * h_out * w_out;
   int in_stride = c_in * h_in * w_in;
@@ -276,10 +276,9 @@ void ConvCompute::Conv2d1x1() {
   }
 
   auto& context = ctx_->As<OpenCLContext>();
-  std::stringstream kernel_key;
-  kernel_key << kernel_func_names_.front() << build_options_.front()
-             << time_stamp_;
-  auto kernel = context.cl_context()->GetKernel(kernel_key.str());
+  // Use direct string concatenation instead of stringstream for better NDK compatibility
+  std::string kernel_key = kernel_func_names_.front() + build_options_.front() + time_stamp_;
+  auto kernel = context.cl_context()->GetKernel(kernel_key);
 
   GemmBatched(kernel, x_d, filter_d, bias_d, output_d, batch_size, m, n, k);
 }

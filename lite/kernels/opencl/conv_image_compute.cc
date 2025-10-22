@@ -810,14 +810,13 @@ void ConvImageCompute::SetLocalWorkSize(size_t repeats /*=4*/) {
 
   if (kernel_func_names_[0] == "fc") {
     auto& context = ctx_->As<OpenCLContext>();
-    std::stringstream kernel_key;
-    kernel_key << kernel_func_names_[0] << build_options_[0] << time_stamp_;
-    kernel_ = context.cl_context()->GetKernel(kernel_key.str());
+    // Use string concatenation instead of stringstream for better NDK compatibility
+    std::string kernel_key = kernel_func_names_[0] + build_options_[0] + time_stamp_;
+    kernel_ = context.cl_context()->GetKernel(kernel_key);
 
     local_work_size_ = cl::NDRange(32, 4, 1);
   } else if (kernel_func_names_[0] == "conv2d_1x1_h1w4c1") {
     auto& context = ctx_->As<OpenCLContext>();
-    std::stringstream kernel_key;
     auto tuned_map_key = GenerateTunedKey();
     std::vector<int> tuned_in_map;
     if (CLRuntime::Global()->HasTunedLocalWorkSizeMap(tuned_map_key,
@@ -835,9 +834,8 @@ void ConvImageCompute::SetLocalWorkSize(size_t repeats /*=4*/) {
                                         kernel_func_paths_[0],
                                         build_options_[0],
                                         time_stamp_);
-        kernel_key.str("");
-        kernel_key << kernel_func_names_[0] << build_options_[0] << time_stamp_;
-        kernel_ = context.cl_context()->GetKernel(kernel_key.str());
+        std::string kernel_key = kernel_func_names_[0] + build_options_[0] + time_stamp_;
+        kernel_ = context.cl_context()->GetKernel(kernel_key);
         return;
       } else if (func_id == 1) {
         kernel_func_names_[0] = "conv2d_1x1_h1w5c1";
@@ -867,9 +865,8 @@ void ConvImageCompute::SetLocalWorkSize(size_t repeats /*=4*/) {
                                       kernel_func_paths_[1],
                                       build_options_[0],
                                       time_stamp_);
-      kernel_key.str("");
-      kernel_key << kernel_func_names_[0] << build_options_[0] << time_stamp_;
-      kernel_ = context.cl_context()->GetKernel(kernel_key.str());
+      std::string kernel_key = kernel_func_names_[0] + build_options_[0] + time_stamp_;
+      kernel_ = context.cl_context()->GetKernel(kernel_key);
       return;
     }
     if (CLRuntime::Global()->tune_file_flag()) {
@@ -960,9 +957,8 @@ void ConvImageCompute::SetLocalWorkSize(size_t repeats /*=4*/) {
                                         build_options_[0],
                                         time_stamp_);
       }
-      kernel_key.str("");
-      kernel_key << kernel_func_names_[0] << build_options_[0] << time_stamp_;
-      kernel_ = context.cl_context()->GetKernel(kernel_key.str());
+      std::string kernel_key = kernel_func_names_[0] + build_options_[0] + time_stamp_;
+      kernel_ = context.cl_context()->GetKernel(kernel_key);
 
       size_t max_work_group_size = 0;
       kernel_.getWorkGroupInfo<size_t>(CLRuntime::Global()->device(),
@@ -1010,9 +1006,8 @@ void ConvImageCompute::SetLocalWorkSize(size_t repeats /*=4*/) {
     kernel_func_names_[0] = final_kernel_func_name;
     global_work_size_ = final_global_work_size;
     local_work_size_ = final_local_work_size;
-    kernel_key.str("");
-    kernel_key << kernel_func_names_[0] << build_options_[0] << time_stamp_;
-    kernel_ = context.cl_context()->GetKernel(kernel_key.str());
+    std::string kernel_key = kernel_func_names_[0] + build_options_[0] + time_stamp_;
+    kernel_ = context.cl_context()->GetKernel(kernel_key);
     if (kernel_func_names_[0] == "conv2d_1x1_h1w4c1") {
       c_blk_ = default_c_blk_;
       w_blk_ = UP_DIV(default_w_blk_, 4);
@@ -1064,16 +1059,14 @@ void ConvImageCompute::SetLocalWorkSize(size_t repeats /*=4*/) {
     }
 
     auto& context = ctx_->As<OpenCLContext>();
-    std::stringstream kernel_key;
-    kernel_key.str("");
-    kernel_key << kernel_func_names_[0] << build_options_[0] << time_stamp_;
-    kernel_ = context.cl_context()->GetKernel(kernel_key.str());
-    kernel_key.str("");
-    kernel_key << kernel_func_names_[1] << build_options_[0] << time_stamp_;
-    kernel_inner_product_ = context.cl_context()->GetKernel(kernel_key.str());
-    kernel_key.str("");
-    kernel_key << kernel_func_names_[2] << build_options_[0] << time_stamp_;
-    kernel_output_trans_ = context.cl_context()->GetKernel(kernel_key.str());
+
+    // Use direct string concatenation instead of stringstream for better NDK compatibility
+    std::string kernel_key_0 = kernel_func_names_[0] + build_options_[0] + time_stamp_;
+    kernel_ = context.cl_context()->GetKernel(kernel_key_0);
+    std::string kernel_key_1 = kernel_func_names_[1] + build_options_[0] + time_stamp_;
+    kernel_inner_product_ = context.cl_context()->GetKernel(kernel_key_1);
+    std::string kernel_key_2 = kernel_func_names_[2] + build_options_[0] + time_stamp_;
+    kernel_output_trans_ = context.cl_context()->GetKernel(kernel_key_2);
 
     auto tuned_map_key = GenerateTunedKey();
     std::vector<int> tuned_in_map;
@@ -1206,16 +1199,14 @@ void ConvImageCompute::SetLocalWorkSize(size_t repeats /*=4*/) {
     }
 
     auto& context = ctx_->As<OpenCLContext>();
-    std::stringstream kernel_key;
-    kernel_key.str("");
-    kernel_key << kernel_func_names_[0] << build_options_[0] << time_stamp_;
-    kernel_input_fill0_ = context.cl_context()->GetKernel(kernel_key.str());
-    kernel_key.str("");
-    kernel_key << kernel_func_names_[1] << build_options_[0] << time_stamp_;
-    kernel_ = context.cl_context()->GetKernel(kernel_key.str());
-    kernel_key.str("");
-    kernel_key << kernel_func_names_[2] << build_options_[0] << time_stamp_;
-    kernel_output_cut0_ = context.cl_context()->GetKernel(kernel_key.str());
+
+    // Use direct string concatenation instead of stringstream for better NDK compatibility
+    std::string kernel_key_0 = kernel_func_names_[0] + build_options_[0] + time_stamp_;
+    kernel_input_fill0_ = context.cl_context()->GetKernel(kernel_key_0);
+    std::string kernel_key_1 = kernel_func_names_[1] + build_options_[0] + time_stamp_;
+    kernel_ = context.cl_context()->GetKernel(kernel_key_1);
+    std::string kernel_key_2 = kernel_func_names_[2] + build_options_[0] + time_stamp_;
+    kernel_output_cut0_ = context.cl_context()->GetKernel(kernel_key_2);
 
     auto tuned_map_key = GenerateTunedKey();
     std::vector<int> tuned_in_map;
@@ -1336,10 +1327,9 @@ void ConvImageCompute::SetLocalWorkSize(size_t repeats /*=4*/) {
   } else {
     auto& context = ctx_->As<OpenCLContext>();
 
-
-    std::stringstream kernel_key;
-    kernel_key << kernel_func_names_[0] << build_options_[0] << time_stamp_;
-    kernel_ = context.cl_context()->GetKernel(kernel_key.str());
+    // Use direct string concatenation instead of stringstream for better NDK compatibility
+    std::string kernel_key = kernel_func_names_[0] + build_options_[0] + time_stamp_;
+    kernel_ = context.cl_context()->GetKernel(kernel_key);
 
     auto tuned_map_key = GenerateTunedKey();
     std::vector<int> tuned_in_map;
@@ -1426,17 +1416,39 @@ std::string ConvImageCompute::GenerateTunedKey() {
     return "";
   }
 
-  std::stringstream key;
-  key << kernel_func_names_[0] << "," << build_options_[0]
-      << ",x:" << input_tensor_n_ << "x" << input_tensor_c_ << "x"
-      << input_tensor_h_ << "x" << input_tensor_w_ << ",w:" << filter_tensor_n_
-      << "x" << filter_tensor_c_ << "x" << filter_tensor_h_ << "x"
-      << filter_tensor_w_ << ",b:" << bias_image_h_ << "x" << bias_image_w_
-      << ",pad:" << pad_up_ << pad_down_ << pad_left_ << pad_right_
-      << ",dil:" << dilation_h_ << dilation_w_ << ",s:" << stride_h_
-      << stride_w_ << ",g:" << groups_
-      << ",act:" << static_cast<int>(conv_param_->activation_param.active_type);
-  return key.str();
+  try {
+    // Additional runtime validation to protect against NDK version mismatch
+    // which can cause std::string/std::vector ABI incompatibility
+    const std::string& func_name = kernel_func_names_[0];
+    const std::string& build_opt = build_options_[0];
+
+    // Validate string pointers are not corrupted (defense against ABI mismatch)
+    if (func_name.data() == nullptr || build_opt.data() == nullptr) {
+      LOG(ERROR) << "GenerateTunedKey: corrupted string data detected";
+      return "";
+    }
+
+    // Use direct string concatenation instead of stringstream for better NDK compatibility
+    std::string key = func_name + "," + build_opt
+        + ",x:" + std::to_string(input_tensor_n_) + "x" + std::to_string(input_tensor_c_) + "x"
+        + std::to_string(input_tensor_h_) + "x" + std::to_string(input_tensor_w_)
+        + ",w:" + std::to_string(filter_tensor_n_) + "x" + std::to_string(filter_tensor_c_) + "x"
+        + std::to_string(filter_tensor_h_) + "x" + std::to_string(filter_tensor_w_)
+        + ",b:" + std::to_string(bias_image_h_) + "x" + std::to_string(bias_image_w_)
+        + ",pad:" + std::to_string(pad_up_) + std::to_string(pad_down_)
+        + std::to_string(pad_left_) + std::to_string(pad_right_)
+        + ",dil:" + std::to_string(dilation_h_) + std::to_string(dilation_w_)
+        + ",s:" + std::to_string(stride_h_) + std::to_string(stride_w_)
+        + ",g:" + std::to_string(groups_)
+        + ",act:" + std::to_string(static_cast<int>(conv_param_->activation_param.active_type));
+    return key;
+  } catch (const std::exception& e) {
+    LOG(ERROR) << "GenerateTunedKey: exception caught (possible NDK ABI mismatch): " << e.what();
+    return "";
+  } catch (...) {
+    LOG(ERROR) << "GenerateTunedKey: unknown exception caught (possible NDK ABI mismatch)";
+    return "";
+  }
 }
 
 void ConvImageCompute::ReInitWhenNeeded() {

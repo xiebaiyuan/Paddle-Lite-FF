@@ -271,10 +271,10 @@ void ConvTransposeImageCompute::PrepareForRun() {
     return;
   }
 
-  std::stringstream kernel_key;
-  kernel_key << kernel_func_names_[0] << build_options_[0] << time_stamp_;
-  kernel_ = context.cl_context()->GetKernel(kernel_key.str());
-  VLOG(4) << "kernel_key: " << kernel_key.str();
+  // Use direct string concatenation instead of stringstream for better NDK compatibility
+  std::string kernel_key = kernel_func_names_[0] + build_options_[0] + time_stamp_;
+  kernel_ = context.cl_context()->GetKernel(kernel_key);
+  VLOG(4) << "kernel_key: " << kernel_key;
 }
 
 void ConvTransposeImageCompute::ReInitWhenNeeded() {
