@@ -252,8 +252,8 @@ void ConvTransposeImageCompute::PrepareForRun() {
   }
 
   kernel_func_paths_.push_back("image/conv2d_transpose_kernel.cl");
-  VLOG(1) << "kernel_func_names_[0]:" << kernel_func_names_[0]
-          << " kernel_func_paths_[0]:" << kernel_func_paths_[0];
+  // VLOG(1) << "kernel_func_names_[0]:" << kernel_func_names_[0]
+  //        << " kernel_func_paths_[0]:" << kernel_func_paths_[0];
 
   build_options_.push_back(build_options_single);
   for (size_t i = 0; i < kernel_func_names_.size(); i++) {
@@ -261,6 +261,14 @@ void ConvTransposeImageCompute::PrepareForRun() {
                                     kernel_func_paths_[i],
                                     build_options_[i],
                                     time_stamp_);
+  }
+
+  // Add safety checks to prevent crash when vectors are empty
+  if (kernel_func_names_.empty() || build_options_.empty()) {
+    LOG(ERROR) << "ConvTransposeImageCompute: kernel_func_names_ or build_options_ is empty, "
+               << "kernel_func_names_.size()=" << kernel_func_names_.size()
+               << ", build_options_.size()=" << build_options_.size();
+    return;
   }
 
   std::stringstream kernel_key;

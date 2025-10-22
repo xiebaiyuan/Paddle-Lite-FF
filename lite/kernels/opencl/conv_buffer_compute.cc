@@ -153,6 +153,14 @@ void ConvCompute::GemmlikeConv2d() {
       param.output->mutable_data<float, cl::Buffer>(TARGET(kOpenCL));
   auto* col_buf = col_buffer_->mutable_data<float, cl::Buffer>();
 
+  // Add safety checks to prevent crash when vectors are empty
+  if (kernel_func_names_.empty() || build_options_.empty()) {
+    LOG(ERROR) << "GemmlikeConv2d: kernel_func_names_ or build_options_ is empty, "
+               << "kernel_func_names_.size()=" << kernel_func_names_.size()
+               << ", build_options_.size()=" << build_options_.size();
+    return;
+  }
+
   auto& context = ctx_->As<OpenCLContext>();
   std::stringstream kernel_key;
   kernel_key << kernel_func_names_[0] << build_options_[0] << time_stamp_;
@@ -220,6 +228,15 @@ void ConvCompute::GemmlikeConv2d() {
   int k = c_in * kernel_h * kernel_w;
   int n = h_out * w_out;
   VLOG(4) << "m = " << m << " n = " << n << " k = " << k;
+
+  // Add safety checks for kernel_func_names_[1] and build_options_[1]
+  if (kernel_func_names_.size() < 2 || build_options_.size() < 2) {
+    LOG(ERROR) << "GemmlikeConv2d: kernel_func_names_ or build_options_ size insufficient for [1], "
+               << "kernel_func_names_.size()=" << kernel_func_names_.size()
+               << ", build_options_.size()=" << build_options_.size();
+    return;
+  }
+
   kernel_key.str("");
   kernel_key << kernel_func_names_[1] << build_options_[1] << time_stamp_;
   auto gemm_kernel = context.cl_context()->GetKernel(kernel_key.str());
@@ -249,6 +266,14 @@ void ConvCompute::Conv2d1x1() {
                      : param.bias->data<float, cl::Buffer>();
   auto* output_d =
       param.output->mutable_data<float, cl::Buffer>(TARGET(kOpenCL));
+
+  // Add safety checks to prevent crash when vectors are empty
+  if (kernel_func_names_.empty() || build_options_.empty()) {
+    LOG(ERROR) << "DirectConv: kernel_func_names_ or build_options_ is empty, "
+               << "kernel_func_names_.size()=" << kernel_func_names_.size()
+               << ", build_options_.size()=" << build_options_.size();
+    return;
+  }
 
   auto& context = ctx_->As<OpenCLContext>();
   std::stringstream kernel_key;

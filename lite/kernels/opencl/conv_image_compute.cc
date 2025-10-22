@@ -798,6 +798,16 @@ void ConvImageCompute::PrepareForRun() {
 #define SHOW_EACH_LWS_TIME
 #undef SHOW_EACH_LWS_TIME
 void ConvImageCompute::SetLocalWorkSize(size_t repeats /*=4*/) {
+  // Add safety checks to prevent crash when vectors are empty
+  if (kernel_func_names_.empty() || build_options_.empty()) {
+    LOG(ERROR) << "SetLocalWorkSize: kernel_func_names_ or build_options_ is empty, "
+               << "kernel_func_names_.size()=" << kernel_func_names_.size()
+               << ", build_options_.size()=" << build_options_.size();
+    local_work_size_ = cl::NullRange;
+    return;
+  }
+
+
   if (kernel_func_names_[0] == "fc") {
     auto& context = ctx_->As<OpenCLContext>();
     std::stringstream kernel_key;
@@ -1044,6 +1054,15 @@ void ConvImageCompute::SetLocalWorkSize(size_t repeats /*=4*/) {
     tune_vec.push_back(final_kernel_id);
     CLRuntime::Global()->SetTunedLocalWorkSizeMap(tuned_map_key, tune_vec);
   } else if (is_wino_) {
+    // Add safety checks for winograd which needs kernel_func_names_[0,1,2]
+    if (kernel_func_names_.size() < 3 || build_options_.empty()) {
+      LOG(ERROR) << "is_wino_ branch: kernel_func_names_ or build_options_ size insufficient, "
+                 << "kernel_func_names_.size()=" << kernel_func_names_.size()
+                 << ", build_options_.size()=" << build_options_.size();
+      local_work_size_ = cl::NullRange;
+      return;
+    }
+
     auto& context = ctx_->As<OpenCLContext>();
     std::stringstream kernel_key;
     kernel_key.str("");
@@ -1177,6 +1196,15 @@ void ConvImageCompute::SetLocalWorkSize(size_t repeats /*=4*/) {
     CLRuntime::Global()->SetTunedLocalWorkSizeMap(tuned_map_key, tune_vec);
 
   } else if (is_conv_mulgroup_) {
+    // Add safety checks for conv_mulgroup which needs kernel_func_names_[0,1,2]
+    if (kernel_func_names_.size() < 3 || build_options_.empty()) {
+      LOG(ERROR) << "is_conv_mulgroup_ branch: kernel_func_names_ or build_options_ size insufficient, "
+                 << "kernel_func_names_.size()=" << kernel_func_names_.size()
+                 << ", build_options_.size()=" << build_options_.size();
+      local_work_size_ = cl::NullRange;
+      return;
+    }
+
     auto& context = ctx_->As<OpenCLContext>();
     std::stringstream kernel_key;
     kernel_key.str("");
@@ -1307,6 +1335,8 @@ void ConvImageCompute::SetLocalWorkSize(size_t repeats /*=4*/) {
     CLRuntime::Global()->SetTunedLocalWorkSizeMap(tuned_map_key, tune_vec);
   } else {
     auto& context = ctx_->As<OpenCLContext>();
+
+
     std::stringstream kernel_key;
     kernel_key << kernel_func_names_[0] << build_options_[0] << time_stamp_;
     kernel_ = context.cl_context()->GetKernel(kernel_key.str());
@@ -1388,6 +1418,14 @@ void ConvImageCompute::SetLocalWorkSize(size_t repeats /*=4*/) {
 }
 
 std::string ConvImageCompute::GenerateTunedKey() {
+  // Add safety checks to prevent crash when vectors are empty
+  if (kernel_func_names_.empty() || build_options_.empty()) {
+    LOG(ERROR) << "GenerateTunedKey: kernel_func_names_ or build_options_ is empty, "
+               << "kernel_func_names_.size()=" << kernel_func_names_.size()
+               << ", build_options_.size()=" << build_options_.size();
+    return "";
+  }
+
   std::stringstream key;
   key << kernel_func_names_[0] << "," << build_options_[0]
       << ",x:" << input_tensor_n_ << "x" << input_tensor_c_ << "x"
@@ -1591,7 +1629,8 @@ void ConvImageCompute::SetGlobalWorkSize() {
                                     static_cast<size_t>(w_blk_),
                                     static_cast<size_t>(nh_blk_)};
     input_c_block_ = static_cast<const int>((input_tensor_c_ + 3) / 4);
-  } else if (kernel_func_names_[0] == "mul_groups_fill0" &&
+  } else if (kernel_func_names_.size() >= 2 &&
+             kernel_func_names_[0] == "mul_groups_fill0" &&
              kernel_func_names_[1] == "conv2d_common_mul_group") {
     c_blk_ = (output_tensor_c_ / groups_ + 3) / 4 * groups_;
     w_blk_ = maptofactor(default_w_blk_, 4);
