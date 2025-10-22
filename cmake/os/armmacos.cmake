@@ -172,8 +172,8 @@ execute_process(COMMAND xcodebuild -sdk ${CMAKE_OSX_SYSROOT} -version SDKVersion
 # CMAKE_OSX_SYSROOT. There does not appear to be a direct way to obtain
 # this information from xcrun or xcodebuild.
 if (NOT DEFINED CMAKE_DEVELOPER_ROOT AND NOT USED_CMAKE_GENERATOR MATCHES "Xcode")
-  get_filename_component(PLATFORM_SDK_DIR ${CMAKE_OSX_SYSROOT} PATH)
-  get_filename_component(CMAKE_DEVELOPER_ROOT ${PLATFORM_SDK_DIR} PATH)
+  get_filename_component(PLATFORM_SDK_DIR "${CMAKE_OSX_SYSROOT}" PATH)
+  get_filename_component(CMAKE_DEVELOPER_ROOT "${PLATFORM_SDK_DIR}" PATH)
 
   if (NOT DEFINED CMAKE_DEVELOPER_ROOT)
     message(FATAL_ERROR "Invalid CMAKE_DEVELOPER_ROOT: "
@@ -186,6 +186,9 @@ if(NOT CMAKE_C_COMPILER)
     OUTPUT_VARIABLE CMAKE_C_COMPILER
     ERROR_QUIET
     OUTPUT_STRIP_TRAILING_WHITESPACE)
+  # Directly set compiler paths - don't rely on xcrun in this case
+  set(CMAKE_C_COMPILER "/usr/bin/clang" CACHE FILEPATH "C compiler" FORCE)
+  set(CMAKE_CXX_COMPILER "/usr/bin/clang++" CACHE FILEPATH "CXX compiler" FORCE)
   message(STATUS "Using C compiler: ${CMAKE_C_COMPILER}")
 endif()
 if(NOT CMAKE_CXX_COMPILER)
