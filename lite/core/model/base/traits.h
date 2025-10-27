@@ -44,6 +44,8 @@ enum class OpAttrType {
   VAR = 13,
   VARS = 14,
   FLOAT64 = 15,
+  SCALAR = 16,
+  SCALARS = 17,
   UNK,
 };
 
@@ -60,6 +62,13 @@ enum class VarDataType {
   SIZE_T,
   UINT8,
   INT8,
+  BF16,
+  COMPLEX64,
+  COMPLEX128,
+  FP8_E4M3FN,
+  FP8_E5M2,
+  UINT32,
+  UINT64,
 
   // Other types that may need additional descriptions
   DENSE_TENSOR,
@@ -75,7 +84,18 @@ enum class VarDataType {
   // raw variables should manage their own allocations
   // in operators like nccl_op
   RAW,
-  TUPLE
+  TUPLE,
+  
+  // String types
+  STRING,
+  STRINGS,
+  VOCAB,
+  FEED_LIST,
+  PSTRING,
+  
+  // Sparse tensor types
+  SPARSE_COO,
+  SPARSE_CSR
 };
 
 inline VarDataType ConvertPrecisionType(lite_api::PrecisionType type) {

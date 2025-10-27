@@ -120,6 +120,8 @@ class OpDesc : public OpDescAPI {
       DEF_ONE(LONGS);
       DEF_ONE(FLOAT64);
       DEF_ONE(FLOAT64S);
+      DEF_ONE(SCALAR);
+      DEF_ONE(SCALARS);
       default:
         LOG(FATAL) << "Unknown attribute type for attr " << name;
         return static_cast<AttrType>(-1);

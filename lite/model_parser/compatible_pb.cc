@@ -186,6 +186,16 @@ void OpAttrsAnyToCpp(const OpDescType &any_desc, cpp::OpDesc *cpp_desc) {
         cpp_desc->SetAttr<double>(name,
                                   any_desc.template GetAttr<double>(name));
         break;
+      case AttrType::SCALAR:
+      case AttrType::SCALARS:
+        // SCALAR and SCALARS are new types in PaddlePaddle 3.0+
+        // For inference, these types are usually converted to concrete types
+        // Skip them for now and log a warning
+        LOG(WARNING) << "Attribute '" << name << "' has type "
+                     << (type == AttrType::SCALAR ? "SCALAR" : "SCALARS")
+                     << " which is not fully supported in Paddle-Lite yet. "
+                     << "Skipping this attribute.";
+        break;
       default:
         LOG(FATAL) << "Unsupported attr type found " << static_cast<int>(type);
     }
