@@ -215,10 +215,10 @@ std::vector<proto::VarType::Type> VarDesc::GetDataTypes() const {
 void VarDesc::SetLoDLevel(int32_t lod_level) {
   switch (desc_->type().type()) {
     case proto::VarType::DENSE_TENSOR:
-      desc_->mutable_type()->mutable_dense_tensor()->set_lod_level(lod_level);
+      desc_->mutable_type()->mutable_dense_tensor()->set_legacy_lod_level(lod_level);
       break;
     case proto::VarType::DENSE_TENSOR_ARRAY:
-      desc_->mutable_type()->mutable_tensor_array()->set_lod_level(lod_level);
+      desc_->mutable_type()->mutable_tensor_array()->set_legacy_lod_level(lod_level);
       break;
     default:
       LOG(FATAL)
@@ -241,7 +241,7 @@ void VarDesc::SetLoDLevels(const std::vector<int32_t> &multiple_lod_level) {
       size_t i = 0;
       for (auto &dense_tensor :
            *desc_->mutable_type()->mutable_reader()->mutable_dense_tensor()) {
-        dense_tensor.set_lod_level(multiple_lod_level[i++]);
+        dense_tensor.set_legacy_lod_level(multiple_lod_level[i++]);
       }
     } break;
     default:
@@ -254,9 +254,9 @@ void VarDesc::SetLoDLevels(const std::vector<int32_t> &multiple_lod_level) {
 int32_t VarDesc::GetLoDLevel() const {
   switch (desc_->type().type()) {
     case proto::VarType::DENSE_TENSOR:
-      return desc_->type().dense_tensor().lod_level();
+      return desc_->type().dense_tensor().legacy_lod_level();
     case proto::VarType::DENSE_TENSOR_ARRAY:
-      return desc_->type().tensor_array().lod_level();
+      return desc_->type().tensor_array().legacy_lod_level();
     default:
       LOG(FATAL)
           << "Getting 'lod_level' is not supported by the type of var %s."
@@ -271,7 +271,7 @@ std::vector<int32_t> VarDesc::GetLoDLevels() const {
     case proto::VarType::READER:
       res.reserve(desc_->type().reader().dense_tensor_size());
       for (auto &dense_tensor : desc_->type().reader().dense_tensor()) {
-        res.push_back(dense_tensor.lod_level());
+        res.push_back(dense_tensor.legacy_lod_level());
       }
       return res;
       break;
