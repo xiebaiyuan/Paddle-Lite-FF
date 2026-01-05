@@ -248,6 +248,13 @@ void elementwise_add_broadcast<float>(const float* dinx,
                                       int batch,
                                       int channels,
                                       int num) {
+  CHECK(dinx) << "elementwise_add_broadcast: dinx is null pointer";
+  CHECK(diny) << "elementwise_add_broadcast: diny is null pointer";
+  CHECK(dout) << "elementwise_add_broadcast: dout is null pointer";
+  CHECK(batch > 0) << "elementwise_add_broadcast: batch must be positive, got " << batch;
+  CHECK(channels > 0) << "elementwise_add_broadcast: channels must be positive, got " << channels;
+  CHECK(num > 0) << "elementwise_add_broadcast: num must be positive, got " << num;
+
   LITE_PARALLEL_BEGIN(i, tid, batch) {
     for (int j = 0; j < channels; ++j) {
       int offset = (i * channels + j) * num;

@@ -233,6 +233,11 @@ void elementwise_compute_template(paddle::lite::KernelBase* kernel,
   auto* x_data = x->template data<T>();
   auto* y_data = y->template data<T>();
   auto* out_data = param.Out->template mutable_data<T>();
+  
+  // Add parameter validation to catch null pointers early
+  CHECK(x_data) << "elementwise_compute_template: x_data is null pointer";
+  CHECK(y_data) << "elementwise_compute_template: y_data is null pointer";
+  CHECK(out_data) << "elementwise_compute_template: out_data is null pointer";
   int axis = param.axis;
   auto x_dims = x->dims();
   auto y_dims = y->dims();
