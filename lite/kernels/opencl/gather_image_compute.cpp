@@ -177,7 +177,7 @@ void GatherImageCompute::Run() {
     status = kernel.setArg(2, *out_img);
     CL_CHECK_FATAL(status);
   } else {
-    std::cout << "Unsupported kernel: " << kernel_func_name_ << std::endl;
+    LOG(FATAL) << "Unsupported kernel: " << kernel_func_name_;
     CHECK(false);
   }
 

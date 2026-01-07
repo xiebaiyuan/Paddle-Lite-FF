@@ -48,7 +48,6 @@ bool BufferValid(const size_t req_size) {
                       std::to_string(max_global_mem_size) +
                       ", but required global mem size(byte):" +
                       std::to_string(req_size);
-    std::cout << log << std::endl;
     LOG(FATAL) << log;
     valid = false;
   }
@@ -94,7 +93,6 @@ bool ImageValid(const size_t req_img_w, const size_t req_img_h) {
                       std::to_string(max_img_h) + ", need image size(w,h):" +
                       std::to_string(req_img_w) + "," +
                       std::to_string(req_img_h);
-    std::cout << log << std::endl;
     LOG(FATAL) << log;
     valid = false;
   }

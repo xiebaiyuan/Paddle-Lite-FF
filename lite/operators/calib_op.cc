@@ -32,7 +32,6 @@ bool CalibOpLite::InferShapeImpl() const {
 #ifdef LITE_ON_FLATBUFFERS_DESC_VIEW
 bool CalibOpLite::AttachImpl(const cpp::OpDescWrite &opdesc,
                              lite::Scope *scope) {
-  std::cout << "attach calib op" << std::endl;
   auto x_var = scope->FindVar(opdesc.Input("Input").front());
   auto output_var = scope->FindVar(opdesc.Output("Out").front());
   CHECK(x_var);
