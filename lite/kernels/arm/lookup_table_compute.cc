@@ -45,6 +45,16 @@ void LookupTableCompute<T_W, T_IDS>::Run() {
   auto table_data = w->template data<T_W>();
   auto dout = out->template mutable_data<T_W>();
 
+  CHECK(ids_data) << "lookup_table: ids_data is null, ids dims=" << ids->dims()
+                   << " ids numel=" << ids->numel()
+                   << " ids precision=" << PrecisionToStr(ids->precision());
+  CHECK(table_data) << "lookup_table: table_data is null, W dims=" << w->dims()
+                    << " W numel=" << w->numel()
+                    << " W precision=" << PrecisionToStr(w->precision());
+  CHECK(dout) << "lookup_table: output data is null, Out dims=" << out->dims()
+               << " Out numel=" << out->numel()
+               << " Out precision=" << PrecisionToStr(out->precision());
+
   for (int64_t i = 0; i < ids_numel; ++i) {
     int ids_int = ids_data[i];
     if (param.padding_idx != -1 && ids_data[i] == param.padding_idx) {
