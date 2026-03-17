@@ -39,15 +39,13 @@ function make_fbs {
   mkdir -p $build_dir
   cd $build_dir
 
-  cmake $workspace   \
-      -DWITH_LITE=ON \
+  cmake $workspace \
       -DLITE_WITH_ARM=ON \
       -DLITE_WITH_X86=OFF \
       -DWITH_TESTING=OFF \
-      -DLITE_WITH_LIGHT_WEIGHT_FRAMEWORK=ON \
-      -DARM_TARGET_OS=android \
+      -DARM_TARGET_OS=armmacos \
       -DLITE_UPDATE_FBS_HEAD=ON \
-      -DLITE_ON_TINY_PUBLISH=ON 
+      -DLITE_ON_TINY_PUBLISH=ON
 
   make fbs_headers -j$NUM_PROC
 

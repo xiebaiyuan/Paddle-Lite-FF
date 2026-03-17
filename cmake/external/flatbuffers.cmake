@@ -51,6 +51,7 @@ ExternalProject_Add(
     SOURCE_DIR      ${FLATBUFFERS_SOURCES_DIR}
     PREFIX          ${FLATBUFFERS_PREFIX_DIR}
     UPDATE_COMMAND  ""
+    PATCH_COMMAND   sed -i.bak "s/-Werror//g" <SOURCE_DIR>/CMakeLists.txt
     CMAKE_ARGS      -DBUILD_STATIC_LIBS=ON
                     -DCMAKE_INSTALL_PREFIX=${FLATBUFFERS_INSTALL_DIR}
                     -DCMAKE_POSITION_INDEPENDENT_CODE=ON
