@@ -31,31 +31,43 @@ This project focuses on Android/iOS platforms. Use the `build_android.sh` script
 - `--with_log=ON|OFF` - Enable logging
 - `--with_opencl=ON|OFF` - Enable OpenCL GPU support
 
-### macOS Build for ARM Testing
+### macOS Build (ARM / x86)
 
-On macOS, compile ARM libraries for verification without Android device:
+使用 `build_macos.sh` 在 macOS 上编译 ARM 或 x86 库，可用于本地验证无需 Android 设备。
 
 ```bash
-# 切换到 cmake 3.22.1 (3.10.3 不可用，4.x 不兼容)
+# 环境准备
 switch_cmake 3.22.1
 export PATH="/Users/baidu/miniforge3/bin:$PATH"
 
-./lite/tools/build_android.sh --arch=armv8 \
-    --toolchain=clang \
-    --android_stl=c++_shared \
-    --with_java=OFF \
-    --with_cv=OFF \
-    --with_log=OFF \
-    --with_extra=ON \
-    --with_exception=ON \
-    --with_static_lib=ON \
-    --with_opencl=ON
+# ARM64 编译 (带 OpenCL)
+./lite/tools/build_macos.sh --with_opencl=ON --with_extra=ON --with_exception=ON arm64
+
+# ARM64 benchmark 编译 (自动开启 extra/exception，关闭 log)
+./lite/tools/build_macos.sh --with_benchmark=ON --with_opencl=ON arm64
+
+# x86 编译
+./lite/tools/build_macos.sh x86
 ```
 
+**常用选项 (`build_macos.sh`):**
+- `arm64` / `x86` - 目标架构 (位置参数，放最后)
+- `--with_opencl=ON|OFF` - OpenCL GPU 支持 (默认 OFF)
+- `--with_benchmark=ON|OFF` - 编译 benchmark 二进制 (默认 OFF，开启后自动设置 extra=ON, exception=ON)
+- `--with_log=ON|OFF` - 日志输出 (默认 ON，benchmark 模式下默认 OFF)
+- `--with_cv=ON|OFF` - OpenCV 函数 (默认 OFF)
+- `--with_extra=ON|OFF` - 额外算子 (序列模型如 OCR/NLP) (默认 OFF)
+- `--with_exception=ON|OFF` - 异常支持 (默认 OFF)
+- `--with_arm82_fp16=ON|OFF` - FP16 内核 (默认 OFF，开启后强制使用 clang)
+- `--with_testing=ON|OFF` - 编译单元测试 (默认 OFF)
+
+**编译输出目录:**
+- ARM64: `build.macos.armmacos.armv8/` (带 OpenCL 时为 `build.macos.armmacos.armv8.opencl/`)
+- x86: `build.lite.x86/`
+
 **macOS build notes:**
-- 需要 `ulimit -n 1024` 增加文件描述符限制
+- 需要 `ulimit -n 1024` 增加文件描述符限制 (脚本内已自动设置)
 - cmake 3.22.1 可用 (`switch_cmake 3.22.1`)，cmake 3.10.3 不可用，cmake 4.x 不兼容
-- 不带 `--with_java=ON` 时不需 Java
 
 ### Build Output
 
