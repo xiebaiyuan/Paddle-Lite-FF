@@ -279,8 +279,8 @@ bool CLContext::IsArmMali() {
          CLRuntime::Global()->GetGpuType() == GpuType::MALELOON;
 }
 
-bool CLContext::IsAppleM1() {
-  return CLRuntime::Global()->GetGpuType() == GpuType::APPLE_M1;
+bool CLContext::IsAppleGpu() {
+  return CLRuntime::Global()->GetGpuType() == GpuType::APPLE_GPU;
 }
 
 }  // namespace lite

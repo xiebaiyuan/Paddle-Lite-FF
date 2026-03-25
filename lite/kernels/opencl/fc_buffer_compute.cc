@@ -201,7 +201,7 @@ class FcCompute
       kernel_.getWorkGroupInfo<size_t>(CLRuntime::Global()->device(),
                                        CL_KERNEL_WORK_GROUP_SIZE,
                                        &max_work_group_size);
-      if (context.cl_context()->IsAppleM1() ||
+      if (context.cl_context()->IsAppleGpu() ||
           context.cl_context()->IsArmMali()) {
         local_work_size_ = cl::NullRange;
       } else {

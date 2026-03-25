@@ -206,7 +206,7 @@ class MatMulV2ImageCompute : public KernelLite<TARGET(kOpenCL),
       auto& context = ctx_->As<OpenCLContext>();
       CHECK(context.cl_context() != nullptr);
       is_mali_ = context.cl_context()->IsArmMali();
-      is_apple_m1_ = context.cl_context()->IsAppleM1();
+      is_apple_m1_ = context.cl_context()->IsAppleGpu();
       device_version =
           CLRuntime::Global()->device().getInfo<CL_DEVICE_VERSION>();
       y_gpu_t_ = std::unique_ptr<Tensor>(new Tensor);
