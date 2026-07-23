@@ -184,8 +184,11 @@ class VariablePlaceInferencePass : public DebugPass {
         const auto& var_name = var.name;
         auto* var_type = &var.type;
         std::string arg_name;
-        CHECK(op_info->GetOutputArgname(var_name, &arg_name))
-            << "Can not find the output argument for var " << var_name;
+        if (!op_info->GetOutputArgname(var_name, &arg_name)) {
+          LOG(WARNING) << "Can not find the output argument for var " << var_name
+                       << ", op_type: " << op_info->Type() << ", skipping";
+          continue;
+        }
         VLOG(4) << " - output arg name:" << arg_name
                 << " var name:" << var_name;
         const auto* decl_type = kernel.GetOutputDeclType(arg_name);

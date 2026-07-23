@@ -86,6 +86,10 @@ DEFINE_string(nnadapter_mixed_precision_quantization_config_path,
               "",
               "path of nnadapter mixed precision quantization config, this "
               "argument is used to remove quant info of ops");
+DEFINE_string(discarded_passes,
+              "",
+              "comma-separated list of pass names to skip during optimization,"
+              " e.g. 'lite_conv_elementwise_fuse_pass'");
 
 int main(int argc, char** argv) {
   auto opt = paddle::lite_api::OptBase();
@@ -133,6 +137,9 @@ int main(int argc, char** argv) {
   if (FLAGS_sparse_model) {
     opt.SetSparseModel(true);
     opt.SetSparseThreshold(FLAGS_sparse_threshold);
+  }
+  if (FLAGS_discarded_passes != "") {
+    opt.SetDiscardedPasses(FLAGS_discarded_passes);
   }
   if (FLAGS_print_all_ops) {
     opt.PrintAllOps();

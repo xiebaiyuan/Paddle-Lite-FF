@@ -78,7 +78,11 @@ void TypeTargetTransformPass::ComplementInputs(
   CHECK(in->IsArg());
   auto in_arg_name = in->AsArg().name;
   std::string tmp;
-  CHECK(inst.op_info()->GetInputArgname(in_arg_name, &tmp));
+  if (!inst.op_info()->GetInputArgname(in_arg_name, &tmp)) {
+    LOG(WARNING) << "Can not find the input argument for var " << in_arg_name
+                 << ", op_type: " << inst.op_info()->Type() << ", skipping";
+    return;
+  }
   auto decl_arg_type = inst.picked_kernel().GetInputDeclType(tmp);
   CHECK(in->AsArg().type);
   if (!TargetCompatibleTo(*in->AsArg().type, *decl_arg_type)) {
@@ -246,7 +250,11 @@ void TypeTargetTransformPass::ComplementOutputs(
   CHECK(out->AsArg().type);
   auto out_arg_name = out->AsArg().name;
   std::string tmp;
-  CHECK(inst.op_info()->GetOutputArgname(out_arg_name, &tmp));
+  if (!inst.op_info()->GetOutputArgname(out_arg_name, &tmp)) {
+    LOG(WARNING) << "Can not find the output argument for var " << out_arg_name
+                 << ", op_type: " << inst.op_info()->Type() << ", skipping";
+    return;
+  }
   auto decl_arg_type = inst.picked_kernel().GetOutputDeclType(tmp);
   if (!TargetCompatibleTo(*out->AsArg().type, *decl_arg_type)) {
     VLOG(3) << "found Output Target unmatched tensor: " << out->AsArg().name

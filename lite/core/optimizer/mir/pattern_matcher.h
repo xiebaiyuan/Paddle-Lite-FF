@@ -428,11 +428,27 @@ struct PatternBase {
   a->outlinks.push_back(b);   \
   b->inlinks.push_back(a);
 
-// Set the out_var as the output of the op
-#define IR_OP_VAR_LINK(op, out_var) \
-  op->outlinks.push_back(out_var);  \
-  out_var->inlinks.clear();         \
-  out_var->inlinks.push_back(op);
+// Set the out_var as the output of the op.
+// This is a bidirectional operation: it removes out_var from the old
+// producer's outlinks (if any), then links op → out_var in both directions.
+// Without cleaning the old producer's outlinks, the SSA graph's bidirectional
+// connection invariant is broken, which can cause downstream passes (e.g.
+// conv_elementwise_fuse_pass, type_target_cast_pass) to operate on a
+// corrupted topology.
+#define IR_OP_VAR_LINK(op, out_var)                      \
+  do {                                                   \
+    for (auto* old_op : out_var->inlinks) {              \
+      auto it = std::find(old_op->outlinks.begin(),      \
+                          old_op->outlinks.end(),        \
+                          out_var);                      \
+      if (it != old_op->outlinks.end()) {                \
+        old_op->outlinks.erase(it);                      \
+      }                                                  \
+    }                                                    \
+    out_var->inlinks.clear();                            \
+    op->outlinks.push_back(out_var);                     \
+    out_var->inlinks.push_back(op);                      \
+  } while (0)
 
 }  // namespace mir
 }  // namespace lite

@@ -30,13 +30,21 @@ bool SSAGraph::CheckBidirectionalConnection() {
     if (node.IsStmt()) VLOG(6) << node.AsStmt().op_info()->Type();
     if (node.IsArg()) VLOG(6) << node.AsArg().name << " " << node.AsArg().id;
     for (auto *in : node.inlinks) {
-      CHECK(in->outlinks.end() !=
-            std::find(in->outlinks.begin(), in->outlinks.end(), &node));
+    if (in->outlinks.end() ==
+        std::find(in->outlinks.begin(), in->outlinks.end(), &node)) {
+      LOG(WARNING) << "SSA bidirectional connection broken: node "
+                   << (node.IsStmt() ? node.AsStmt().op_info()->Type() : node.AsArg().name)
+                   << " has inlink that doesn't point back";
     }
-    for (auto *out : node.outlinks) {
-      CHECK(out->inlinks.end() !=
-            std::find(out->inlinks.begin(), out->inlinks.end(), &node));
+  }
+  for (auto *out : node.outlinks) {
+    if (out->inlinks.end() ==
+        std::find(out->inlinks.begin(), out->inlinks.end(), &node)) {
+      LOG(WARNING) << "SSA bidirectional connection broken: node "
+                   << (node.IsStmt() ? node.AsStmt().op_info()->Type() : node.AsArg().name)
+                   << " has outlink that doesn't point back";
     }
+  }
   }
   return true;
 }

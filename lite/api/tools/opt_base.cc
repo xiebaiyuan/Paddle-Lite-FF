@@ -88,6 +88,19 @@ void OptBase::SetNNAdapterMixedPrecisionQuantizationConfigPath(
       nnadapter_mixed_precision_quantization_config_path);
 }
 
+void OptBase::SetDiscardedPasses(const std::string& discarded_passes) {
+  auto passes = lite::Split(discarded_passes, ",");
+  for (auto& pass : passes) {
+    // Strip leading/trailing whitespace
+    auto start = pass.find_first_not_of(" \t");
+    auto end = pass.find_last_not_of(" \t");
+    if (start == std::string::npos) continue;  // all whitespace
+    auto trimmed = pass.substr(start, end - start + 1);
+    opt_config_.add_discarded_pass(trimmed);
+    OPT_LOG << "Will discard pass: " << trimmed;
+  }
+}
+
 void OptBase::SetPassesInternal(
     const std::vector<std::string>& passes_internal) {
   opt_config_.set_passes_internal(passes_internal);
