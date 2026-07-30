@@ -57,6 +57,12 @@ if (LITE_WITH_ARM_DNN_LIBRARY)
   set(ARM_DEPS arm_dnn_library)
 endif ()
 
+option(LITE_USE_PASS_MANAGER_V2 "Use PassManagerV2 with convergence loop" OFF)
+if(LITE_USE_PASS_MANAGER_V2)
+  add_definitions(-DLITE_WITH_PASS_MANAGER_V2)
+  message(STATUS "PassManagerV2 enabled (convergence loop + pass levels)")
+endif()
+
 lite_cc_library(core SRCS ${CORE_SRC}
   DEPS target_wrapper_host fbs_headers ${CORE_DEPS}
   ARM_DEPS ${ARM_DEPS}

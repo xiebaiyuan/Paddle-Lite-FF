@@ -15,6 +15,7 @@
 #include "lite/core/optimizer/optimizer.h"
 #include <fstream>
 #include "lite/core/optimizer/mir/__xpu__static_kernel_pick_pass.h"
+#include "lite/core/optimizer/mir/pass_v2.h"
 #include "lite/core/optimizer/mir/static_kernel_pick_pass.h"
 #include "lite/core/optimizer/mir/type_target_cast_pass.h"
 #include "lite/model_parser/model_parser.h"
@@ -102,30 +103,82 @@ void Optimizer::InitControlFlowOpSharedInputsAndOutputsPlaceSyncPass() {
 
 void Optimizer::ApplyPasses(
     std::vector<std::unique_ptr<mir::SSAGraph>>* graphes) {
+  // Build the set of target types for this optimizer invocation.
+  std::set<TargetType> targets;
+  for (const auto& place : valid_places_) {
+    targets.insert(place.target);
+  }
+
+  // Helper: applies a pass to the correct graph(s) based on subblock rules.
+  auto apply_to_graphs = [&](mir::Pass* pass,
+                             std::function<void(
+                                 const std::unique_ptr<mir::SSAGraph>&)> apply_fn) {
+    if (kSubblockUnsupportedPasses.count(pass->name()) ||
+        kSubblockSkippedPasses.count(pass->name())) {
+      apply_fn((*graphes)[kRootBlockIdx]);
+    } else {
+      for (auto& graph : *graphes) {
+        apply_fn(graph);
+      }
+    }
+  };
+
+#ifdef LITE_WITH_PASS_MANAGER_V2
+  constexpr int kMaxSteps = 3;
+  for (int step = 0; step < kMaxSteps; ++step) {
+    bool graph_changed = false;
+    for (auto& pass : passes_) {
+      auto* pass_v2 = dynamic_cast<mir::PassV2*>(pass);
+      if (pass_v2 && step > 0 && pass_v2->ShouldOnlyApplyOnce()) {
+        VLOG(4) << "Step " << step << ": skipping apply-once pass "
+                << pass->name();
+        continue;
+      }
+      LOG(INFO) << "== Running pass (step=" << step << "): " << pass->name();
+      bool matched =
+          PassMatchesTarget(*pass, targets) && PassMatchesKernels(*pass);
+      if (!matched) {
+        LOG(INFO) << "   - Skip " << pass->name()
+                  << " because the target or kernel does not match.";
+        continue;
+      }
+      if (pass_v2) {
+        apply_to_graphs(pass, [&](const std::unique_ptr<mir::SSAGraph>& g) {
+          bool modified = false;
+          pass_v2->ApplyV2(g, modified);
+          graph_changed = graph_changed || modified;
+        });
+      } else {
+        apply_to_graphs(pass, [&](const std::unique_ptr<mir::SSAGraph>& g) {
+          pass->Apply(g);
+        });
+        graph_changed = true;  // Legacy pass — always assume modification.
+      }
+      LOG(INFO) << "== Finished running (step=" << step
+                << "): " << pass->name();
+    }
+    if (!graph_changed) {
+      LOG(INFO) << "PassManagerV2 convergence reached after " << (step + 1)
+                << " step(s).";
+      break;
+    }
+  }
+#else
   for (auto& pass : passes_) {
     LOG(INFO) << "== Running pass: " << pass->name();
-    std::set<TargetType> targets;
-    for (const auto& place : valid_places_) {
-      targets.insert(place.target);
-    }
     bool matched =
         PassMatchesTarget(*pass, targets) && PassMatchesKernels(*pass);
     if (!matched) {
       LOG(INFO) << "   - Skip " << pass->name()
                 << " because the target or kernel does not match.";
-    } else {
-      // Check the pass whether it is supported for processing subblocks
-      if (kSubblockUnsupportedPasses.count(pass->name()) ||
-          kSubblockSkippedPasses.count(pass->name())) {
-        pass->Apply((*graphes)[kRootBlockIdx]);
-      } else {
-        for (auto& graph : *graphes) {
-          pass->Apply(graph);
-        }
-      }
-      LOG(INFO) << "== Finished running: " << pass->name();
+      continue;
     }
+    apply_to_graphs(pass, [&](const std::unique_ptr<mir::SSAGraph>& g) {
+      pass->Apply(g);
+    });
+    LOG(INFO) << "== Finished running: " << pass->name();
   }
+#endif
 }
 
 std::unique_ptr<RuntimeProgram> RunDefaultOptimizer(
