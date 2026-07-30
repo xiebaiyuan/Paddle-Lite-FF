@@ -15,6 +15,7 @@
 #include "lite/core/optimizer/mir/fusion/conv_activation_fuser.h"
 #include <memory>
 #include <vector>
+#include "lite/core/optimizer/mir/subgraph_matcher.h"
 
 namespace paddle {
 namespace lite {
@@ -85,52 +86,7 @@ cpp::OpDesc ConvActivationFuser::GenOpDesc(const key2nodes_t& matched) {
   op_desc.SetOutput("Output", {matched.at("output")->arg()->name});
   cpp::OpDesc act_op_desc = *matched.at("act")->stmt()->op_info();
 
-  op_desc.SetAttr("with_act", true);
-  op_desc.SetAttr("act_type", act_type_);
-  if (act_op_desc.HasAttr("out_threshold")) {
-    float out_threshold = act_op_desc.GetAttr<float>("out_threshold");
-    op_desc.SetAttr("out_threshold", out_threshold);
-    VLOG(4) << "conv+relu fusion,out_threshold:" << out_threshold;
-  }
-  if (act_type_ == "relu") {
-    op_desc.SetAttr("fuse_relu", true);
-  } else if (act_type_ == "relu6") {
-    float alpha = act_op_desc.GetAttr<float>("threshold");
-    op_desc.SetAttr("fuse_brelu_threshold", alpha);
-  } else if (act_type_ == "leaky_relu") {
-    float alpha = act_op_desc.GetAttr<float>("alpha");
-    op_desc.SetAttr("leaky_relu_alpha", alpha);
-  } else if (act_type_ == "hard_swish") {
-    float threshold = act_op_desc.GetAttr<float>("threshold");
-    float scale = act_op_desc.GetAttr<float>("scale");
-    float offset = act_op_desc.GetAttr<float>("offset");
-    op_desc.SetAttr("hard_swish_threshold", threshold);
-    op_desc.SetAttr("hard_swish_scale", scale);
-    op_desc.SetAttr("hard_swish_offset", offset);
-  } else if (act_type_ == "hard_sigmoid") {
-    float slope = act_op_desc.GetAttr<float>("slope");
-    float offset = act_op_desc.GetAttr<float>("offset");
-    op_desc.SetAttr("slope", slope);
-    op_desc.SetAttr("offset", offset);
-  } else if (act_type_ == "prelu") {
-    auto prelu_mode = act_op_desc.GetAttr<std::string>("mode");
-    op_desc.SetAttr("prelu_mode", prelu_mode);
-    op_desc.SetInput("Prelu_alpha", {matched.at("alpha")->arg()->name});
-  } else if (act_type_ == "sigmoid") {
-    op_desc.SetAttr("fuse_sigmoid", true);
-  } else if (act_type_ == "tanh") {
-    op_desc.SetAttr("fuse_tanh", true);
-  } else if (act_type_ == "swish") {
-    float scale = 1.0f;
-    if (act_op_desc.HasAttr("beta")) {
-      scale = act_op_desc.GetAttr<float>("beta");
-    }
-    op_desc.SetAttr("swish_scale", scale);
-    op_desc.SetAttr("fuse_swish", true);
-  } else if (act_type_ == "abs") {
-    op_desc.SetAttr("fuse_abs", true);
-  }
-
+  ApplyActivationAttributes(&op_desc, act_type_, &act_op_desc);
   return op_desc;
 }
 
