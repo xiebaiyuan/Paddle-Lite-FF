@@ -18,7 +18,7 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include "lite/core/optimizer/mir/pass.h"
+#include "lite/core/optimizer/mir/pass_v2.h"
 #include "lite/core/optimizer/mir/pass_registry.h"
 #include "lite/core/tensor.h"
 #include "lite/core/types.h"
@@ -27,10 +27,13 @@ namespace paddle {
 namespace lite {
 namespace mir {
 
-class UnsqueezeCalcOfflinePass : public mir::StmtPass {
+class UnsqueezeCalcOfflinePass : public mir::PassV2 {
  public:
+  UnsqueezeCalcOfflinePass() : PassV2(mir::Pass::Kind::kStmtWise) {}
   void Apply(const std::unique_ptr<SSAGraph>& graph) override;
   void RemoveUnsqueezePattern(const std::unique_ptr<SSAGraph>& graph);
+  bool ShouldOnlyApplyOnce() const override { return true; }
+  int OptimizationLevel() const override { return mir::PassV2::kLevelBasic; }
 };
 
 }  // namespace mir

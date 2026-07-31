@@ -15,6 +15,7 @@
 #include "lite/core/optimizer/mir/fusion/instance_norm_activation_fuser.h"
 #include <memory>
 #include <vector>
+#include "lite/core/optimizer/mir/subgraph_matcher.h"
 
 namespace paddle {
 namespace lite {
@@ -81,16 +82,10 @@ void InstanceNormActivationFuser::InsertNewNode(SSAGraph* graph,
 cpp::OpDesc InstanceNormActivationFuser::GenOpDesc(const key2nodes_t& matched) {
   auto op_desc = *matched.at("instance_norm")->stmt()->op_info();
   auto* act_op_desc = matched.at("act")->stmt()->op_info();
-  op_desc.SetAttr("activation_type", act_type_);
-  if (act_type_ == "relu") {
-    op_desc.SetAttr("fuse_relu", true);
-  } else if (act_type_ == "relu6") {
-    float alpha = act_op_desc->GetAttr<float>("threshold");
-    op_desc.SetAttr("alpha", alpha);
-  } else if (act_type_ == "leaky_relu") {
-    float alpha = act_op_desc->GetAttr<float>("alpha");
-    op_desc.SetAttr("alpha", alpha);
-  }
+
+  auto attrs = ExtractActivationAttributes(act_type_, act_op_desc);
+  attrs.ApplyToOpDescScaleLike(&op_desc);
+
   auto& out_name = matched.at("output")->arg()->name;
   op_desc.SetOutput("Y", {out_name});
   return op_desc;

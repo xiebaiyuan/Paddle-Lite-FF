@@ -16,6 +16,7 @@
 #include <cmath>
 #include <memory>
 #include <vector>
+#include "lite/core/optimizer/mir/subgraph_matcher.h"
 
 namespace paddle {
 namespace lite {
@@ -173,13 +174,13 @@ cpp::OpDesc FcFuser::GenOpDesc(const key2nodes_t& matched) {
   }
   op_desc.SetAttr("op_type", op_type_);
 
-  if (act_type_ == "relu") {
-    op_desc.SetAttr("activation_type", std::string{"relu"});
-  } else if (act_type_ == "relu6") {
-    op_desc.SetAttr("activation_type", std::string{"relu6"});
-    auto relu6_desc = *matched.at("relu6")->stmt()->op_info();
-    auto alpha = relu6_desc.GetAttr<float>("threshold");
-    op_desc.SetAttr("alpha", alpha);
+  if (act_type_ == "relu6") {
+    auto attrs = ExtractActivationAttributes(
+        "relu6", matched.at("relu6")->stmt()->op_info());
+    attrs.ApplyToOpDescScaleLike(&op_desc);
+  } else if (act_type_ == "relu") {
+    auto attrs = ExtractActivationAttributes("relu", nullptr);
+    attrs.ApplyToOpDescScaleLike(&op_desc);
   }
 
   // Set the input scale into fc

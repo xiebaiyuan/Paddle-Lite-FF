@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "lite/core/optimizer/mir/pass.h"
+#include "lite/core/optimizer/mir/pass_v2.h"
 #include "lite/core/optimizer/mir/pass_registry.h"
 #include "lite/core/optimizer/mir/pattern_matcher_high_api.h"
 
@@ -94,12 +94,15 @@ class ElementwiseMulConstantEliminator : public FuseBase {
 
 }  // namespace
 
-class ElementwiseMulConstantEliminatePass : public ProgramPass {
+class ElementwiseMulConstantEliminatePass : public PassV2 {
  public:
+  ElementwiseMulConstantEliminatePass() : PassV2(Pass::Kind::kProgramWise) {}
   void Apply(const std::unique_ptr<SSAGraph>& graph) override {
     ElementwiseMulConstantEliminator eliminator;
     eliminator(graph.get());
   }
+  bool ShouldOnlyApplyOnce() const override { return true; }
+  int OptimizationLevel() const override { return PassV2::kLevelBasic; }
 };
 
 }  // namespace mir

@@ -19,7 +19,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include "lite/core/optimizer/mir/pass.h"
+#include "lite/core/optimizer/mir/pass_v2.h"
 #include "lite/core/tensor.h"
 #include "lite/core/types.h"
 
@@ -31,9 +31,12 @@ namespace mir {
  * mir::RemoveScale1Pass
  * Remve Scale op with scale = 1.0.
  */
-class RemoveScale1Pass : public mir::StmtPass {
+class RemoveScale1Pass : public mir::PassV2 {
  public:
+  RemoveScale1Pass() : PassV2(mir::Pass::Kind::kStmtWise) {}
   void Apply(const std::unique_ptr<SSAGraph>& graph) override;
+  bool ShouldOnlyApplyOnce() const override { return true; }
+  int OptimizationLevel() const override { return mir::PassV2::kLevelBasic; }
 };
 
 }  // namespace mir

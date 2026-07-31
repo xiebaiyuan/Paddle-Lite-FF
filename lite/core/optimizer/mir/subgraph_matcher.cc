@@ -98,6 +98,31 @@ void ApplyActivationAttributes(cpp::OpDesc* op_desc,
   }
 }
 
+void ActivationAttributes::ApplyToOpDescScaleLike(cpp::OpDesc* op_desc) const {
+  if (type.empty()) return;
+  op_desc->SetAttr("activation_type", type);
+  if (type == "relu") {
+    op_desc->SetAttr("fuse_relu", true);
+  } else if (type == "relu6") {
+    op_desc->SetAttr("alpha", threshold);  // scale/instance_norm kernel reads "alpha"
+  } else if (type == "leaky_relu") {
+    op_desc->SetAttr("alpha", alpha);
+  } else if (type == "hard_swish") {
+    op_desc->SetAttr("threshold", threshold);
+    op_desc->SetAttr("scale", scale);
+    op_desc->SetAttr("offset", offset);
+  } else if (type == "hard_sigmoid") {
+    op_desc->SetAttr("slope", scale);
+    op_desc->SetAttr("offset", offset);
+  } else if (type == "prelu") {
+    op_desc->SetAttr("mode", mode);
+  } else if (type == "swish") {
+    op_desc->SetAttr("beta", beta);
+  }
+  // sigmoid / tanh / abs — scale/instance_norm kernels don't fuse these,
+  // so no additional attributes needed beyond activation_type.
+}
+
 }  // namespace mir
 }  // namespace lite
 }  // namespace paddle

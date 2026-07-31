@@ -15,6 +15,7 @@
 #include "lite/core/optimizer/mir/fusion/scale_activation_fuser.h"
 #include <memory>
 #include <vector>
+#include "lite/core/optimizer/mir/subgraph_matcher.h"
 
 namespace paddle {
 namespace lite {
@@ -63,38 +64,10 @@ void ScaleActivationFuser::InsertNewNode(SSAGraph* graph,
 cpp::OpDesc ScaleActivationFuser::GenOpDesc(const key2nodes_t& matched) {
   auto op_desc = *matched.at("scale")->stmt()->op_info();
   auto* act_op_desc = matched.at("act")->stmt()->op_info();
-  op_desc.SetAttr("activation_type", act_type_);
-  if (act_type_ == "relu") {
-    op_desc.SetAttr("fuse_relu", true);
-  } else if (act_type_ == "relu6") {
-    float alpha = act_op_desc->GetAttr<float>("threshold");
-    op_desc.SetAttr("alpha", alpha);
-    op_desc.SetAttr("threshold", alpha);
-  } else if (act_type_ == "leaky_relu") {
-    float alpha = act_op_desc->GetAttr<float>("alpha");
-    op_desc.SetAttr("alpha", alpha);
-  } else if (act_type_ == "hard_swish") {
-    float threshold = act_op_desc->GetAttr<float>("threshold");
-    float scale = act_op_desc->GetAttr<float>("scale");
-    float offset = act_op_desc->GetAttr<float>("offset");
-    op_desc.SetAttr("threshold", threshold);
-    op_desc.SetAttr("scale", scale);
-    op_desc.SetAttr("offset", offset);
-  } else if (act_type_ == "hard_sigmoid") {
-    float slope = act_op_desc->GetAttr<float>("slope");
-    float offset = act_op_desc->GetAttr<float>("offset");
-    op_desc.SetAttr("slope", slope);
-    op_desc.SetAttr("offset", offset);
-  } else if (act_type_ == "prelu") {
-    auto prelu_mode = act_op_desc->GetAttr<std::string>("mode");
-    op_desc.SetAttr("mode", prelu_mode);
-  } else if (act_type_ == "swish") {
-    float scale = 1.0;
-    if (act_op_desc->HasAttr("beta")) {
-      scale = act_op_desc->GetAttr<float>("beta");
-    }
-    op_desc.SetAttr("beta", scale);
-  }
+
+  auto attrs = ExtractActivationAttributes(act_type_, act_op_desc);
+  attrs.ApplyToOpDescScaleLike(&op_desc);
+
   auto& out_name = matched.at("output")->arg()->name;
   op_desc.SetOutput("Out", {out_name});
   if (act_op_desc->HasOutputScale(out_name)) {

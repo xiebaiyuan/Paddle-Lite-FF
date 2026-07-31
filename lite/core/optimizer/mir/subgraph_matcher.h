@@ -49,6 +49,14 @@ struct ActivationAttributes {
   std::string mode;       // prelu mode ("channel", "element", "all")
 
   bool empty() const { return type.empty(); }
+
+  // Apply the activation attributes to |op_desc| using the "scale-like"
+  // naming convention used by scale / instance_norm / fc fused kernels.
+  //
+  // These kernels read "activation_type" + bare "alpha"/"threshold"/"scale"/
+  // "offset"/"mode" rather than the "fuse_*" / "hard_swish_*" prefixed names
+  // used by conv fused kernels (which are handled by ApplyActivationAttributes).
+  void ApplyToOpDescScaleLike(cpp::OpDesc* op_desc) const;
 };
 
 // Extract activation parameters from an op's OpDesc.
