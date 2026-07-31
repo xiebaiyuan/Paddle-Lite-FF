@@ -108,10 +108,12 @@ function set_benchmark_options {
   WITH_EXCEPTION=ON
   LITE_ON_TINY_PUBLISH=OFF
 
-  if [ ${WITH_PROFILE} == "ON" ] || [ ${WITH_PRECISION_PROFILE} == "ON" ]; then
-    WITH_LOG=ON
-  else
-    WITH_LOG=OFF
+  if [ "${WITH_LOG_EXPLICIT}" != "ON" ]; then
+    if [ ${WITH_PROFILE} == "ON" ] || [ ${WITH_PRECISION_PROFILE} == "ON" ]; then
+      WITH_LOG=ON
+    else
+      WITH_LOG=OFF
+    fi
   fi
 }
 
@@ -133,7 +135,31 @@ function build_opt {
       -DWITH_TESTING=OFF \
       -DLITE_BUILD_EXTRA=ON \
       -DLITE_WITH_X86=${with_x86} \
-      -DWITH_MKL=OFF
+      -DWITH_MKL=OFF \
+      -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+    make opt -j$NUM_PROC
+}
+
+function build_opt_2 {
+    cd $workspace
+#    prepare_thirdparty
+    mkdir -p build.opt
+    cd build.opt
+    opt_arch=$(echo `uname -a` | awk -F " " '{print $15}')
+    with_x86=OFF
+    if [ $opt_arch == "arm64" ]; then
+       with_x86=OFF
+    else
+       with_x86=ON
+    fi
+    cmake .. \
+      -DLITE_ON_MODEL_OPTIMIZE_TOOL=ON \
+      -DLITE_SKIP_SUPPORT_0_DIM_TENSOR_PASS=$SKIP_SUPPORT_0_DIM_TENSOR_PASS \
+      -DWITH_TESTING=OFF \
+      -DLITE_BUILD_EXTRA=ON \
+      -DLITE_WITH_X86=${with_x86} \
+      -DWITH_MKL=OFF \
+      -DCMAKE_POLICY_VERSION_MINIMUM=3.5
     make opt -j$NUM_PROC
 }
 
@@ -385,6 +411,7 @@ function main {
                 ;;
             --with_log=*)
                 WITH_LOG="${i#*=}"
+                WITH_LOG_EXPLICIT=ON
                 shift
                 ;;
             --skip_support_0_dim_tensor_pass=*)
