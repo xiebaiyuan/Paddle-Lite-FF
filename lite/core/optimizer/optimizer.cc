@@ -234,6 +234,7 @@ std::unique_ptr<RuntimeProgram> RunDefaultOptimizer(
        "lite_conv_activation_fuse_pass",              //
        "lite_gelu_fuse_pass",                        // erf-based gelu chain folding
        "lite_div_mul_fuse_pass",                     // Div+Mul constant folding
+       "lite_scale_clip_mul_fuse_pass",              // scale+clip(0,1) → hard_sigmoid gate
        "lite_squeeze2_matmul_fuse_pass",              //
        "lite_reshape2_matmul_fuse_pass",              //
        "lite_matmul_element_add_fuse_pass",           //
