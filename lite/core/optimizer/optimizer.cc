@@ -232,6 +232,8 @@ std::unique_ptr<RuntimeProgram> RunDefaultOptimizer(
        // kernels for devices automatically.
        "lite_sigmoid_elementmul_fuse_pass",           //
        "lite_conv_activation_fuse_pass",              //
+       "lite_gelu_fuse_pass",                        // erf-based gelu chain folding
+       "lite_div_mul_fuse_pass",                     // Div+Mul constant folding
        "lite_squeeze2_matmul_fuse_pass",              //
        "lite_reshape2_matmul_fuse_pass",              //
        "lite_matmul_element_add_fuse_pass",           //
