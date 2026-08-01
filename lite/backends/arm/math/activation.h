@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #pragma once
+#include <arm_neon.h>
 #include <cmath>
 #include <string>
 
@@ -20,6 +21,11 @@ namespace paddle {
 namespace lite {
 namespace arm {
 namespace math {
+
+// Forward declaration: exp_ps is defined in funcs.h (included by
+// conv_block_utils.h etc.). We cannot include funcs.h here — it includes
+// activation.h, creating a cycle — but erff_approx_v4 below needs it.
+inline float32x4_t exp_ps(float32x4_t x);
 
 // ============================================================
 // Scalar gelu helpers, shared between the standalone gelu kernel
@@ -125,6 +131,159 @@ inline float act_gelu_scalar(float x, bool approximate) {
   }
   const float sqrt_2_rec = 1.0f / std::sqrt(2.0f);
   return 0.5f * x * (1 + erff_approx(x * sqrt_2_rec));
+}
+
+// ============================================================
+// NEON (float32x4_t) gelu helpers — same approximation as the scalar
+// versions above, but processing 4 lanes at once. The standalone gelu
+// kernel (act_gelu<float>) uses these on the SIMD main path; exposing
+// them here lets the fused conv+gelu path (write_to_output_c4_fp32's
+// kGelu branch) reuse the exact same NEON math instead of falling back
+// to per-element scalar calls (which measurably regressed conv latency).
+// ============================================================
+
+inline float32x4_t tansig_approx_v4(float32x4_t x) {
+  float32x4_t v_8 = vdupq_n_f32(8.f);
+  float32x4_t v_8_ = vdupq_n_f32(-8.f);
+  float32x4_t v_1_ = vdupq_n_f32(-1.f);
+  float32x4_t vzero = vdupq_n_f32(0.f);
+  float32x4_t vones = vdupq_n_f32(1.f);
+
+  uint32x4_t v_comge8 = vcgeq_f32(x, v_8);
+  uint32x4_t v_comle8_ = vcleq_f32(x, v_8_);
+  uint32x4_t v_comlt0 = vcltq_f32(x, vzero);
+
+  float32x4_t vsign = vbslq_f32(v_comlt0, v_1_, vones);
+  x = vmulq_f32(x, vsign);
+  float32x4_t v_x_25 = vmlaq_f32(vdupq_n_f32(0.5f), x, vdupq_n_f32(25.f));
+
+  int32x4_t tab_i_v = vcvtq_s32_f32(v_x_25);
+  int tab_i_0 = vgetq_lane_s32(tab_i_v, 0);
+  int tab_i_1 = vgetq_lane_s32(tab_i_v, 1);
+  int tab_i_2 = vgetq_lane_s32(tab_i_v, 2);
+  int tab_i_3 = vgetq_lane_s32(tab_i_v, 3);
+
+  float32x4_t tab_data_v;
+  tab_data_v = vsetq_lane_f32(tansig_table[tab_i_0], tab_data_v, 0);
+  tab_data_v = vsetq_lane_f32(tansig_table[tab_i_1], tab_data_v, 1);
+  tab_data_v = vsetq_lane_f32(tansig_table[tab_i_2], tab_data_v, 2);
+  tab_data_v = vsetq_lane_f32(tansig_table[tab_i_3], tab_data_v, 3);
+
+  float32x4_t tab_i_f = vcvtq_f32_s32(tab_i_v);
+  x = vmlsq_f32(x, vdupq_n_f32(0.04), tab_i_f);
+
+  float32x4_t v_dy = vmlsq_f32(vones, tab_data_v, tab_data_v);  // dy
+  float32x4_t v_res = vmlsq_f32(vones, tab_data_v, x);
+  v_res = vmulq_f32(v_dy, v_res);
+  v_res = vmlaq_f32(tab_data_v, x, v_res);
+  v_res = vmulq_f32(vsign, v_res);
+
+  v_res = vbslq_f32(v_comge8, vones, v_res);
+  v_res = vbslq_f32(v_comle8_, v_1_, v_res);
+  return v_res;
+}
+
+#define c_erff_r0_p0 -1.72853470e-5f
+#define c_erff_r0_p1 3.83197126e-4f
+#define c_erff_r0_p2 -3.88396438e-3f
+#define c_erff_r0_p3 2.42546219e-2f
+#define c_erff_r0_p4 -1.06777877e-1f
+#define c_erff_r0_p5 -6.34846687e-1f
+#define c_erff_r0_p6 -1.28717512e-1f
+#define c_erff_r1_p0 -5.96761703e-4f
+#define c_erff_r1_p1 4.99119423e-3f
+#define c_erff_r1_p2 -2.67681349e-2f
+#define c_erff_r1_p3 1.12819925e-1f
+#define c_erff_r1_p4 -3.76125336e-1f
+#define c_erff_r1_p5 1.28379166e-1f
+#define c_erff_threshold 0.927734375f
+
+inline float32x4_t erff_approx_v4(float32x4_t a) {
+  float32x4_t coef0 = vdupq_n_f32(c_erff_r0_p0);
+  float32x4_t coef1 = vdupq_n_f32(c_erff_r0_p1);
+  float32x4_t coef2 = vdupq_n_f32(c_erff_r0_p2);
+  float32x4_t coef3 = vdupq_n_f32(c_erff_r0_p3);
+  float32x4_t coef4 = vdupq_n_f32(c_erff_r0_p4);
+  float32x4_t coef5 = vdupq_n_f32(c_erff_r0_p5);
+  float32x4_t coef6 = vdupq_n_f32(c_erff_r0_p6);
+
+  float32x4_t vzero_4 = vdupq_n_f32(0.f);
+  float32x4_t vones_4 = vdupq_n_f32(1.f);
+  float32x4_t vmask_4 = vdupq_n_f32(c_erff_threshold);
+  float32x4_t r0, r1, s, t, u, t_;
+
+  // r0 (t > 0.927734375f)
+  t = vabsq_f32(a);
+  s = vmulq_f32(a, a);
+  t_ = vsubq_f32(vzero_4, t);
+  r0 = vmlaq_f32(coef1, coef0, t);
+  u = vmlaq_f32(coef3, coef2, t);
+  r0 = vmlaq_f32(u, r0, s);
+  r0 = vmlaq_f32(coef4, r0, t);
+  r0 = vmlaq_f32(coef5, r0, t);
+  r0 = vmlaq_f32(coef6, r0, t);
+  r0 = vmlaq_f32(t_, r0, t);
+  r0 = vsubq_f32(vones_4, exp_ps(r0));
+
+  uint32x4_t vm_gt0 = vcgtq_f32(a, vzero_4);
+  r0 = vbslq_f32(vm_gt0, r0, vsubq_f32(vzero_4, r0));
+
+  // r1 (t <= 0.927734375f)
+  coef0 = vdupq_n_f32(c_erff_r1_p0);
+  coef1 = vdupq_n_f32(c_erff_r1_p1);
+  coef2 = vdupq_n_f32(c_erff_r1_p2);
+  coef3 = vdupq_n_f32(c_erff_r1_p3);
+  coef4 = vdupq_n_f32(c_erff_r1_p4);
+  coef5 = vdupq_n_f32(c_erff_r1_p5);
+
+  r1 = coef0;
+  r1 = vmlaq_f32(coef1, r1, s);
+  r1 = vmlaq_f32(coef2, r1, s);
+  r1 = vmlaq_f32(coef3, r1, s);
+  r1 = vmlaq_f32(coef4, r1, s);
+  r1 = vmlaq_f32(coef5, r1, s);
+  r1 = vmlaq_f32(a, r1, a);
+
+  // choose r0 or r1
+  uint32x4_t v_mask_re = vcltq_f32(t, vmask_4);
+  r0 = vbslq_f32(v_mask_re, r1, r0);
+  return r0;
+}
+
+// Elementwise gelu on 4 lanes, mirroring act_gelu<float>'s SIMD main
+// path exactly (approximate -> tanh-based, exact -> erf-based) so the
+// fused conv result is bit-identical to the standalone kernel.
+inline float32x4_t act_gelu_v4(float32x4_t x, bool approximate) {
+  if (approximate) {
+    const float pi = std::atan(1) * 4;
+    const float sqrt_2_div_pi = std::sqrt(2 / pi);
+    float32x4_t sqrt_2_div_pi_v4 = vdupq_n_f32(sqrt_2_div_pi);
+    float32x4_t coeff_v4 = vdupq_n_f32(0.044715f);
+    float32x4_t vones_4 = vdupq_n_f32(1.f);
+    float32x4_t v05_4 = vdupq_n_f32(0.5f);
+
+    float32x4_t vx_pow = vmulq_f32(x, x);
+    vx_pow = vmulq_f32(vx_pow, x);
+    vx_pow = vmlaq_f32(x, vx_pow, coeff_v4);
+    vx_pow = vmulq_f32(vx_pow, sqrt_2_div_pi_v4);
+
+    float32x4_t v_res = tansig_approx_v4(vx_pow);
+    v_res = vaddq_f32(v_res, vones_4);
+    v_res = vmulq_f32(v_res, x);
+    v_res = vmulq_f32(v_res, v05_4);
+    return v_res;
+  }
+  const float sqrt_2_rec = 1.0f / std::sqrt(2.0f);
+  float32x4_t v_sqrt2_rec = vdupq_n_f32(sqrt_2_rec);
+  float32x4_t vones_4 = vdupq_n_f32(1.f);
+  float32x4_t vdata_0_5 = vdupq_n_f32(0.5f);
+
+  float32x4_t v_tmp = vmulq_f32(v_sqrt2_rec, x);
+  float32x4_t v_erf = erff_approx_v4(v_tmp);
+  float32x4_t res = vmulq_f32(vdata_0_5, x);
+  v_erf = vaddq_f32(vones_4, v_erf);
+  res = vmulq_f32(res, v_erf);
+  return res;
 }
 
 template <typename T>

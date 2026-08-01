@@ -2222,11 +2222,14 @@ inline bool write_to_output_c4_fp32(const float* din,
     } else if (act_param->active_type == lite_api::ActivationType::kGelu) {
       // gelu needs erf, which cannot be expressed with the flag_act bit
       // pattern (relu/relu6/leaky_relu/hard_swish are all cheap ops), so
-      // fall back to a plain C loop over the already-transposed c4 data
-      // (bias already applied by the caller). act_gelu_scalar is the same
-      // approximation used by the standalone gelu kernel, so the fused
-      // result matches the unfused one bit-for-bit.
+      // fall back to a C loop over the already-transposed c4 data (bias
+      // applied by the caller). act_gelu_v4 processes one pixel's 4
+      // channels per NEON pass and uses the exact same approximation as
+      // the standalone gelu kernel's SIMD path, so the fused result is
+      // bit-identical to the unfused one (and avoids the per-element
+      // scalar fallback that measurably regressed conv latency).
       const int row_cnt = cnt * 4 + remain;
+      float32x4_t vbias_v = vld1q_f32(bias);
       for (int i = 0; i < size_h; i++) {
         float* doutc0_ptr = doutc0r0;
         float* doutc1_ptr = doutc1r0;
@@ -2246,20 +2249,19 @@ inline bool write_to_output_c4_fp32(const float* din,
         }
         // din is [w-major, c4-interleaved]: din[w * 4 + c] == channel c of
         // pixel w. gelu is elementwise, so compute per-pixel then store
-        // channel-major into the four output rows. bias (if any) is applied
-        // here, matching the other act branches which fold vbias into the
-        // transposed data.
+        // channel-major into the four output rows. bias (if any) is folded
+        // into the vector add, matching the other act branches.
         const float* src = ptr_din;
         for (int w = 0; w < row_cnt; ++w) {
           const float* p = src + w * 4;
-          *(doutc0_ptr++) =
-              act_gelu_scalar(p[0] + bias[0], act_param->gelu_approximate);
-          *(doutc1_ptr++) =
-              act_gelu_scalar(p[1] + bias[1], act_param->gelu_approximate);
-          *(doutc2_ptr++) =
-              act_gelu_scalar(p[2] + bias[2], act_param->gelu_approximate);
-          *(doutc3_ptr++) =
-              act_gelu_scalar(p[3] + bias[3], act_param->gelu_approximate);
+          float32x4_t vx = vaddq_f32(vld1q_f32(p), vbias_v);
+          float32x4_t vy = act_gelu_v4(vx, act_param->gelu_approximate);
+          float out[4];
+          vst1q_f32(out, vy);
+          *(doutc0_ptr++) = out[0];
+          *(doutc1_ptr++) = out[1];
+          *(doutc2_ptr++) = out[2];
+          *(doutc3_ptr++) = out[3];
         }
         doutc0r0 += width;
         doutc1r0 += width;
