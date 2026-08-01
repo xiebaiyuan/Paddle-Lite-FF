@@ -37,6 +37,21 @@ class FuseBase {
     BuildPattern();
     PerformPatternMatcher(graph);
 
+    // Drop matches rejected by value/constant validation. They must not be
+    // fused (InsertNewNode would return early without creating a node) yet
+    // DeleteInterNodes below removes Intermediate nodes for *every* match in
+    // key2nodes_ — deleting graph nodes for a skipped match corrupts the
+    // graph. So prune invalid matches here, before any node is inserted or
+    // removed.
+    std::vector<key2nodes_t> valid;
+    valid.reserve(key2nodes_.size());
+    for (const auto& matched : key2nodes_) {
+      if (ValidateMatch(graph, matched)) {
+        valid.push_back(matched);
+      }
+    }
+    key2nodes_.swap(valid);
+
     for (const auto& matched : key2nodes_) {
       InsertNewNode(graph, matched);
     }
@@ -63,6 +78,13 @@ class FuseBase {
 
  protected:
   virtual void InsertNewNode(SSAGraph* graph, const key2nodes_t& matched) = 0;
+
+  // Optional pre-check: return false to skip a matched subgraph before any
+  // node is inserted or removed. Default accepts every match. Subclasses
+  // that validate constants in InsertNewNode should move that check here.
+  virtual bool ValidateMatch(SSAGraph* graph, const key2nodes_t& matched) {
+    return true;
+  }
 
   void PerformPatternMatcher(SSAGraph* graph);
 

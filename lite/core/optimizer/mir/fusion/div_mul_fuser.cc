@@ -56,14 +56,7 @@ void DivMulFuser::BuildPattern() {
   *mul_y >> *mul_op;
 }
 
-void DivMulFuser::InsertNewNode(SSAGraph* graph,
-                                 const key2nodes_t& matched) {
-  // Fold constants: out = (x / c_div) * c_mul = x * (c_mul / c_div)
-  // Read both constant tensors from scope and write the combined scale
-  // back into the mul's Y tensor.
-  auto mul_old = matched.at("mul")->stmt()->op();
-  auto* scope = mul_old->scope();
-
+bool DivMulFuser::ValidateMatch(SSAGraph* graph, const key2nodes_t& matched) {
   // Safety: we mutate the mul_y tensor in place. Only fold when mul_y is
   // consumed exclusively by this mul; otherwise another op sharing the same
   // constant would read the overwritten value.
@@ -72,15 +65,17 @@ void DivMulFuser::InsertNewNode(SSAGraph* graph,
     if (consumer != matched.at("mul")) {
       LOG(WARNING) << "div_mul_fuse: constant " << mul_y_node->arg()->name
                    << " is shared by multiple ops, skip";
-      return;
+      return false;
     }
   }
 
+  auto mul_old = matched.at("mul")->stmt()->op();
+  auto* scope = mul_old->scope();
   auto* div_y_t = scope->FindMutableTensor(matched.at("div_y")->arg()->name);
   auto* mul_y_t = scope->FindMutableTensor(matched.at("mul_y")->arg()->name);
   if (div_y_t == nullptr || mul_y_t == nullptr) {
     LOG(WARNING) << "div_mul_fuse: cannot find constant tensors, skip";
-    return;
+    return false;
   }
 
   auto div_dims = div_y_t->dims();
@@ -89,19 +84,37 @@ void DivMulFuser::InsertNewNode(SSAGraph* graph,
   // identical shape for this fold to be valid.
   if (div_dims.production() != mul_dims.production()) {
     LOG(WARNING) << "div_mul_fuse: constant shapes mismatch, skip";
-    return;
+    return false;
   }
 
   const float* div_data = div_y_t->data<float>();
   const float* mul_data = mul_y_t->data<float>();
   auto numel = div_y_t->numel();
-
-  float* combined_data = mul_y_t->mutable_data<float>();
   for (int64_t i = 0; i < numel; ++i) {
     if (div_data[i] == 0.0f) {
       LOG(WARNING) << "div_mul_fuse: division by zero constant, skip";
-      return;
+      return false;
     }
+  }
+  return true;
+}
+
+void DivMulFuser::InsertNewNode(SSAGraph* graph,
+                                 const key2nodes_t& matched) {
+  // Fold constants: out = (x / c_div) * c_mul = x * (c_mul / c_div)
+  // Read both constant tensors from scope and write the combined scale
+  // back into the mul's Y tensor.
+  auto mul_old = matched.at("mul")->stmt()->op();
+  auto* scope = mul_old->scope();
+
+  auto* div_y_t = scope->FindMutableTensor(matched.at("div_y")->arg()->name);
+  auto* mul_y_t = scope->FindMutableTensor(matched.at("mul_y")->arg()->name);
+  auto numel = div_y_t->numel();
+
+  const float* div_data = div_y_t->data<float>();
+  const float* mul_data = mul_y_t->data<float>();
+  float* combined_data = mul_y_t->mutable_data<float>();
+  for (int64_t i = 0; i < numel; ++i) {
     combined_data[i] = mul_data[i] / div_data[i];
   }
 

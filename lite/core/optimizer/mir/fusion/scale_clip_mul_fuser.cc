@@ -68,27 +68,24 @@ void ScaleClipMulFuser::BuildPattern() {
   *x_in >> *mul_op;
 }
 
-void ScaleClipMulFuser::InsertNewNode(SSAGraph* graph,
+bool ScaleClipMulFuser::ValidateMatch(SSAGraph* graph,
                                       const key2nodes_t& matched) {
   // Validate the scale parameters before fusing. hard_sigmoid is
   //   clip(slope * x + offset, 0, 1)
   // so the scale bias must be 0.5 and the scale factor (the slope) must be
   // non-zero. Fusing without these checks would silently change numerics for
   // any scale→clip subgraph that merely looks like hard_sigmoid.
-  auto scale_old = matched.at("scale")->stmt()->op();
-  auto* scope = scale_old->scope();
-
   auto* scale_op_info = matched.at("scale")->stmt()->op_info();
   float slope = scale_op_info->GetAttr<float>("scale");
   float bias = scale_op_info->GetAttr<float>("bias");
   if (std::fabs(bias - 0.5f) > 1e-4f) {
     LOG(WARNING) << "scale_clip_mul_fuse: unexpected bias " << bias
                  << " (expected 0.5), skip";
-    return;
+    return false;
   }
   if (std::fabs(slope) < 1e-6f) {
     LOG(WARNING) << "scale_clip_mul_fuse: zero slope, skip";
-    return;
+    return false;
   }
 
   // The clip output must be consumed exclusively by this mul: after folding,
@@ -100,9 +97,16 @@ void ScaleClipMulFuser::InsertNewNode(SSAGraph* graph,
       LOG(WARNING) << "scale_clip_mul_fuse: clip output "
                    << clip_out_node->arg()->name
                    << " is shared by multiple ops, skip";
-      return;
+      return false;
     }
   }
+  return true;
+}
+
+void ScaleClipMulFuser::InsertNewNode(SSAGraph* graph,
+                                      const key2nodes_t& matched) {
+  auto scale_old = matched.at("scale")->stmt()->op();
+  auto* scope = scale_old->scope();
 
   auto op_desc = GenOpDesc(matched);
   auto hs_op = LiteOpRegistry::Global().Create("hard_sigmoid");

@@ -95,7 +95,7 @@ void GeluFuser::BuildPattern() {
   *scale_y >> *scale_op;
 }
 
-void GeluFuser::InsertNewNode(SSAGraph* graph, const key2nodes_t& matched) {
+bool GeluFuser::ValidateMatch(SSAGraph* graph, const key2nodes_t& matched) {
   // Validate the GELU constants before fusing. Exact GELU is
   //   0.5 * x * (1 + erf(x / √2))
   // so the div divisor must be √2 (or equivalently 1/√2 folded into the
@@ -114,7 +114,7 @@ void GeluFuser::InsertNewNode(SSAGraph* graph, const key2nodes_t& matched) {
   auto* scale_y_t = scope->FindMutableTensor(matched.at("scale_y")->arg()->name);
   if (div_y_t == nullptr || add_y_t == nullptr || scale_y_t == nullptr) {
     LOG(WARNING) << "gelu_fuse: cannot find constant tensors, skip";
-    return;
+    return false;
   }
 
   auto check_scalar = [kTolerance](const lite::Tensor* t, float expected,
@@ -134,11 +134,17 @@ void GeluFuser::InsertNewNode(SSAGraph* graph, const key2nodes_t& matched) {
   };
 
   // div(x, c1): c1 must be √2 (x/√2). Accept both √2 and its reciprocal.
-  if (!check_scalar(div_y_t, kSqrt2, "div divisor")) return;
+  if (!check_scalar(div_y_t, kSqrt2, "div divisor")) return false;
   // add: erf_out + 1.0
-  if (!check_scalar(add_y_t, 1.0f, "add bias")) return;
+  if (!check_scalar(add_y_t, 1.0f, "add bias")) return false;
   // final mul scale: 0.5
-  if (!check_scalar(scale_y_t, 0.5f, "final scale")) return;
+  if (!check_scalar(scale_y_t, 0.5f, "final scale")) return false;
+  return true;
+}
+
+void GeluFuser::InsertNewNode(SSAGraph* graph, const key2nodes_t& matched) {
+  auto mul_old = matched.at("scale")->stmt()->op();
+  auto* scope = mul_old->scope();
 
   auto op_desc = GenOpDesc(matched);
   auto gelu_op = LiteOpRegistry::Global().Create("gelu");
