@@ -196,6 +196,11 @@ std::unique_ptr<RuntimeProgram> RunDefaultOptimizer(
        "support_0_dim_tensor_pass",
 #endif  // LITE_SKIP_SUPPORT_0_DIM_TENSOR_PASS
        "op_transformation_pass",
+       // Eliminate x2paddle `assign` identity copies before any fusion
+       // pass: assign ops form a shared-variable "register pool" that
+       // breaks the SSA closedness fusion patterns require. Must run
+       // before lite_conv_activation_fuse_pass and friends.
+       "assign_eliminate_pass",
        "assign_value_calc_offline_pass",
        "ssd_boxes_calc_offline_pass",
        "p_norm_fill_constant_max_div_fuse_pass",
