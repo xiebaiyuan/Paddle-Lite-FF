@@ -55,7 +55,13 @@ void ConvActivationFusePass::Apply(const std::unique_ptr<SSAGraph>& graph) {
     act_types.push_back("relu6");
     act_types.push_back("leaky_relu");
     act_types.push_back("hard_swish");
-    act_types.push_back("gelu");
+    // gelu fusion is temporarily disabled: fusing gelu into the conv
+    // kernels (write_to_output_c4_fp32 kGelu branch / conv_gelu_act.h)
+    // regressed rec-model inference by ~4% (116ms vs 111ms, threads=1)
+    // because the fused path runs gelu inline in the winograd writeback
+    // instead of the standalone kernel's cache-friendly pass. The kernel
+    // support (3893fd0b0) stays for future use; re-enable by uncommenting.
+    // act_types.push_back("gelu");
   }
   if (has_opencl) {
     act_types.push_back("relu6");

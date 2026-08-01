@@ -16,7 +16,10 @@ bool IsFusableActivationOp(const std::string& op_type) {
       "relu",          "relu6",       "leaky_relu",
       "hard_swish",    "hard_sigmoid", "prelu",
       "sigmoid",       "tanh",         "swish",
-      "gelu",          "abs" };
+      // "gelu" removed — gelu fusion temporarily disabled (see
+      // conv_activation_fuse_pass.cc). The attribute plumbing below stays
+      // so re-enabling is a one-line change.
+      "abs" };
   return kFusable.count(op_type) > 0;
 }
 
