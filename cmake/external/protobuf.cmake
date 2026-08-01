@@ -239,6 +239,7 @@ FUNCTION(build_protobuf TARGET_NAME BUILD_FOR_HOST)
             SOURCE_DIR      ${SOURCE_DIR}
             CMAKE_ARGS
                 ${OPTIONAL_ARGS}
+                ${CCACHE_LAUNCHER_ARG}
                 -DCMAKE_POLICY_VERSION_MINIMUM=3.5
                 -Dprotobuf_BUILD_TESTS=OFF
                 -DCMAKE_SKIP_RPATH=ON

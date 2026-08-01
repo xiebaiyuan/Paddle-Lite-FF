@@ -1426,6 +1426,7 @@ bool DeviceInfo::ExtendWorkspace(size_t size) {
 #endif  // LITE_WITH_ARM
 
 #ifdef LITE_WITH_X86
+#if defined(__x86_64__) || defined(__i386__)
 
 #define uint32_t unsigned int
 
@@ -1571,7 +1572,17 @@ FMAType device_fma_level() {
     return FMAType::FMA_NONE;
 }
 
-#endif
+#else  // !(__x86_64__ || __i386__)
+
+// Non-x86 hosts (e.g. arm64 macOS): there is no CPUID/XGETBV instruction.
+// Report the conservative "none" levels so the x86 code paths are never used.
+SSEType device_sse_level() { return SSEType::SSE_NONE; }
+AVXType device_avx_level() { return AVXType::AVX_NONE; }
+FMAType device_fma_level() { return FMAType::FMA_NONE; }
+
+#endif  // __x86_64__ || __i386__
+
+#endif  // LITE_WITH_X86
 
 #if defined(LITE_WITH_ANDROID) && defined(__aarch64__)
 #undef AARCH64_HWCAP_SVE

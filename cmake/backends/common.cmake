@@ -25,13 +25,13 @@ include(backends/x86)
 # Add dependencies
 include(generic)                # simplify cmake module
 include(configure)              # add paddle env configuration
+include(ccache)                 # set ccache for compilation (all targets)
 if(LITE_WITH_ARM)
   message(STATUS "Building the mobile framework")
   include(postproject)
   if(NOT LITE_ON_TINY_PUBLISH)
     include(external/gflags)    # download, build, install gflags
     include(external/gtest)     # download, build, install gtest
-    include(ccache)
     include(external/protobuf)  # download, build, install protobuf
   endif()
   if(LITE_WITH_ARM_DNN_LIBRARY)
@@ -45,7 +45,6 @@ else()
   include(external/protobuf)    # download, build, install protobuf
   include(external/openblas)    # download, build, install openblas
   include(external/eigen)       # download eigen3
-  include(ccache)               # set ccache for compilation
   include(util)                 # set unittest and link libs
   include(version)              # set PADDLE_VERSION
   if(NOT APPLE AND NOT OHOS)

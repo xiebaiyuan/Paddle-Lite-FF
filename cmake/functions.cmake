@@ -156,8 +156,11 @@ function(lite_cc_test TARGET)
       target_link_libraries(${TARGET} ${xpu_builder_libs} ${xpu_runtime_libs})
   endif()
 
-  set(LINK_FLAGS "-Wl,--version-script ${PADDLE_SOURCE_DIR}/lite/core/lite.map")
-  set_target_properties(${TARGET} PROPERTIES LINK_FLAGS "${LINK_FLAGS}")
+  # symbol visibility map: only GNU ld supports --version-script
+  if(NOT APPLE AND NOT WIN32)
+    set(LINK_FLAGS "-Wl,--version-script ${PADDLE_SOURCE_DIR}/lite/core/lite.map")
+    set_target_properties(${TARGET} PROPERTIES LINK_FLAGS "${LINK_FLAGS}")
+  endif()
   common_link(${TARGET})
   add_test(NAME ${TARGET}
           COMMAND ${TARGET} ${args_ARGS}
