@@ -22,7 +22,7 @@ from __future__ import print_function
 import sys
 import os
 import logging
-from ast import RegisterLiteKernelParser
+from ast_custom import RegisterLiteKernelParser
 from utils import *
 
 if len(sys.argv) != 7:

@@ -15,7 +15,7 @@
 from __future__ import print_function
 import sys
 import logging
-from ast import RegisterLiteKernelParser
+from ast_custom import RegisterLiteKernelParser
 
 if len(sys.argv) != 8:
     print("Error: parse_kernel_registry.py requires seven inputs!")

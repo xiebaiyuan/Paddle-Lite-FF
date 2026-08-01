@@ -18,7 +18,7 @@ Usage: to generate `xxx_compute_arm.cc`/`xxx_compute_host.cc` in build dir when 
 """
 import sys
 import os
-from ast import RegisterLiteKernelParser
+from ast_custom import RegisterLiteKernelParser
 
 
 def parse_tailored_kernel_from_file(src_path, dst_path, op_name, device_target,
