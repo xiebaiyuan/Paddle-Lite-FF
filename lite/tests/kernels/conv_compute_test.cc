@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <gtest/gtest.h>
+#include <cmath>
 #include "lite/api/paddle_use_kernels.h"
 #include "lite/api/paddle_use_ops.h"
 #include "lite/core/test/arena/framework.h"
@@ -193,6 +194,12 @@ class ConvComputeTester : public arena::TestCase {
                       std::max(0.f, out_value + hard_swish_offset_);
                   float min_value = std::min(max_value, hard_swish_threshold_);
                   out_value = min_value * out_value / hard_swish_scale_;
+                } else if (act_type_ == "gelu") {
+                  // reference gelu (exact erf). The fused kernel uses the
+                  // same Abramowitz-Stegun erff_approx (< 1 ulp error), well
+                  // within abs_error.
+                  out_value = 0.5f * out_value *
+                              (1.f + std::erf(out_value / std::sqrt(2.f)));
                 } else {
                   LOG(FATAL) << " activation type " << act_type_
                              << "not supported in conv test";
@@ -235,6 +242,9 @@ class ConvComputeTester : public arena::TestCase {
         op_desc->SetAttr("hard_swish_threshold", hard_swish_threshold_);
         op_desc->SetAttr("hard_swish_scale", hard_swish_scale_);
         op_desc->SetAttr("hard_swish_offset", hard_swish_offset_);
+      }
+      if (act_type_ == "gelu") {
+        op_desc->SetAttr("approximate", false);
       }
     }
   }
@@ -433,6 +443,65 @@ void TestConvAct(Place place, float abs_error = 2e-5) {
                                 0.1));
       arena::Arena arena1(std::move(tester1), place, abs_error);
       arena1.TestPrecision();
+
+      // conv+gelu fusion (kGelu branch in write_to_output_c4_fp32)
+      std::unique_ptr<arena::TestCase> tester2(
+          new ConvComputeTester(place,
+                                "def",
+                                DDim(dims),
+                                out_channels,
+                                3,
+                                {1, 1},
+                                {0, 0},
+                                1,
+                                {1, 1},
+                                "",
+                                false,
+                                true,
+                                "gelu"));
+      arena::Arena arena2(std::move(tester2), place, abs_error);
+      arena2.TestPrecision();
+    }
+  }
+}
+
+// conv+gelu fusion across every ARM kernel path:
+//   winograd (3x3 s1) / gemmlike (1x1 s1) / direct (3x3 s2) / depthwise (3x3 s1/s2)
+void TestConvGeluFusion(Place place, float abs_error = 2e-5) {
+  // winograd 3x3 s1 (write_to_output_c4_fp32 kGelu branch)
+  for (auto dims :
+       std::vector<std::vector<int64_t>>{{1, 4, 7, 8}, {1, 8, 9, 13}}) {
+    std::unique_ptr<arena::TestCase> tester(new ConvComputeTester(
+        place, "def", DDim(dims), 4, 3, {1, 1}, {0, 0}, 1, {1, 1}, "", true,
+        true, "gelu"));
+    arena::Arena arena(std::move(tester), place, abs_error);
+    arena.TestPrecision();
+  }
+  // gemmlike 1x1 s1 (kernel-layer gelu post-processing)
+  for (auto dims :
+       std::vector<std::vector<int64_t>>{{1, 4, 7, 8}, {1, 6, 9, 13}}) {
+    std::unique_ptr<arena::TestCase> tester(new ConvComputeTester(
+        place, "def", DDim(dims), 4, 1, {1, 1}, {0, 0}, 1, {1, 1}, "", true,
+        true, "gelu"));
+    arena::Arena arena(std::move(tester), place, abs_error);
+    arena.TestPrecision();
+  }
+  // direct 3x3 s2 (write_to_output_c4_fp32 kGelu branch)
+  {
+    std::unique_ptr<arena::TestCase> tester(new ConvComputeTester(
+        place, "def", DDim({1, 4, 8, 10}), 4, 3, {2, 2}, {1, 1}, 1, {1, 1}, "",
+        true, true, "gelu"));
+    arena::Arena arena(std::move(tester), place, abs_error);
+    arena.TestPrecision();
+  }
+  // depthwise 3x3 s1 / s2 (asm path + kernel-layer gelu post-processing)
+  for (auto stride : {1, 2}) {
+    for (auto pad : {0, 1}) {
+      std::unique_ptr<arena::TestCase> tester(new ConvComputeTester(
+          place, "def", DDim({1, 4, 8, 10}), 4, 3, {stride, stride},
+          {pad, pad}, 4, {1, 1}, "", true, true, "gelu"));
+      arena::Arena arena(std::move(tester), place, abs_error);
+      arena.TestPrecision();
     }
   }
 }
@@ -554,6 +623,7 @@ TEST(Conv2d, precision) {
   TestConvPaddings(place, abs_error);
   TestConvPaddingAlgorithm(place, abs_error);
   TestConvBias(place, abs_error);
+  TestConvGeluFusion(place, abs_error);
   TestConvAct(place, abs_error);
 #if !defined(NNADAPTER_WITH_HUAWEI_ASCEND_NPU) && \
     !defined(NNADAPTER_WITH_HUAWEI_KIRIN_NPU)

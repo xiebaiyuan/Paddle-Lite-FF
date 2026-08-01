@@ -169,6 +169,12 @@ class ConvOpLite : public OpLite {
             op_desc.GetAttr<float>("slope");
         param_.activation_param.hard_sigmoid_offset =
             op_desc.GetAttr<float>("offset");
+      } else if (act_type == "gelu") {
+        param_.activation_param.active_type = lite_api::ActivationType::kGelu;
+        if (op_desc.HasAttr("approximate")) {
+          param_.activation_param.gelu_approximate =
+              op_desc.GetAttr<bool>("approximate");
+        }
       } else if (act_type == "prelu") {
         param_.activation_param.active_type = lite_api::ActivationType::kPRelu;
         param_.activation_param.Prelu_mode =

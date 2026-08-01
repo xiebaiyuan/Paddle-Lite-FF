@@ -16,6 +16,7 @@
 #include <vector>
 #include "lite/backends/arm/math/gemm_prepacked_int8.h"
 #include "lite/backends/arm/math/packed_sgemm.h"
+#include "lite/kernels/arm/conv_gelu_act.h"
 
 namespace paddle {
 namespace lite {
@@ -124,6 +125,9 @@ void GemmLikeConv<PRECISION(kFloat), PRECISION(kFloat)>::Run() {
   int oh = o_dims[2];
   int ow = o_dims[3];
   int oc = o_dims[1];
+  // gelu is applied after the conv math (which only knows the flag_act
+  // relu/relu6/leaky_relu/hard_swish bit pattern), see conv_gelu_act.h.
+  UnsetGeluForConvMath(&param.activation_param);
   if (flag_1x1gemm_) {
     lite::arm::math::conv1x1s1_gemm(
         din, dout, bs, oc, oh, ow, ic, ih, iw, weights, bias, param, &ctx);
@@ -133,6 +137,7 @@ void GemmLikeConv<PRECISION(kFloat), PRECISION(kFloat)>::Run() {
         din, dout, bs, oc, oh, ow, ic, ih, iw, weights, bias, param, &ctx);
     KERNEL_FUNC_NAME("conv_im2col_gemm_fp32")
   }
+  ApplyGeluIfFused(param.activation_param, dout, o_dims.production());
 }
 
 PROFILE_INFO(kInt8, kFloat);

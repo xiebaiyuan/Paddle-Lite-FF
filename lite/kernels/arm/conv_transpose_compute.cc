@@ -18,6 +18,7 @@
 #include "lite/backends/arm/math/gemm_prepacked_int8.h"
 #include "lite/core/op_registry.h"
 #include "lite/core/type_system.h"
+#include "lite/kernels/arm/conv_gelu_act.h"
 #ifdef ENABLE_ARM_FP16
 #include "lite/backends/arm/math/fp16/funcs_fp16.h"
 #endif
@@ -194,7 +195,10 @@ void Conv2DTransposeCompute<PRECISION(kFloat), PRECISION(kFloat)>::Run() {
   auto weights =
       flag_trans_weight_ ? weights_.data<float>() : param.filter->data<float>();
   auto act_param = param.activation_param;
+  // gelu cannot be expressed by the flag_act asm dispatch (fill_bias_act
+  // would LOG(FATAL)); apply it after the conv math instead.
   bool has_act = act_param.has_active;
+  UnsetGeluForConvMath(&act_param);
   bool depthwise_s1 =
       depthwise_ && (param.strides[0] == 1 && param.strides[1] == 1);
   bool depthwise_s2 =
@@ -272,6 +276,7 @@ void Conv2DTransposeCompute<PRECISION(kFloat), PRECISION(kFloat)>::Run() {
       }
     }
   }
+  ApplyGeluIfFused(param.activation_param, dout, chout * hout * wout * num);
 }
 
 PROFILE_INFO(kInt8, kFloat)

@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <gtest/gtest.h>
+#include <cmath>
 #include "lite/api/paddle_use_kernels.h"
 #include "lite/api/paddle_use_ops.h"
 #include "lite/core/test/arena/framework.h"
@@ -42,6 +43,7 @@ class ConvTransposeComputeTester : public arena::TestCase {
   std::vector<int> output_padding_{};
   std::string bias_ = "";
   bool fuse_relu_ = false;
+  std::string act_type_;  // optional fused activation: "", "relu" (fuse_relu_), "gelu"
 
  public:
   ConvTransposeComputeTester(const Place& place,
@@ -57,7 +59,8 @@ class ConvTransposeComputeTester : public arena::TestCase {
                              std::vector<int> output_size = {},
                              std::vector<int> output_padding = {},
                              std::string bias = "",
-                             bool fuse_relu = false)
+                             bool fuse_relu = false,
+                             std::string act_type = "")
       : TestCase(place, alias),
         dims_(dims),
         filter_channels_(filter_channels),
@@ -70,7 +73,8 @@ class ConvTransposeComputeTester : public arena::TestCase {
         output_size_(output_size),
         output_padding_(output_padding),
         bias_(bias),
-        fuse_relu_(fuse_relu) {}
+        fuse_relu_(fuse_relu),
+        act_type_(act_type) {}
 
   void RunBaseline(Scope* scope) override {
     if (paddings_.size() == 2L) {
@@ -157,6 +161,14 @@ class ConvTransposeComputeTester : public arena::TestCase {
                                paddings_[1],
                                flag_bias,
                                fuse_relu_);
+    if (act_type_ == "gelu") {
+      // reference gelu (exact erf); fused kernel uses the same
+      // Abramowitz-Stegun erff_approx (< 1 ulp error).
+      for (int64_t i = 0; i < output_dims.production(); ++i) {
+        output_data[i] = 0.5f * output_data[i] *
+                         (1.f + std::erf(output_data[i] / std::sqrt(2.f)));
+      }
+    }
   }
 
   void PrepareOpDesc(cpp::OpDesc* op_desc) override {
@@ -183,6 +195,11 @@ class ConvTransposeComputeTester : public arena::TestCase {
     if (fuse_relu_) {
       op_desc->SetAttr("with_act", true);
       op_desc->SetAttr("act_type", std::string("relu"));
+    }
+    if (act_type_ == "gelu") {
+      op_desc->SetAttr("with_act", true);
+      op_desc->SetAttr("act_type", std::string("gelu"));
+      op_desc->SetAttr("approximate", false);
     }
   }
 
@@ -351,6 +368,25 @@ void TestConvTransposeBiasRelu(Place place, float abs_error = 2e-5) {
         arena::Arena arena(std::move(tester), place, abs_error);
         arena.TestPrecision();
       }
+      // conv_transpose + gelu fusion (kernel-layer gelu post-processing)
+      std::unique_ptr<arena::TestCase> tester(
+          new ConvTransposeComputeTester(place,
+                                         "def",
+                                         DDim(dims),
+                                         3,
+                                         {3, 3},
+                                         {1, 1},
+                                         {0, 0},
+                                         1,
+                                         {1, 1},
+                                         "",
+                                         {},
+                                         {},
+                                         bias,
+                                         false,
+                                         "gelu"));
+      arena::Arena arena(std::move(tester), place, abs_error);
+      arena.TestPrecision();
     }
   }
 }

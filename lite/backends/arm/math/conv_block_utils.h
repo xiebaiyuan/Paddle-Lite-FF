@@ -2219,6 +2219,54 @@ inline bool write_to_output_c4_fp32(const float* din,
               doutc3r0 += width;
               ptr_din += w_stride;
             }
+    } else if (act_param->active_type == lite_api::ActivationType::kGelu) {
+      // gelu needs erf, which cannot be expressed with the flag_act bit
+      // pattern (relu/relu6/leaky_relu/hard_swish are all cheap ops), so
+      // fall back to a plain C loop over the already-transposed c4 data
+      // (bias already applied by the caller). act_gelu_scalar is the same
+      // approximation used by the standalone gelu kernel, so the fused
+      // result matches the unfused one bit-for-bit.
+      const int row_cnt = cnt * 4 + remain;
+      for (int i = 0; i < size_h; i++) {
+        float* doutc0_ptr = doutc0r0;
+        float* doutc1_ptr = doutc1r0;
+        float* doutc2_ptr = doutc2r0;
+        float* doutc3_ptr = doutc3r0;
+        if (ce > channel) {
+          switch (ce - channel) {
+            case 3:
+              doutc1_ptr = trash_ptr;
+            case 2:
+              doutc2_ptr = trash_ptr;
+            case 1:
+              doutc3_ptr = trash_ptr;
+            default:
+              break;
+          }
+        }
+        // din is [w-major, c4-interleaved]: din[w * 4 + c] == channel c of
+        // pixel w. gelu is elementwise, so compute per-pixel then store
+        // channel-major into the four output rows. bias (if any) is applied
+        // here, matching the other act branches which fold vbias into the
+        // transposed data.
+        const float* src = ptr_din;
+        for (int w = 0; w < row_cnt; ++w) {
+          const float* p = src + w * 4;
+          *(doutc0_ptr++) =
+              act_gelu_scalar(p[0] + bias[0], act_param->gelu_approximate);
+          *(doutc1_ptr++) =
+              act_gelu_scalar(p[1] + bias[1], act_param->gelu_approximate);
+          *(doutc2_ptr++) =
+              act_gelu_scalar(p[2] + bias[2], act_param->gelu_approximate);
+          *(doutc3_ptr++) =
+              act_gelu_scalar(p[3] + bias[3], act_param->gelu_approximate);
+        }
+        doutc0r0 += width;
+        doutc1r0 += width;
+        doutc2r0 += width;
+        doutc3r0 += width;
+        ptr_din += w_stride;
+      }
     } else {
       LOG(FATAL) << "this act_type: "
                  << static_cast<int>(act_param->active_type)

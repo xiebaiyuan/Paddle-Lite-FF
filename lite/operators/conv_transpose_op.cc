@@ -206,6 +206,12 @@ bool ConvTransposeOpLite::AttachImpl(const cpp::OpDesc& op_desc,
           lite_api::ActivationType::kLeakyRelu;
       param_.activation_param.Leaky_relu_alpha =
           op_desc.GetAttr<float>("leaky_relu_alpha");
+    } else if (act_type == "gelu") {
+      param_.activation_param.active_type = lite_api::ActivationType::kGelu;
+      if (op_desc.HasAttr("approximate")) {
+        param_.activation_param.gelu_approximate =
+            op_desc.GetAttr<bool>("approximate");
+      }
     } else {
       CHECK(false)
           << "The fused conv only supports fuse with relu and leaky relu";

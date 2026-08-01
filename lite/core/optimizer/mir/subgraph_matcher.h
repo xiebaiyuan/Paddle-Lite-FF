@@ -46,6 +46,7 @@ struct ActivationAttributes {
   float scale    = 1.0f;  // scale for hard_swish, slope for hard_sigmoid
   float offset   = 0.0f;  // offset for hard_swish / hard_sigmoid
   float beta     = 1.0f;  // swish beta
+  bool approximate = false;  // gelu approximate
   std::string mode;       // prelu mode ("channel", "element", "all")
 
   bool empty() const { return type.empty(); }

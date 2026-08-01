@@ -15,6 +15,7 @@
 #include "lite/kernels/arm/conv_depthwise.h"
 #include "lite/backends/arm/math/conv_block_utils.h"
 #include "lite/backends/arm/math/conv_impl.h"
+#include "lite/kernels/arm/conv_gelu_act.h"
 #ifdef ENABLE_ARM_FP16
 #include "lite/backends/arm/math/fp16/conv_impl_fp16.h"
 #endif
@@ -350,7 +351,11 @@ void DepthwiseConv<PRECISION(kFloat), PRECISION(kFloat)>::Run() {
   int oh = o_dims[2];
   int ow = o_dims[3];
   int oc = o_dims[1];
+  // gelu cannot be expressed by the asm act dispatch (would LOG(FATAL));
+  // apply it after the conv math (see conv_gelu_act.h).
+  UnsetGeluForConvMath(&param.activation_param);
   impl_(CONV_DW_PARAM, w_scale_.data());
+  ApplyGeluIfFused(param.activation_param, o_data, o_dims.production());
 }
 
 PROFILE_INFO(kInt8, kFloat)

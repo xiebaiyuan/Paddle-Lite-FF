@@ -16,7 +16,7 @@ bool IsFusableActivationOp(const std::string& op_type) {
       "relu",          "relu6",       "leaky_relu",
       "hard_swish",    "hard_sigmoid", "prelu",
       "sigmoid",       "tanh",         "swish",
-      "abs" };
+      "gelu",          "abs" };
   return kFusable.count(op_type) > 0;
 }
 
@@ -36,6 +36,9 @@ ActivationAttributes ExtractActivationAttributes(
   }
   if (act_type == "swish" && act_op_desc->HasAttr("beta")) {
     attrs.beta = act_op_desc->GetAttr<float>("beta");
+  }
+  if (act_type == "gelu" && act_op_desc->HasAttr("approximate")) {
+    attrs.approximate = act_op_desc->GetAttr<bool>("approximate");
   }
   if (act_type == "hard_swish" || act_type == "hard_sigmoid") {
     attrs.offset = act_op_desc->GetAttr<float>("offset");
@@ -95,6 +98,8 @@ void ApplyActivationAttributes(cpp::OpDesc* op_desc,
     op_desc->SetAttr("fuse_swish", true);
   } else if (act_type == "abs") {
     op_desc->SetAttr("fuse_abs", true);
+  } else if (act_type == "gelu") {
+    op_desc->SetAttr("approximate", attrs.approximate);
   }
 }
 
@@ -118,6 +123,8 @@ void ActivationAttributes::ApplyToOpDescScaleLike(cpp::OpDesc* op_desc) const {
     op_desc->SetAttr("mode", mode);
   } else if (type == "swish") {
     op_desc->SetAttr("beta", beta);
+  } else if (type == "gelu") {
+    op_desc->SetAttr("approximate", approximate);
   }
   // sigmoid / tanh / abs — scale/instance_norm kernels don't fuse these,
   // so no additional attributes needed beyond activation_type.
