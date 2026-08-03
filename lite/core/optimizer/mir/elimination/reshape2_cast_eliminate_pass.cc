@@ -125,7 +125,83 @@ void Reshape2CastEliminatePass::Apply(const std::unique_ptr<SSAGraph>& graph) {
     GraphSafeRemoveNodes(graph.get(), to_remove);
   }
 
-  // Second phase: drop identity casts (in_dtype == out_dtype). x2paddle
+  // Second phase: drop dtype round-trips cast(A->B) -> cast(B->A). x2paddle
+  // widens a shape tensor to int64 (for concat with int64 constants) and
+  // narrows it back to int32 for the consuming reshape2 — an exact lossless
+  // round-trip when the middle cast's output has only the second cast as a
+  // consumer. ONNX export (the fusion reference) has zero such casts; the
+  // rewritten graph feeds the original int32 tensor straight to the reshape2.
+  for (int iter = 0; iter < 16; ++iter) {
+    bool modified = false;
+    std::set<const Node*> to_remove;
+    for (auto* node : graph->StmtTopologicalOrder()) {
+      if (!node->IsStmt() || node->stmt()->op_type() != "cast") continue;
+      auto* op_info = node->stmt()->op_info();
+      if (!op_info->HasAttr("in_dtype") || !op_info->HasAttr("out_dtype")) continue;
+      const int in_dtype = op_info->GetAttr<int>("in_dtype");
+      const int out_dtype = op_info->GetAttr<int>("out_dtype");
+      if (in_dtype == out_dtype) continue;  // handled by identity-cast phase
+      const auto in_names = op_info->Input("X");
+      if (in_names.size() != 1) continue;
+      const auto out_names = op_info->Output("Out");
+      if (out_names.size() != 1) continue;
+
+      // The middle cast's output must feed exactly one consumer: the
+      // narrowing cast back (A->B -> B->A). Any other reader of the widened
+      // value makes the round-trip non-eliminable.
+      auto* out_arg = graph->RetrieveArgument(out_names.front());
+      if (out_arg == nullptr) continue;
+      std::vector<Node*> consumers;
+      for (auto* consumer : out_arg->outlinks) {
+        if (consumer->IsStmt()) consumers.push_back(consumer);
+      }
+      if (consumers.size() != 1) continue;
+      Node* next = consumers.front();
+      if (!next->IsStmt() || next->stmt()->op_type() != "cast") continue;
+      auto* next_info = next->stmt()->op_info();
+      if (!next_info->HasAttr("in_dtype") || !next_info->HasAttr("out_dtype")) continue;
+      // The reverse cast must exactly undo the widening.
+      if (next_info->GetAttr<int>("in_dtype") != out_dtype ||
+          next_info->GetAttr<int>("out_dtype") != in_dtype) {
+        continue;
+      }
+      // The narrowing cast's output must also be single-consumer (linear
+      // chain) so we can safely rewire its consumer to X.
+      const auto next_out_names = next_info->Output("Out");
+      if (next_out_names.size() != 1) continue;
+      auto* next_out_arg = graph->RetrieveArgument(next_out_names.front());
+      if (next_out_arg == nullptr) continue;
+      std::vector<Node*> next_consumers;
+      for (auto* consumer : next_out_arg->outlinks) {
+        if (consumer->IsStmt()) next_consumers.push_back(consumer);
+      }
+      if (next_consumers.empty()) continue;
+
+      auto* in_arg = graph->RetrieveArgument(in_names.front());
+      if (in_arg == nullptr) continue;
+      // Rewire the narrowing cast's consumers to read the original int32
+      // tensor directly (value is identical after the lossless round-trip).
+      for (auto* consumer : next_consumers) {
+        auto new_op_info = *consumer->stmt()->op_info();
+        new_op_info.UpdateAllInputs(next_out_names.front(), in_names.front());
+        consumer->stmt()->ResetOp(new_op_info, graph->valid_places());
+        RemoveDirectedLink(next_out_arg, consumer);
+        DirectedLink(in_arg, consumer);
+      }
+      to_remove.insert(node);
+      to_remove.insert(out_arg);
+      to_remove.insert(next);
+      to_remove.insert(next_out_arg);
+      modified = true;
+      VLOG(3) << "reshape2_cast_eliminate: drop cast round-trip ("
+              << in_dtype << "->" << out_dtype << "->" << in_dtype << " "
+              << in_names.front() << " -> " << next_out_names.front() << ")";
+    }
+    if (!modified) break;
+    GraphSafeRemoveNodes(graph.get(), to_remove);
+  }
+
+  // Third phase: drop identity casts (in_dtype == out_dtype). x2paddle
   // sometimes emits a no-op cast(3->3) in the shape-assembly chain; the value
   // is bit-identical, so consumers can read X directly. Only the exact
   // same-dtype case is touched — one-way casts (int32<->int64) carry real
@@ -171,12 +247,10 @@ void Reshape2CastEliminatePass::Apply(const std::unique_ptr<SSAGraph>& graph) {
     GraphSafeRemoveNodes(graph.get(), to_remove);
   }
 
-  // Third phase (shape-cast round-trip elimination) is intentionally
-  // disabled: the remaining cast[131]/[159] (int64->int32 after reshape2[4]
-  // removal) are not reached by StmtTopologicalOrder after the earlier
-  // phases mutate the graph, and forcing dtype-safe rewrite there is risky.
-  // The identity reshape2(shape=[3/4]) and identity-cast drops above are
-  // verified safe (numerics unchanged, inference OK).
+  // Fourth phase (one-way shape casts are never removed here).
+  // The identity reshape2(shape=[1/3/4]), identity-cast, and dtype
+  // round-trip drops above are verified safe (numerics unchanged,
+  // inference OK).
 }
 
 }  // namespace mir
