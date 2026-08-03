@@ -48,6 +48,7 @@ USE_MIR_PASS(identity_scale_eliminate_pass);
 USE_MIR_PASS(identity_dropout_eliminate_pass);
 USE_MIR_PASS(assign_eliminate_pass);
 USE_MIR_PASS(lite_layer_norm_fuse_pass);
+USE_MIR_PASS(reshape2_cast_eliminate_pass);
 USE_MIR_PASS(lite_conv_elementwise_fuse_pass);
 USE_MIR_PASS(lite_conv_activation_fuse_pass);
 USE_MIR_PASS(lite_gelu_fuse_pass);

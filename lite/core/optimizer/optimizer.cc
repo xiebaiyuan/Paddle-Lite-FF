@@ -206,6 +206,9 @@ std::unique_ptr<RuntimeProgram> RunDefaultOptimizer(
        // has assign copies interleaved, and the pattern needs the cleaned SSA
        // graph.
        "lite_layer_norm_fuse_pass",
+       // Drop x2paddle dynamic-shape residue: identity reshape2(shape=[4])
+       // on shape tensors and int32<->int64 shape casts.
+       "reshape2_cast_eliminate_pass",
        "assign_value_calc_offline_pass",
        "ssd_boxes_calc_offline_pass",
        "p_norm_fill_constant_max_div_fuse_pass",
