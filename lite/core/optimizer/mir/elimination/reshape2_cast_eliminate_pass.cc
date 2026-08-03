@@ -28,11 +28,13 @@ namespace mir {
 namespace {
 
 // A shape-value tensor is one produced by `shape`, `reshape2` (of a shape
-// tensor) or `cast` (of one of those) — i.e. a small int vector describing
-// another tensor's dims, not real feature data. Only those are safe to
-// shuffle (drop identity reshapes) without touching numerics.
+// tensor), `cast`, or shape-vector assembly ops (`concat`/`slice`/
+// `strided_slice` of those) — i.e. a small int vector describing another
+// tensor's dims, not real feature data. Only those are safe to shuffle
+// (drop identity reshapes) without touching numerics.
 bool IsShapeTensorProducer(const std::string& op_type) {
-  return op_type == "shape" || op_type == "reshape2" || op_type == "cast";
+  return op_type == "shape" || op_type == "reshape2" || op_type == "cast" ||
+         op_type == "concat" || op_type == "slice" || op_type == "strided_slice";
 }
 
 }  // namespace
@@ -49,13 +51,28 @@ void Reshape2CastEliminatePass::Apply(const std::unique_ptr<SSAGraph>& graph) {
       auto* op_info = node->stmt()->op_info();
       if (!op_info->HasAttr("shape")) continue;
       const auto& shape = op_info->GetAttr<std::vector<int>>("shape");
-      if (shape != std::vector<int>{4}) continue;
 
-      // reshape2(shape=[4]) is an identity when its X is a 4-element shape
-      // tensor. Find the producer of X.
+      // reshape2(shape=[N]) is an identity when its X is an N-element shape
+      // tensor. N is small (rec's shape-vector assembly produces 3/4-element
+      // vectors, e.g. concat(slice(shape,0,2), const) = [batch, h, w]); the
+      // element count equals the product of positive dims. Find the producer
+      // of X.
       const auto in_names = op_info->Input("X");
       if (in_names.size() != 1) continue;
       const std::string& x_name = in_names.front();
+
+      int target_elems = 1;
+      bool has_dynamic = false;
+      for (int d : shape) {
+        if (d > 0) {
+          target_elems *= d;
+        } else {
+          has_dynamic = true;  // 0 / -1: shape depends on runtime batch
+        }
+      }
+      // Only fully-static small shapes (3/4 elements) are safe — a dynamic
+      // dim means the reshape is the dynamic-batch propagation itself.
+      if (has_dynamic || target_elems > 4) continue;
 
       // X must come from a shape-tensor producer. The producer stmt is the
       // stmt inlink of the X arg node.
@@ -108,12 +125,58 @@ void Reshape2CastEliminatePass::Apply(const std::unique_ptr<SSAGraph>& graph) {
     GraphSafeRemoveNodes(graph.get(), to_remove);
   }
 
-  // Second phase (shape-cast round-trip elimination) is intentionally
+  // Second phase: drop identity casts (in_dtype == out_dtype). x2paddle
+  // sometimes emits a no-op cast(3->3) in the shape-assembly chain; the value
+  // is bit-identical, so consumers can read X directly. Only the exact
+  // same-dtype case is touched — one-way casts (int32<->int64) carry real
+  // dtype semantics and are never removed here.
+  for (int iter = 0; iter < 16; ++iter) {
+    bool modified = false;
+    std::set<const Node*> to_remove;
+    for (auto* node : graph->StmtTopologicalOrder()) {
+      if (!node->IsStmt() || node->stmt()->op_type() != "cast") continue;
+      auto* op_info = node->stmt()->op_info();
+      if (!op_info->HasAttr("in_dtype") || !op_info->HasAttr("out_dtype")) continue;
+      if (op_info->GetAttr<int>("in_dtype") != op_info->GetAttr<int>("out_dtype")) continue;
+
+      const auto in_names = op_info->Input("X");
+      if (in_names.size() != 1) continue;
+      const std::string& x_name = in_names.front();
+      const auto out_names = op_info->Output("Out");
+      if (out_names.size() != 1) continue;
+      auto* out_arg = graph->RetrieveArgument(out_names.front());
+      if (out_arg == nullptr) continue;
+      std::vector<Node*> consumers;
+      for (auto* consumer : out_arg->outlinks) {
+        if (consumer->IsStmt()) consumers.push_back(consumer);
+      }
+      if (consumers.empty()) continue;
+
+      auto* in_arg = graph->RetrieveArgument(x_name);
+      if (in_arg == nullptr) continue;
+      for (auto* consumer : consumers) {
+        auto new_op_info = *consumer->stmt()->op_info();
+        new_op_info.UpdateAllInputs(out_names.front(), x_name);
+        consumer->stmt()->ResetOp(new_op_info, graph->valid_places());
+        RemoveDirectedLink(out_arg, consumer);
+        DirectedLink(in_arg, consumer);
+      }
+      to_remove.insert(node);
+      to_remove.insert(out_arg);
+      modified = true;
+      VLOG(3) << "reshape2_cast_eliminate: drop identity cast(" << x_name
+              << " -> " << out_names.front() << ")";
+    }
+    if (!modified) break;
+    GraphSafeRemoveNodes(graph.get(), to_remove);
+  }
+
+  // Third phase (shape-cast round-trip elimination) is intentionally
   // disabled: the remaining cast[131]/[159] (int64->int32 after reshape2[4]
-  // removal) are not reached by StmtTopologicalOrder after the first phase
-  // mutates the graph, and forcing dtype-safe rewrite there is risky. The
-  // identity reshape2(shape=[4]) drop above is verified safe (numerics
-  // unchanged, inference OK).
+  // removal) are not reached by StmtTopologicalOrder after the earlier
+  // phases mutate the graph, and forcing dtype-safe rewrite there is risky.
+  // The identity reshape2(shape=[3/4]) and identity-cast drops above are
+  // verified safe (numerics unchanged, inference OK).
 }
 
 }  // namespace mir

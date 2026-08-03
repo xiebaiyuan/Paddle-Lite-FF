@@ -26,15 +26,20 @@ namespace mir {
  * Reshape2CastEliminatePass — eliminate x2paddle dynamic-shape residue.
  *
  * x2paddle-exported models (PaddleOCR rec) contain reshape2/cast chains that
- * shuffle shape tensors at runtime for dynamic batch. One deterministically
- * redundant pattern appears repeatedly:
+ * shuffle shape tensors at runtime for dynamic batch. Two deterministically
+ * redundant patterns appear repeatedly:
  *
- *   reshape2(shape=[4]) identity — a shape tensor already has 4 elements,
- *   so `reshape2(shape=[4])` is a no-op; drop it, feeding the shape tensor
- *   directly to the consumer (usually the next cast/reshape2 in the chain).
+ *   1. reshape2(shape=[N]) identity — a shape tensor already has N elements
+ *      (N in {3,4}: shape-vector assembly via concat/slice), so the reshape
+ *      is a no-op; drop it, feeding the shape tensor directly to the
+ *      consumer (usually the next cast/reshape2 in the chain).
+ *   2. cast(in_dtype == out_dtype) identity — a no-op dtype cast x2paddle
+ *      sometimes emits in the shape-assembly chain; value is bit-identical,
+ *      consumers read X directly.
  *
- * The pattern is pure shape-value manipulation; the rewritten graph computes
- * the same runtime shape (verified bit-identical on inference).
+ * The patterns are pure shape-value manipulation; the rewritten graph
+ * computes the same runtime shape (verified bit-identical on inference).
+ * One-way casts (int32<->int64) are never touched.
  */
 class Reshape2CastEliminatePass : public PassV2 {
  public:
