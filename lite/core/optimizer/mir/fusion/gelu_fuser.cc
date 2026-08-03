@@ -105,7 +105,6 @@ bool GeluFuser::ValidateMatch(SSAGraph* graph, const key2nodes_t& matched) {
   auto mul_old = matched.at("scale")->stmt()->op();
   auto* scope = mul_old->scope();
 
-  const float kInvSqrt2 = 0.70710678118f;
   const float kSqrt2 = 1.41421356237f;
   const float kTolerance = 1e-4f;
 
@@ -124,8 +123,7 @@ bool GeluFuser::ValidateMatch(SSAGraph* graph, const key2nodes_t& matched) {
       return false;
     }
     float v = t->data<float>()[0];
-    if (std::fabs(v - expected) > kTolerance &&
-        std::fabs(1.0f / v - expected) > kTolerance) {
+    if (std::fabs(v - expected) > kTolerance) {
       LOG(WARNING) << "gelu_fuse: unexpected " << what << " value " << v
                    << " (expected " << expected << "), skip";
       return false;
@@ -133,11 +131,12 @@ bool GeluFuser::ValidateMatch(SSAGraph* graph, const key2nodes_t& matched) {
     return true;
   };
 
-  // div(x, c1): c1 must be √2 (x/√2). Accept both √2 and its reciprocal.
+  // div(x, c1): c1 must be exactly √2 (the op computes x / c1, so c1 ≈ 1/√2
+  // would compute x·√2 — wrong for exact GELU). No reciprocal accepted.
   if (!check_scalar(div_y_t, kSqrt2, "div divisor")) return false;
   // add: erf_out + 1.0
   if (!check_scalar(add_y_t, 1.0f, "add bias")) return false;
-  // final mul scale: 0.5
+  // final mul scale: exactly 0.5 (scale_y ≈ 2.0 would compute ×2, wrong).
   if (!check_scalar(scale_y_t, 0.5f, "final scale")) return false;
   return true;
 }
