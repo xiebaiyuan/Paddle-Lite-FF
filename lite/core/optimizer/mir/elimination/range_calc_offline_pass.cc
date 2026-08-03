@@ -134,4 +134,4 @@ void RangeCalcOfflinePass::RemoveRangePattern(
 
 REGISTER_MIR_PASS(range_calc_offline_pass,
                   paddle::lite::mir::RangeCalcOfflinePass)
-    .BindTargets({TARGET(kNNAdapter)});
+    .BindTargets({TARGET(kNNAdapter), TARGET(kARM), TARGET(kOpenCL)});

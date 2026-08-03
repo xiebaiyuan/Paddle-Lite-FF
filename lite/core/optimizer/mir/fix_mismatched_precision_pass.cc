@@ -67,4 +67,4 @@ void FixMismatchedPrecisionPass::FixMismatchedPrecision(
 
 REGISTER_MIR_PASS(fix_mismatched_precision_pass,
                   paddle::lite::mir::FixMismatchedPrecisionPass)
-    .BindTargets({TARGET(kXPU)});
+    .BindTargets({TARGET(kXPU), TARGET(kARM), TARGET(kOpenCL), TARGET(kX86)});
