@@ -201,6 +201,11 @@ std::unique_ptr<RuntimeProgram> RunDefaultOptimizer(
        // breaks the SSA closedness fusion patterns require. Must run
        // before lite_conv_activation_fuse_pass and friends.
        "assign_eliminate_pass",
+       // Fold the x2paddle LayerNorm elementwise expansion back into a native
+       // `layer_norm` op. Must run after assign_eliminate_pass: the expansion
+       // has assign copies interleaved, and the pattern needs the cleaned SSA
+       // graph.
+       "lite_layer_norm_fuse_pass",
        "assign_value_calc_offline_pass",
        "ssd_boxes_calc_offline_pass",
        "p_norm_fill_constant_max_div_fuse_pass",
