@@ -145,7 +145,7 @@ else ()
 endif()
 
 if (LITE_ON_TINY_PUBLISH)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ffast-math -Ofast -Os -fomit-frame-pointer")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ffast-math -Ofast -Os -fno-omit-frame-pointer")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden -ffunction-sections")
     # 1. strip useless symbols from third-party libs
     # exclude-libs is not supported on macOs system
@@ -157,7 +157,7 @@ if (LITE_ON_TINY_PUBLISH)
     #     2.1 replace typeid by fastTypeId
     #     2.2 replace dynamic_cast by static_cast
     if ((NOT LITE_WITH_NNADAPTER) AND (NOT LITE_WITH_LOG))
-      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti")
+      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ")
     endif()
 endif()
 

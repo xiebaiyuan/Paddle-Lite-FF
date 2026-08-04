@@ -129,6 +129,16 @@ void Optimizer::ApplyPasses(
     bool graph_changed = false;
     for (auto& pass : passes_) {
       auto* pass_v2 = dynamic_cast<mir::PassV2*>(pass);
+      if (step > 0 && pass_v2 == nullptr) {
+        // Legacy passes (not PassV2) are not convergence-loop safe: they
+        // unconditionally assume graph modification and may re-match nodes
+        // that were already fused/deleted on step 0 (e.g. conv_conv_fuser
+        // dereferences weights deleted by an earlier fusion), which crashes.
+        // Run them only on the first step, exactly as the non-V2 path does.
+        VLOG(4) << "Step " << step << ": skipping legacy pass "
+                << pass->name();
+        continue;
+      }
       if (pass_v2 && step > 0 && pass_v2->ShouldOnlyApplyOnce()) {
         VLOG(4) << "Step " << step << ": skipping apply-once pass "
                 << pass->name();
@@ -152,7 +162,10 @@ void Optimizer::ApplyPasses(
         apply_to_graphs(pass, [&](const std::unique_ptr<mir::SSAGraph>& g) {
           pass->Apply(g);
         });
-        graph_changed = true;  // Legacy pass — always assume modification.
+        // Legacy pass on step 0 may modify the graph; count it as changed so
+        // PassV2 passes get a chance to converge afterwards. Do not blindly
+        // mark changed on every step (that would prevent convergence).
+        graph_changed = graph_changed || (step == 0);
       }
       LOG(INFO) << "== Finished running (step=" << step
                 << "): " << pass->name();
