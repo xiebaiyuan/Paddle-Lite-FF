@@ -53,6 +53,12 @@ std::shared_ptr<cpp::ProgramDesc> BuildProgramDesc(
     for (const auto& kv : op.int_vector_attrs) {
       op_desc->SetAttr(kv.first, kv.second);
     }
+    for (const auto& kv : op.float_vector_attrs) {
+      op_desc->SetAttr(kv.first, kv.second);
+    }
+    for (const auto& kv : op.string_vector_attrs) {
+      op_desc->SetAttr(kv.first, kv.second);
+    }
   }
   for (const auto& name : all_vars) {
     auto* var = block->AddVar<cpp::VarDesc>();
@@ -111,6 +117,19 @@ bool OpHasFloatAttr(const SSAGraph& graph,
           1e-6f) {
         return true;
       }
+    }
+  }
+  return false;
+}
+
+bool OpHasBoolAttr(const SSAGraph& graph,
+                   const std::string& op_type,
+                   const std::string& name,
+                   bool value) {
+  for (auto& node : graph.nodes()) {
+    if (node.IsStmt() && node.stmt()->op_info()->Type() == op_type &&
+        node.stmt()->op_info()->HasAttr(name)) {
+      if (node.stmt()->op_info()->GetAttr<bool>(name) == value) return true;
     }
   }
   return false;

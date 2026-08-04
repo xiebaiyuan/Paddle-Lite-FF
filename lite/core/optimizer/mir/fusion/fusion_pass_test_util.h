@@ -39,6 +39,8 @@ struct TestOpDesc {
   std::map<std::string, bool> bool_attrs;
   std::map<std::string, std::string> str_attrs;
   std::map<std::string, std::vector<int>> int_vector_attrs;
+  std::map<std::string, std::vector<float>> float_vector_attrs;
+  std::map<std::string, std::vector<std::string>> string_vector_attrs;
 };
 
 // Build a cpp::ProgramDesc from a list of ops. All intermediate vars are
@@ -63,6 +65,12 @@ bool OpHasFloatAttr(const SSAGraph& graph,
                     const std::string& op_type,
                     const std::string& name,
                     float value);
+
+// True if any stmt node of `op_type` has a bool attr `name` == `value`.
+bool OpHasBoolAttr(const SSAGraph& graph,
+                   const std::string& op_type,
+                   const std::string& name,
+                   bool value);
 
 }  // namespace mir
 }  // namespace lite
