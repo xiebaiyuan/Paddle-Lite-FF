@@ -1,202 +1,106 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+> ## ⚠️ 本机是 ARM Mac（Apple Silicon）
+>
+> **本开发机是 ARM (arm64) Mac，禁止使用任何 x86 架构的工具、二进制、库或内容。**
+>
+> - 不要下载/调用 x86 版本的工具链、预编译库、wheel、conda 包。
+> - 不要执行 x86-only 的编译/运行路径；本机验证一律走 `arm64` 目标。
+> - 文档中出现的 `x86` 相关内容（如 `build_macos.sh x86`、`build.lite.x86/`）仅作仓库参考，**本机不适用**。
+> - 可用 `uname -m` 确认架构（应返回 `arm64`）。
 
-## Build Commands
+# 全局约定
+- **Obsidian**：Vault `/Users/baidu/AI_DOC/`，决策/架构/bug 归档到 `obsidian-docs/`（软链）
+- **Archive**：删除文件用 `trash`（不用 `rm`）；产物归档用 `swe-archive` skill
+- **Python**：用 `uv` 管理环境（如 `PADDLEOCR/.../pp3_env`）
+- @RTK.md
 
-### Android Build (Primary)
+# 构建
 
-This project focuses on Android/iOS platforms. Use the `build_android.sh` script:
+> **本机禁止一切 x86 构建**：`build.lite.x86`/`build.macos.local_test` 等 x86 产物在本机不可用（`lite/backends/x86/math/sse/` 是 x86 专属 SSE 数学库，ARM Mac 编译不过）。测试一律走 ARM 测试构建（见下）。
 
+## 环境准备（每次构建前）
 ```bash
-# Android ARM64 with OpenCL (推荐使用 clang)
-./lite/tools/build_android.sh --arch=armv8 \
-    --toolchain=clang \
-    --android_stl=c++_shared \
-    --with_java=ON \
-    --with_cv=OFF \
-    --with_log=OFF \
-    --with_extra=ON \
-    --with_exception=ON \
-    --with_static_lib=ON \
-    --with_opencl=ON
+switch_cmake 3.22.1    # 3.10.3 不可用，4.x 不兼容
+# Bash 工具里每次是新 shell，switch_cmake 是 shell 函数不跨 shell 持久化，需显式：
+export PATH="/opt/homebrew/Cellar/cmake/3.22.1/bin:$PATH"
+ulimit -n 1024
 ```
 
-**Common options:**
-- `--arch=armv8|armv7` - ARM architecture (default: armv8)
-- `--toolchain=clang|gcc` - Compiler (推荐使用 clang)
-- `--android_stl=c++_shared|c++_static` - Android STL type
-- `--with_java=ON|OFF` - Build Java JNI (需要 Java)
-- `--with_cv=ON|OFF` - Include OpenCV functions
-- `--with_log=ON|OFF` - Enable logging
-- `--with_opencl=ON|OFF` - Enable OpenCL GPU support
-
-### macOS Build (ARM / x86)
-
-使用 `build_macos.sh` 在 macOS 上编译 ARM 或 x86 库，可用于本地验证无需 Android 设备。
-
+## macOS ARM 库（本地验证推理）
 ```bash
-# 环境准备
-switch_cmake 3.22.1
-export PATH="/Users/baidu/miniforge3/bin:$PATH"
-
-# ARM64 编译 (带 OpenCL)
 ./lite/tools/build_macos.sh --with_opencl=ON --with_extra=ON --with_exception=ON arm64
-
-# ARM64 benchmark 编译 (自动开启 extra/exception，关闭 log)
-./lite/tools/build_macos.sh --with_benchmark=ON --with_opencl=ON arm64
-
-# x86 编译
-./lite/tools/build_macos.sh x86
 ```
+- 产物目录：`build.macos.armmacos.armv8/`（带 OpenCL 时 `.opencl/` 后缀）
+- 推理测试：`build.macos.armmacos.armv8/lite/api/test_model_bin`
+  ```
+  test_model_bin --model_dir=<nb> --use_optimize_nb=true --backend=arm_cpu \
+    --input_shape=1,3,640,640 --in_txt=<prefix_> --out_txt=<out_dir>/out_
+  ```
+  `--in_txt` 读 `prefix_1.txt`（原始 float 二进制）
 
-**常用选项 (`build_macos.sh`):**
-- `arm64` / `x86` - 目标架构 (位置参数，放最后)
-- `--with_opencl=ON|OFF` - OpenCL GPU 支持 (默认 OFF)
-- `--with_benchmark=ON|OFF` - 编译 benchmark 二进制 (默认 OFF，开启后自动设置 extra=ON, exception=ON)
-- `--with_log=ON|OFF` - 日志输出 (默认 ON，benchmark 模式下默认 OFF)
-- `--with_cv=ON|OFF` - OpenCV 函数 (默认 OFF)
-- `--with_extra=ON|OFF` - 额外算子 (序列模型如 OCR/NLP) (默认 OFF)
-- `--with_exception=ON|OFF` - 异常支持 (默认 OFF)
-- `--with_arm82_fp16=ON|OFF` - FP16 内核 (默认 OFF，开启后强制使用 clang)
-- `--with_testing=ON|OFF` - 编译单元测试 (默认 OFF)
-
-**编译输出目录:**
-- ARM64: `build.macos.armmacos.armv8/` (带 OpenCL 时为 `build.macos.armmacos.armv8.opencl/`)
-- x86: `build.lite.x86/`
-
-**macOS build notes:**
-- 需要 `ulimit -n 1024` 增加文件描述符限制 (脚本内已自动设置)
-- cmake 3.22.1 可用 (`switch_cmake 3.22.1`)，cmake 3.10.3 不可用，cmake 4.x 不兼容
-
-### Build Output
-
-编译成功后，输出在 `build.lite.android.armv8.clang/inference_lite_lib.android.armv8.opencl/cxx/`:
-- `libpaddle_api_light_bundled.a` - 静态库
-- `libpaddle_light_api_shared.so` - 动态库
-
-### Model Optimization Tool (opt)
-
+## Android（主目标）
 ```bash
-# 在 macOS 上构建 opt 工具
-switch_cmake 3.22.1
-./lite/tools/build_macos.sh build_optimize_tool
+./lite/tools/build_android.sh --arch=armv8 --toolchain=clang --android_stl=c++_shared \
+    --with_java=ON --with_cv=OFF --with_log=OFF --with_extra=ON --with_exception=ON \
+    --with_static_lib=ON --with_opencl=ON
 ```
+产物：`build.lite.android.armv8.clang/inference_lite_lib.android.armv8.opencl/cxx/`
 
-**opt 构建注意事项:**
-- 如果 third-party 子模块有问题，可尝试：删除 `third-party/` 目录，使用下载的 `third-party-651c7c4.tar.gz` 解压替代；同时在 git 上恢复 third-party 相关文件。但对比下载资源与 git submodule 内容，这两步可能非必须。
-
-### 更新 FlatBuffers 生成头文件 (update_fbs)
-
-当修改了 `.fbs` schema 文件后，需要重新生成对应的 `*_generated.h` 头文件并提交到 `third-party/flatbuffers/pre-build/`。
-
-**FBS schema 文件列表:**
-- `lite/model_parser/flatbuffers/framework.fbs` - 模型框架 schema (ProgramDesc, BlockDesc, OpDesc 等)
-- `lite/model_parser/flatbuffers/param.fbs` - 模型参数 schema (CombinedParamsDesc, ParamDesc)
-- `lite/backends/opencl/utils/cache.fbs` - OpenCL 二进制内核缓存 schema
-- `lite/backends/opencl/utils/tune_cache.fbs` - OpenCL 调优缓存 schema
-
-**更新步骤:**
-
+## opt 工具（模型转换）
 ```bash
-# Step 1: 编辑 .fbs schema 文件
-
-# Step 2: 运行更新脚本 (会自动下载 flatc 编译器并重新生成头文件)
-switch_cmake 3.22.1
-cd /Users/baidu/workspace/github/Paddle-Lite
-./third-party/flatbuffers/update_fbs.sh
-
-# Step 3: 提交更新后的预编译头文件
-git add -f third-party/flatbuffers/pre-build
-git commit -m "update flatbuffers pre-build headers"
+./lite/tools/build_macos.sh build_optimize_tool   # 产物 build.opt/lite/api/opt
+# 转换: opt --model_dir=<pdmodel_dir> --optimize_out=<out> --valid_targets=arm --optimize_out_type=naive_buffer
 ```
+- 部署模式：**opt → nb → 部署**（老模型用新 opt 重新转换）
+- third-party 子模块异常时：删 `third-party/`，`build_macos.sh` 会自动从 `https://paddlelite-data.bj.bcebos.com/third_party_libs/` 下载 `third-party-651c7c4.tar.gz` 重建（脚本内置逻辑，无需手动找备份）
 
-**工作原理:**
-- `update_fbs.sh` 使用 cmake 选项 `-DLITE_UPDATE_FBS_HEAD=ON` 触发从源码编译 flatc (v1.12.0)，然后调用 `make fbs_headers` 生成 `*_generated.h`
-- 生成的头文件和 flatbuffers 运行时头文件一起拷贝到 `third-party/flatbuffers/pre-build/`
-- 正常编译时 (`LITE_UPDATE_FBS_HEAD=OFF`，默认)，CMake 的 `fbs_headers` target 直接从 `pre-build/` 拷贝预编译头文件到源码目录，无需编译 flatc
-- 构建输出目录: `build.lite.flatbuffer/`
+## 更新 FlatBuffers 头文件（update_fbs）
+改 `.fbs` 后：`./third-party/flatbuffers/update_fbs.sh` 重新生成 `*_generated.h` 到 `third-party/flatbuffers/pre-build/`，`git add -f` 提交。
 
-## Environment Setup
+## 测试构建（跑 gtest）
+- **本机一律走 ARM 测试构建**（x86 `build.macos.local_test/` 已废弃，SSE 数学库编译不过）：
+  ```bash
+  ./lite/tools/build_macos.sh --with_testing=ON arm64
+  # 产物 build.macos.armmacos.armv8.test/，单测二进制在对应源码目录下，如：
+  # build.macos.armmacos.armv8.test/lite/core/optimizer/mir/fusion/test_conv_activation_fuse_pass
+  ```
+- fusion pass 单测在 `lite/core/optimizer/mir/fusion/`（详见下）
+- ccache 已全量启用（`brew install ccache`），清产物重建测试约 10s
 
-```bash
-# Activate Python (conda base)
-conda activate base
+# 架构概览
 
-# Switch to cmake 3.22.1 (3.10.3 不可用，4.x 不兼容)
-switch_cmake 3.22.1
+## 核心抽象（`lite/core/`）
+- **OpLite** (`op_lite.h`)：`AttachImpl` 绑运行时、`InferShape` 推断形状、`Run` 执行
+- **KernelLite** (`kernel.h`)：由 (Target, Precision, Layout) 三元组标识
+- **注册** (`op_registry.h`)：
+  ```cpp
+  REGISTER_LITE_KERNEL(conv2d, kARM, kFloat, kNCHW, Conv2DCompute, def)
+      .BindInput("Input", {LiteType::GetTensorTy(TARGET(kARM))})
+      .BindOutput("Output", {LiteType::GetTensorTy(TARGET(kARM))})
+      .Finalize();
+  ```
 
-# Set Android NDK (如果未设置)
-export ANDROID_NDK=/opt/android-ndk-r27d
-```
+## 目录
+- `lite/operators/` 算子定义 ｜ `lite/kernels/{arm,opencl,host}/` 内核 ｜ `lite/backends/` 数学库
+- `lite/core/optimizer/mir/` 图优化 Pass ｜ `lite/api/` API
 
-## Architecture Overview
+## Conv kernel 选择与 activation dispatch（本次沉淀，改 conv 必读）
+- **kernel 选择**（`lite/kernels/arm/conv_compute.cc` PrepareForRun）：
+  - 3x3 s1 groups=1 no-dilation → **WinogradConv**
+  - 3x3 s2 groups=1 小通道 → DirectConv；1x1 → GemmLikeConv；depthwise → DepthwiseConv
+- **activation dispatch 两条路径**：
+  1. `write_to_output_c4_fp32`（`lite/backends/arm/math/conv_block_utils.h`）— winograd/direct3x3s2/dw5x5 写回统一走这里，**kGelu 已加 C 分支**
+  2. kernel Run 层后处理（`lite/kernels/arm/conv_gelu_act.h`）— gemmlike/conv_transpose/depthwise3x3，`UnsetGeluForConvMath` 清 has_active 避免 asm LOG(FATAL) + `ApplyGeluIfFused` 逐位一致补 gelu
+- 新增 conv 激活融合：kernel 支持后，`conv_activation_fuse_pass` act_types 加字符串即可（图侧）＋ `conv_op.h`/`subgraph_matcher` 属性透传
 
-Paddle Lite 是轻量级深度学习推理框架，专为移动端优化。
+## MIR fusion pass
+- 图优化在 `lite/core/optimizer/mir/fusion/`，FuseBase pattern 模式（`pattern_matcher_high_api.h`）
+- pass 注册：`optimizer.cc` 加 pass 名 + `lite/api/paddle_use_passes.h` 加 USE_MIR_PASS
+- **x2paddle 产物陷阱**：rec 类模型（x2paddle 转）含大量 `assign` 共享变量"寄存器池"（node_0/node_1/node_5 被 100+ 算子共享），**破坏 fusion pattern 的 SSA 封闭性** → conv+act 类融合不可行（det 无 assign 正常）。验证：dot 图统计 assign 数 + 共享变量 producer/consumer
+- 单测：`fusion_pass_test_util.h/.cc`（ProgramDesc → SSAGraph）+ `*_fuse_pass_test.cc`
 
-### 核心抽象 (`lite/core/`)
-
-**OpLite** (`op_lite.h`): 算子基类
-- `AttachImpl()` - 绑定运行时环境
-- `InferShape()` - 推断输出形状
-- `AttachKernel()` - 绑定内核
-- `Run()` - 执行算子
-
-**KernelLite** (`kernel.h`): 内核基类，由 (Target, Precision, Layout) 三元组标识
-
-**Place**: 组合 target/precision/layout
-
-**算子/内核注册** (`op_registry.h`):
-```cpp
-REGISTER_LITE_KERNEL(
-    conv2d, kARM, kFloat, kNCHW, Conv2DCompute, def)
-    .BindInput("Input", {LiteType::GetTensorTy(TARGET(kARM))})
-    .BindOutput("Output", {LiteType::GetTensorTy(TARGET(kARM))})
-    .Finalize();
-```
-
-### 目录结构
-
-- `lite/operators/` - 算子定义
-- `lite/kernels/` - 内核实现
-  - `arm/` - ARM CPU 内核 (NEON, dotprod, fp16)
-  - `opencl/` - OpenCL GPU 内核
-  - `host/` - Host CPU 后备内核
-- `lite/backends/` - 后端工具和数学库
-- `lite/core/optimizer/mir/` - 图优化 Pass
-- `lite/api/` - C++, Java, Python API
-
-### 后端支持
-
-- **ARM CPU**: NEON, dotprod (v8.2), fp16, int8
-- **OpenCL**: Buffer 和 Image 格式内核
-- **Metal**: Apple Metal (iOS)
-- **X86**: AVX/SSE, MKL (仅测试)
-
-### MIR 优化 Pass
-
-- `StaticKernelPickPass` - 选择最优内核
-- `TypeTargetCastPass`, `TypePrecisionCastPass`, `TypeLayoutCastPass` - 类型转换
-- `VariablePlaceInferencePass` - 变量布局推断
-- `MemoryOptimizePass` - 内存优化
-
-### 常见模式
-
-**添加新算子:**
-1. `operators/new_op.cc` 创建 `OpLite` 子类
-2. `REGISTER_LITE_OP(new_op, NewOp)`
-
-**添加新内核:**
-1. `kernels/<backend>/new_op_compute.cc` 创建 `KernelLite` 子类
-2. 实现 `Run()` 方法
-3. `REGISTER_LITE_KERNEL(new_op, target, precision, layout, NewOpCompute, alias)`
-
-**添加优化 Pass:**
-1. `lite/core/optimizer/mir/new_pass.cc` 继承 `mir::StmtPass`
-2. 实现 `Apply()` 方法
-
-## Debugging Tips
-
-- `--with_log=ON` 启用日志
-- `--with_exception=ON` 启用异常（需要 clang for armv7）
-- macOS 编译用 `--with_java=OFF`
+## 常用调试
+- 编译带 `--with_log=ON` / `--with_exception=ON`（armv7 需 clang）
+- 转换产物分析：`opt --optimized_nb_model_path=<nb> --visualization_file_output_path=<dir>` 出 `Block_0.dot`，统计 op 节点
+- 模型位置：`PADDLEOCR/deploy/ppocr-android/model-convert/paddle26_models/{det,medium_rec,tiny_rec}/inference_model/`
