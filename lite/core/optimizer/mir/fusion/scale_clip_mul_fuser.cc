@@ -78,6 +78,27 @@ bool ScaleClipMulFuser::ValidateMatch(SSAGraph* graph,
   auto* scale_op_info = matched.at("scale")->stmt()->op_info();
   float slope = scale_op_info->GetAttr<float>("scale");
   float bias = scale_op_info->GetAttr<float>("bias");
+  // scale(x) = x*slope + bias when bias_after_scale=true, but
+  //          = (x + bias)*slope when bias_after_scale=false. hard_sigmoid is
+  // clip(slope*x + offset, 0, 1), i.e. always "bias after scale". With
+  // bias_after_scale=false the effective offset is bias*slope, so the 0.5
+  // check must apply to bias (for slope==1) or to bias*slope otherwise. The
+  // cleanest rule: require bias_after_scale=true (the canonical PaddlePaddle
+  // hard_sigmoid export) so offset == bias directly.
+  bool bias_after_scale = true;
+  if (scale_op_info->HasAttr("bias_after_scale")) {
+    bias_after_scale = scale_op_info->GetAttr<bool>("bias_after_scale");
+  }
+  if (!bias_after_scale) {
+    // With bias-after-scale disabled the effective offset is bias*slope; the
+    // fusion is only exact when slope==1 (offset == bias == 0.5). Rather than
+    // special-casing, reject the non-canonical form.
+    if (std::fabs(slope - 1.0f) > 1e-4f) {
+      LOG(WARNING) << "scale_clip_mul_fuse: bias_after_scale=false with "
+                      "slope != 1 changes the offset, skip";
+      return false;
+    }
+  }
   if (std::fabs(bias - 0.5f) > 1e-4f) {
     LOG(WARNING) << "scale_clip_mul_fuse: unexpected bias " << bias
                  << " (expected 0.5), skip";
@@ -126,13 +147,21 @@ cpp::OpDesc ScaleClipMulFuser::GenOpDesc(const key2nodes_t& matched) {
   auto* scale_op_info = matched.at("scale")->stmt()->op_info();
   float slope = scale_op_info->GetAttr<float>("scale");
   float bias = scale_op_info->GetAttr<float>("bias");
+  bool bias_after_scale = true;
+  if (scale_op_info->HasAttr("bias_after_scale")) {
+    bias_after_scale = scale_op_info->GetAttr<bool>("bias_after_scale");
+  }
+  // scale(x) = x*slope + bias_eff, where bias_eff = bias (bias after scale)
+  // or bias*slope (bias before scale). hard_sigmoid always applies the offset
+  // after scaling, so express the same affine transform in that form.
+  float offset = bias_after_scale ? bias : bias * slope;
 
   cpp::OpDesc op_desc;
   op_desc.SetType("hard_sigmoid");
   op_desc.SetInput("X", {matched.at("scale_in")->arg()->name});
   op_desc.SetOutput("Out", {matched.at("clip_out")->arg()->name});
   op_desc.SetAttr("slope", slope);
-  op_desc.SetAttr("offset", bias);
+  op_desc.SetAttr("offset", offset);
   return op_desc;
 }
 

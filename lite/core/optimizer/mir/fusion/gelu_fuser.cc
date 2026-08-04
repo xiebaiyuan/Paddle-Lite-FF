@@ -108,6 +108,30 @@ bool GeluFuser::ValidateMatch(SSAGraph* graph, const key2nodes_t& matched) {
   const float kSqrt2 = 1.41421356237f;
   const float kTolerance = 1e-4f;
 
+  // Every intermediate var is removed by DeleteInterNodes after fusion. If
+  // any of them feeds an op outside the pattern, that op loses its producer.
+  // `div_out` and `erf_out` feed the next chain op; `add_out` feeds mul;
+  // `mul_out` feeds scale. `input` is retained (feeds the new gelu), so only
+  // the internal chain vars need the single-consumer check.
+  const std::pair<const char*, const char*> chain[] = {
+      {"div_out", "erf"},
+      {"erf_out", "add"},
+      {"add_out", "mul"},
+      {"mul_out", "scale"},
+  };
+  for (const auto& kv : chain) {
+    auto* var_node = matched.at(kv.first);
+    for (auto* consumer : var_node->outlinks) {
+      if (!consumer->IsStmt()) continue;
+      if (consumer != matched.at(kv.second)) {
+        LOG(WARNING) << "gelu_fuse: " << kv.first << " var "
+                     << var_node->arg()->name << " has extra consumer "
+                     << consumer->stmt()->op_type() << ", skip";
+        return false;
+      }
+    }
+  }
+
   auto* div_y_t = scope->FindMutableTensor(matched.at("div_y")->arg()->name);
   auto* add_y_t = scope->FindMutableTensor(matched.at("add_y")->arg()->name);
   auto* scale_y_t = scope->FindMutableTensor(matched.at("scale_y")->arg()->name);
@@ -120,6 +144,13 @@ bool GeluFuser::ValidateMatch(SSAGraph* graph, const key2nodes_t& matched) {
                                    const char* what) {
     if (t->numel() != 1) {
       LOG(WARNING) << "gelu_fuse: " << what << " is not a scalar, skip";
+      return false;
+    }
+    // numel()==1 alone does not guarantee the buffer is materialized: a
+    // fill_constant that hasn't executed yet has dims but a null data ptr.
+    if (t->data<float>() == nullptr) {
+      LOG(WARNING) << "gelu_fuse: " << what
+                   << " buffer not materialized, skip";
       return false;
     }
     float v = t->data<float>()[0];

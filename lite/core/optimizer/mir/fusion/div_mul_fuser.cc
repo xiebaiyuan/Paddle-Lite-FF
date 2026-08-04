@@ -69,6 +69,20 @@ bool DivMulFuser::ValidateMatch(SSAGraph* graph, const key2nodes_t& matched) {
     }
   }
 
+  // div_out is an intermediate node that DeleteInterNodes will remove. If it
+  // feeds any op other than the matched mul, that op loses its producer and
+  // reads an uninitialized tensor. Same for the div input x: it must not be
+  // consumed by another op that would be orphaned when the div is deleted.
+  auto* div_out_node = matched.at("div_out");
+  for (auto* consumer : div_out_node->outlinks) {
+    if (consumer != matched.at("mul")) {
+      LOG(WARNING) << "div_mul_fuse: div output "
+                   << div_out_node->arg()->name
+                   << " is shared by multiple ops, skip";
+      return false;
+    }
+  }
+
   auto mul_old = matched.at("mul")->stmt()->op();
   auto* scope = mul_old->scope();
   auto* div_y_t = scope->FindMutableTensor(matched.at("div_y")->arg()->name);
@@ -80,10 +94,21 @@ bool DivMulFuser::ValidateMatch(SSAGraph* graph, const key2nodes_t& matched) {
 
   auto div_dims = div_y_t->dims();
   auto mul_dims = mul_y_t->dims();
-  // Both constants must be broadcast-compatible scalars or vectors of
-  // identical shape for this fold to be valid.
-  if (div_dims.production() != mul_dims.production()) {
-    LOG(WARNING) << "div_mul_fuse: constant shapes mismatch, skip";
+  // The fold writes c_mul/c_div into mul_y and rewires mul to read a single
+  // constant. This is only exact when both constants broadcast identically
+  // (equal shape). Equal element count but different shapes ([1,4] vs [4],
+  // [4,1] vs [1,4], ...) broadcast differently per-axis and would fold to a
+  // wrong per-position scale, so require identical dims.
+  if (div_dims != mul_dims) {
+    LOG(WARNING) << "div_mul_fuse: constant shapes differ ("
+                 << div_dims << " vs " << mul_dims << "), skip";
+    return false;
+  }
+
+  // Buffers must be materialized: dims can be set while data is still null
+  // (a fill_constant that hasn't executed yet).
+  if (div_y_t->data<float>() == nullptr || mul_y_t->data<float>() == nullptr) {
+    LOG(WARNING) << "div_mul_fuse: constant buffer not materialized, skip";
     return false;
   }
 

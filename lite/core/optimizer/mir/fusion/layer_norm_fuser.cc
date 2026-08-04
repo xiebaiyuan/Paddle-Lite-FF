@@ -274,6 +274,57 @@ bool LayerNormFuser::ValidateMatch(SSAGraph* graph,
     return false;
   }
 
+  // begin_norm_axis is derived from the var reduce_mean's `dim` attribute:
+  // a reduce over trailing dims [axis, axis+1, ..., rank-1] maps to
+  // begin_norm_axis = axis (i.e. the first reduced axis). Any other `dim`
+  // shape (non-contiguous, or not ending at the last axis) cannot be
+  // expressed by the fused layer_norm op, so the match is rejected rather
+  // than silently computing over the wrong axes.
+  auto* var_in_info = matched.at("var_op")->stmt()->op_info();
+  if (!var_in_info->HasAttr("dim")) {
+    LOG(WARNING) << "layer_norm_fuse: reduce_mean lacks dim attr, skip";
+    return false;
+  }
+  auto dim_attr_type = var_in_info->GetAttrType("dim");
+  std::vector<int64_t> dims;
+  if (dim_attr_type == paddle::lite::OpDescAPI::AttrType::INTS) {
+    auto dims32 = var_in_info->GetAttr<std::vector<int32_t>>("dim");
+    dims.assign(dims32.begin(), dims32.end());
+  } else if (dim_attr_type == paddle::lite::OpDescAPI::AttrType::LONGS) {
+    dims = var_in_info->GetAttr<std::vector<int64_t>>("dim");
+  } else {
+    LOG(WARNING) << "layer_norm_fuse: unexpected dim attr type, skip";
+    return false;
+  }
+  if (dims.empty()) {
+    LOG(WARNING) << "layer_norm_fuse: empty reduce dim, skip";
+    return false;
+  }
+  // dims must be contiguous trailing axes [axis, axis+1, ..., rank-1].
+  int64_t begin_norm_axis = dims[0];
+  for (size_t i = 1; i < dims.size(); ++i) {
+    if (dims[i] != begin_norm_axis + static_cast<int64_t>(i)) {
+      LOG(WARNING) << "layer_norm_fuse: reduce dims not contiguous trailing "
+                      "axes, skip";
+      return false;
+    }
+  }
+  // The mean reduce_mean must reduce the same axes; use its dim attr.
+  if (mean_op_info->HasAttr("dim")) {
+    auto mean_dim_type = mean_op_info->GetAttrType("dim");
+    std::vector<int64_t> mean_dims;
+    if (mean_dim_type == paddle::lite::OpDescAPI::AttrType::INTS) {
+      auto md32 = mean_op_info->GetAttr<std::vector<int32_t>>("dim");
+      mean_dims.assign(md32.begin(), md32.end());
+    } else if (mean_dim_type == paddle::lite::OpDescAPI::AttrType::LONGS) {
+      mean_dims = mean_op_info->GetAttr<std::vector<int64_t>>("dim");
+    }
+    if (mean_dims != dims) {
+      LOG(WARNING) << "layer_norm_fuse: mean/var reduce dims differ, skip";
+      return false;
+    }
+  }
+
   // scale/bias must be 1-D vectors (per-channel LN parameters).
   if (scale_t->dims().size() != 1 || bias_t->dims().size() != 1) {
     LOG(WARNING) << "layer_norm_fuse: scale/bias must be 1-D, skip";
@@ -311,8 +362,7 @@ bool LayerNormFuser::ValidateMatch(SSAGraph* graph,
     LOG(WARNING) << "layer_norm_fuse: cannot read eps, skip";
     return false;
   }
-  epsilon_ = eps;
-  if (epsilon_ <= 0.0f) {
+  if (eps <= 0.0f) {
     LOG(WARNING) << "layer_norm_fuse: non-positive eps, skip";
     return false;
   }
@@ -344,6 +394,60 @@ void LayerNormFuser::InsertNewNode(SSAGraph* graph,
 }
 
 cpp::OpDesc LayerNormFuser::GenOpDesc(const key2nodes_t& matched) {
+  // Re-derive per-match values directly from the matched subgraph instead of
+  // relying on members populated by ValidateMatch: FuseBase::operator() runs
+  // ValidateMatch for every match before any InsertNewNode, so a member would
+  // hold the *last* validated match's values for all fused ops. Reading here
+  // keeps every fused layer_norm independent.
+
+  // epsilon = eps constant (fill_constant attr or tensor).
+  auto add_bias_op = matched.at("add_bias_op")->stmt()->op();
+  auto* scope = add_bias_op->scope();
+  float eps = 1e-5f;
+  bool have_eps = false;
+  auto* eps_node = matched.at("eps");
+  for (auto* producer : eps_node->inlinks) {
+    if (producer->IsStmt() &&
+        producer->stmt()->op_info()->Type() == "fill_constant") {
+      auto* op_info = producer->stmt()->op_info();
+      if (op_info->HasAttr("value")) {
+        auto t = op_info->GetAttrType("value");
+        if (t == paddle::lite::OpDescAPI::AttrType::FLOAT) {
+          eps = op_info->GetAttr<float>("value");
+          have_eps = true;
+        } else if (t == paddle::lite::OpDescAPI::AttrType::INT) {
+          eps = static_cast<float>(op_info->GetAttr<int>("value"));
+          have_eps = true;
+        }
+      }
+    }
+  }
+  if (!have_eps) {
+    auto* eps_t = scope->FindMutableTensor(eps_node->arg()->name);
+    if (eps_t != nullptr && eps_t->numel() == 1) {
+      eps = eps_t->data<float>()[0];
+      have_eps = true;
+    }
+  }
+  if (!have_eps || eps <= 0.0f) {
+    // ValidateMatch rejected this match; fall back to a sane default.
+    eps = 1e-5f;
+  }
+
+  // begin_norm_axis = first reduced axis of the var reduce_mean.
+  int64_t begin_norm_axis = 2;
+  auto* var_in_info = matched.at("var_op")->stmt()->op_info();
+  if (var_in_info->HasAttr("dim")) {
+    auto dim_attr_type = var_in_info->GetAttrType("dim");
+    if (dim_attr_type == paddle::lite::OpDescAPI::AttrType::INTS) {
+      auto dims = var_in_info->GetAttr<std::vector<int32_t>>("dim");
+      if (!dims.empty()) begin_norm_axis = dims[0];
+    } else if (dim_attr_type == paddle::lite::OpDescAPI::AttrType::LONGS) {
+      auto dims = var_in_info->GetAttr<std::vector<int64_t>>("dim");
+      if (!dims.empty()) begin_norm_axis = dims[0];
+    }
+  }
+
   cpp::OpDesc op_desc;
   op_desc.SetType("layer_norm");
   op_desc.SetInput("X", {matched.at("input")->arg()->name});
@@ -352,8 +456,8 @@ cpp::OpDesc LayerNormFuser::GenOpDesc(const key2nodes_t& matched) {
   op_desc.SetOutput("Y", {matched.at("output")->arg()->name});
   op_desc.SetOutput("Mean", {matched.at("mean")->arg()->name});
   op_desc.SetOutput("Variance", {matched.at("var")->arg()->name});
-  op_desc.SetAttr("begin_norm_axis", 2);
-  op_desc.SetAttr("epsilon", epsilon_);
+  op_desc.SetAttr("begin_norm_axis", static_cast<int>(begin_norm_axis));
+  op_desc.SetAttr("epsilon", eps);
   return op_desc;
 }
 

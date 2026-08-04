@@ -117,6 +117,105 @@ void ConvHardSwishFuser::InsertNewNode(SSAGraph* graph,
   IR_NODE_LINK_TO(new_op_node, matched.at("output"));
 }
 
+bool ConvHardSwishFuser::ValidateMatch(SSAGraph* graph,
+                                       const key2nodes_t& matched) {
+  // Only fuse the canonical hard_swish constants, otherwise the fused conv
+  // would silently change numerics. offset comes from the add bias (3.0),
+  // clip must be (0, 6), and the tail mul scale must be 1/6.
+  auto add_bias_op = matched.at("add")->stmt()->op();
+  auto* scope = add_bias_op->scope();
+
+  float offset = 3.0f;
+  bool have_offset = false;
+  auto* add_y_node = matched.at("add_y");
+  for (auto* producer : add_y_node->inlinks) {
+    if (producer->IsStmt() &&
+        producer->stmt()->op_info()->Type() == "fill_constant") {
+      auto* op_info = producer->stmt()->op_info();
+      if (op_info->HasAttr("value")) {
+        auto t = op_info->GetAttrType("value");
+        if (t == paddle::lite::OpDescAPI::AttrType::FLOAT) {
+          offset = op_info->GetAttr<float>("value");
+          have_offset = true;
+        } else if (t == paddle::lite::OpDescAPI::AttrType::INT) {
+          offset = static_cast<float>(op_info->GetAttr<int>("value"));
+          have_offset = true;
+        }
+      }
+    }
+  }
+  if (!have_offset) {
+    auto* add_y_t = scope->FindMutableTensor(add_y_node->arg()->name);
+    if (add_y_t != nullptr && add_y_t->numel() == 1 &&
+        add_y_t->data<float>() != nullptr) {
+      offset = add_y_t->data<float>()[0];
+      have_offset = true;
+    }
+  }
+  if (!have_offset || std::fabs(offset - 3.0f) > 1e-4f) {
+    LOG(WARNING) << "conv_hardswish_fuse: non-canonical offset " << offset
+                 << " (expected 3.0), skip";
+    return false;
+  }
+
+  auto* clip_op_info = matched.at("clip")->stmt()->op_info();
+  if (clip_op_info->HasAttr("min") &&
+      std::fabs(clip_op_info->GetAttr<float>("min") - 0.0f) > 1e-4f) {
+    LOG(WARNING) << "conv_hardswish_fuse: non-canonical clip min, skip";
+    return false;
+  }
+  if (clip_op_info->HasAttr("max") &&
+      std::fabs(clip_op_info->GetAttr<float>("max") - 6.0f) > 1e-4f) {
+    LOG(WARNING) << "conv_hardswish_fuse: non-canonical clip max, skip";
+    return false;
+  }
+
+  // tail_mul_y must be 1/6.
+  auto* tail_t = scope->FindMutableTensor(matched.at("tail_mul_y")->arg()->name);
+  if (tail_t == nullptr || tail_t->numel() != 1 ||
+      tail_t->data<float>() == nullptr ||
+      std::fabs(tail_t->data<float>()[0] - 1.0f / 6.0f) > 1e-4f) {
+    LOG(WARNING) << "conv_hardswish_fuse: non-canonical tail scale, skip";
+    return false;
+  }
+
+  // conv_out is an intermediate node removed after fusion; it must be
+  // consumed only by add and mul (the two pattern branches). Any other
+  // consumer would be orphaned.
+  auto* conv_out_node = matched.at("conv_out");
+  for (auto* consumer : conv_out_node->outlinks) {
+    if (!consumer->IsStmt()) continue;
+    if (consumer != matched.at("add") && consumer != matched.at("mul")) {
+      LOG(WARNING) << "conv_hardswish_fuse: conv output "
+                   << conv_out_node->arg()->name
+                   << " has extra consumer "
+                   << consumer->stmt()->op_type() << ", skip";
+      return false;
+    }
+  }
+
+  // add_out feeds only clip; clip_out feeds only mul; mul_out feeds only
+  // tail_mul. These are all intermediates that get deleted.
+  const std::pair<const char*, const char*> chain[] = {
+      {"add_out", "clip"},
+      {"clip_out", "mul"},
+      {"mul_out", "tail_mul"},
+  };
+  for (const auto& kv : chain) {
+    auto* var_node = matched.at(kv.first);
+    for (auto* consumer : var_node->outlinks) {
+      if (!consumer->IsStmt()) continue;
+      if (consumer != matched.at(kv.second)) {
+        LOG(WARNING) << "conv_hardswish_fuse: " << kv.first << " var "
+                     << var_node->arg()->name << " has extra consumer "
+                     << consumer->stmt()->op_type() << ", skip";
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
 cpp::OpDesc ConvHardSwishFuser::GenOpDesc(const key2nodes_t& matched) {
   cpp::OpDesc op_desc = *matched.at("conv2d")->stmt()->op_info();
   op_desc.SetOutput("Output", {matched.at("output")->arg()->name});
@@ -125,19 +224,50 @@ cpp::OpDesc ConvHardSwishFuser::GenOpDesc(const key2nodes_t& matched) {
   op_desc.SetAttr("with_act", true);
   op_desc.SetAttr("act_type", std::string("hard_swish"));
 
-  // Extract hard_swish parameters
+  // Extract hard_swish parameters. HardSwish(x) = x * clip(x + offset, 0,
+  // threshold) / scale, so the offset is the *bias constant of the
+  // elementwise_add*, not derived from the clip range (offset = -clip.min is
+  // only correct when the add bias happens to equal -min, which is not the
+  // canonical pattern). Read the add_y constant like the layer_norm fuser:
+  // prefer the fill_constant producer's attr, fall back to the tensor.
   float offset = 3.0f;
   float scale = 6.0f;
   float threshold = 6.0f;
 
+  auto add_bias_op = matched.at("add")->stmt()->op();
+  auto* scope = add_bias_op->scope();
+  auto* add_y_node = matched.at("add_y");
+  bool have_offset = false;
+  for (auto* producer : add_y_node->inlinks) {
+    if (producer->IsStmt() &&
+        producer->stmt()->op_info()->Type() == "fill_constant") {
+      auto* op_info = producer->stmt()->op_info();
+      if (op_info->HasAttr("value")) {
+        auto t = op_info->GetAttrType("value");
+        if (t == paddle::lite::OpDescAPI::AttrType::FLOAT) {
+          offset = op_info->GetAttr<float>("value");
+          have_offset = true;
+        } else if (t == paddle::lite::OpDescAPI::AttrType::INT) {
+          offset = static_cast<float>(op_info->GetAttr<int>("value"));
+          have_offset = true;
+        }
+      }
+    }
+  }
+  if (!have_offset) {
+    auto* add_y_t = scope->FindMutableTensor(add_y_node->arg()->name);
+    if (add_y_t != nullptr && add_y_t->numel() == 1 &&
+        add_y_t->data<float>() != nullptr) {
+      offset = add_y_t->data<float>()[0];
+      have_offset = true;
+    }
+  }
+  // If the offset is not recoverable, keep the default 3.0 (the canonical
+  // hard_swish offset); a future ValidateMatch tightening can reject instead.
+
   auto* clip_op_info = matched.at("clip")->stmt()->op_info();
-  if (clip_op_info) {
-    if (clip_op_info->HasAttr("min")) {
-      offset = -clip_op_info->GetAttr<float>("min");
-    }
-    if (clip_op_info->HasAttr("max")) {
-      threshold = clip_op_info->GetAttr<float>("max");
-    }
+  if (clip_op_info && clip_op_info->HasAttr("max")) {
+    threshold = clip_op_info->GetAttr<float>("max");
   }
 
   op_desc.SetAttr("hard_swish_threshold", threshold);

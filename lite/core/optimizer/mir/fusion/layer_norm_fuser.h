@@ -49,9 +49,6 @@ class LayerNormFuser : public FuseBase {
  private:
   bool ValidateMatch(SSAGraph* graph, const key2nodes_t& matched) override;
   cpp::OpDesc GenOpDesc(const key2nodes_t& matched) override;
-
-  // Epsilon read from the `eps` constant in ValidateMatch, used by GenOpDesc.
-  float epsilon_{1e-5f};
 };
 
 }  // namespace fusion

@@ -41,6 +41,7 @@ class ConvHardSwishFuser : public FuseBase {
   void InsertNewNode(SSAGraph* graph, const key2nodes_t& matched) override;
 
  private:
+  bool ValidateMatch(SSAGraph* graph, const key2nodes_t& matched) override;
   cpp::OpDesc GenOpDesc(const key2nodes_t& matched) override;
   std::string conv_type_;
   bool has_bias_;
