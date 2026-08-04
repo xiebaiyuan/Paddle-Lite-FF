@@ -124,3 +124,6 @@ third-party/*
 
 # hiai libs
 ai_ddk_lib*
+
+# OpenCL kernel source generated at build time by gen_opencl_code.py
+lite/backends/opencl/opencl_kernels_source.cc

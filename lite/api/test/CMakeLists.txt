@@ -48,7 +48,7 @@ if(LITE_WITH_ARM AND WITH_TESTING)
     lite_cc_test(test_mobilenetv1 SRCS mobilenetv1_test.cc
        ARGS --model_dir=${LITE_MODEL_DIR}/mobilenet_v1 SERIAL)
     add_dependencies(test_mobilenetv1 extern_lite_download_mobilenet_v1_tar_gz)
-    if(NOT WIN32)
+    if(NOT WIN32 AND NOT APPLE)
        set(LINK_FLAGS "-Wl,--version-script ${PADDLE_SOURCE_DIR}/lite/core/lite.map")
        set_target_properties(test_mobilenetv1 PROPERTIES LINK_FLAGS "${LINK_FLAGS}")
     endif()
@@ -64,7 +64,7 @@ if(LITE_WITH_ARM AND WITH_TESTING)
     lite_cc_test(test_mobilenetv2 SRCS mobilenetv2_test.cc
        ARGS --model_dir=${LITE_MODEL_DIR}/mobilenet_v2_relu SERIAL)
     add_dependencies(test_mobilenetv2 extern_lite_download_mobilenet_v2_relu_tar_gz)
-    if(NOT WIN32)
+    if(NOT WIN32 AND NOT APPLE)
         set_target_properties(test_mobilenetv2 PROPERTIES LINK_FLAGS "${LINK_FLAGS}")
     endif()
 

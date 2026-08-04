@@ -68,6 +68,7 @@ IF(WITH_TESTING)
                         -DBUILD_GMOCK=ON
                         -Dgtest_disable_pthreads=ON
                         -Dgtest_force_shared_crt=ON
+                        -DCMAKE_POLICY_VERSION_MINIMUM=3.5
                         -DCMAKE_BUILD_TYPE=${THIRD_PARTY_BUILD_TYPE}
                         ${EXTERNAL_OPTIONAL_ARGS}
         CMAKE_CACHE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${GTEST_INSTALL_DIR}
