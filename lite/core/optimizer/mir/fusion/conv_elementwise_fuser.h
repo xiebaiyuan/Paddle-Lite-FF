@@ -35,6 +35,7 @@ class ConvElementwiseFuser : public FuseBase {
   void InsertNewNode(SSAGraph* graph, const key2nodes_t& matched) override;
 
  private:
+  bool ValidateMatch(SSAGraph* graph, const key2nodes_t& matched) override;
   std::string conv_type_{"conv2d"};
   bool conv_has_bias_{false};
 };

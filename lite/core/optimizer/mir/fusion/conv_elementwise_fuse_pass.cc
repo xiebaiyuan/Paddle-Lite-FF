@@ -28,6 +28,15 @@ void ConvElementwiseFusePass::Apply(const std::unique_ptr<SSAGraph>& graph) {
   std::vector<bool> conv_has_bias_cases{true, false};
   std::vector<std::string> conv_type_cases{
       "conv2d", "depthwise_conv2d"};
+  // NOTE: conv2d_transpose is deliberately excluded. Its Input/Output
+  // semantics differ from conv2d (transposed-conv upsamples X; the trailing
+  // add bias is a separate elementwise_add). Fusing that add into the
+  // convT via ConvElementwiseFuser rewrites the convT's Input to the add's X
+  // and its Output to the add's Out, which corrupts dataflow when the add's X
+  // aliases the convT's Input (self-loop) or when convT output feeds multiple
+  // consumers (SSA breakage — see commit 2f2f0f238). A correct convT-bias
+  // fusion requires a dedicated fuser that rewrites only the bias, not the
+  // Input/Output topology.
   // start fuse using params
   for (auto conv_has_bias : conv_has_bias_cases) {
     for (auto conv_type : conv_type_cases) {

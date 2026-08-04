@@ -63,6 +63,33 @@ void ConvElementwiseFuser::BuildPattern() {
   add_inputs >> *add >> *add_out;
 }
 
+bool ConvElementwiseFuser::ValidateMatch(SSAGraph* graph,
+                                         const key2nodes_t& matched) {
+  // When the conv already has a bias (conv_has_bias_ == true), InsertNewNode
+  // folds the add's bias into the conv's *existing* Bias tensor and keeps the
+  // conv's output as-is — the graph topology is unchanged, so the conv output
+  // may legally feed any number of consumers. Only the no-bias case rewires
+  // the conv's output to the add's Out, which requires conv2d_out to be
+  // consumed exclusively by the matched add; any other consumer would be
+  // orphaned (its producer deleted) — the historical SSA breakage root cause
+  // for conv2d_transpose, where the tail topology
+  // (concat → conv2d_transpose → sigmoid) forked.
+  if (!conv_has_bias_) {
+    auto* conv2d_out_node = matched.at("conv2d_out");
+    for (auto* consumer : conv2d_out_node->outlinks) {
+      if (!consumer->IsStmt()) continue;
+      if (consumer != matched.at("add")) {
+        LOG(WARNING) << "conv_elementwise_fuse: conv output "
+                     << conv2d_out_node->arg()->name << " has extra consumer "
+                     << consumer->stmt()->op_type()
+                     << " (type=" << conv_type_ << "), skip fusion";
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
 void ConvElementwiseFuser::InsertNewNode(SSAGraph* graph,
                                          const key2nodes_t& matched) {
   auto conv_instruct = matched.at("conv2d")->stmt();
