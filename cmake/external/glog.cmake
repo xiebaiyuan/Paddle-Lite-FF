@@ -59,6 +59,7 @@ ExternalProject_Add(
                     -Dgflags_DIR=${GFLAGS_INSTALL_DIR}/lib/cmake/gflags
                     -DBUILD_TESTING=OFF
                     -DCMAKE_BUILD_TYPE=${THIRD_PARTY_BUILD_TYPE}
+                    -DCMAKE_POLICY_VERSION_MINIMUM=3.5
                     ${EXTERNAL_OPTIONAL_ARGS}
     CMAKE_CACHE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${GLOG_INSTALL_DIR}
                      -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON

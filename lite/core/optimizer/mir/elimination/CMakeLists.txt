@@ -43,6 +43,10 @@ lite_cc_test(test_reshape2_cast_eliminate_pass
              SRCS reshape2_cast_eliminate_pass_test.cc
              ${CMAKE_CURRENT_SOURCE_DIR}/../fusion/fusion_pass_test_util.cc
              DEPS core)
+lite_cc_test(test_dynamic_shape_pass
+             SRCS dynamic_shape_pass_test.cc
+             ${CMAKE_CURRENT_SOURCE_DIR}/../fusion/fusion_pass_test_util.cc
+             DEPS core)
 lite_cc_test(test_ssd_boxes_calc_offline_pass
              SRCS ssd_boxes_calc_offline_pass_test.cc
              ${CMAKE_CURRENT_SOURCE_DIR}/../fusion/fusion_pass_test_util.cc

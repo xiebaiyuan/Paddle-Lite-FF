@@ -222,6 +222,12 @@ std::unique_ptr<RuntimeProgram> RunDefaultOptimizer(
        // Drop x2paddle dynamic-shape residue: identity reshape2(shape=[4])
        // on shape tensors and int32<->int64 shape casts.
        "reshape2_cast_eliminate_pass",
+       // Restore dynamic input shape: x2paddle hardcodes the input dims and
+       // width-derived reshape2 shape values (W/8, W*3/8, W/64) from the
+       // fixed input_shape_dict; make them -1 so arbitrary width/batch runs.
+       // Runs after reshape2_cast_eliminate_pass (structure cleanup first,
+       // then value cleanup).
+       "dynamic_shape_pass",
        "assign_value_calc_offline_pass",
        "ssd_boxes_calc_offline_pass",
        "p_norm_fill_constant_max_div_fuse_pass",
