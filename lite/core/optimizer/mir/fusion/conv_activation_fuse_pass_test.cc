@@ -23,6 +23,25 @@ namespace paddle {
 namespace lite {
 namespace mir {
 
+// True if any stmt node of `op_type` binds the var `input_name` under the
+// input slot `param`. Used to lock fused-op input bindings (e.g. prelu's
+// Prelu_alpha) that a generic attribute refactor could silently drop.
+bool OpHasInput(const SSAGraph& graph,
+                const std::string& op_type,
+                const std::string& param,
+                const std::string& input_name) {
+  for (auto& node : graph.nodes()) {
+    if (!node.IsStmt()) continue;
+    auto* info = node.stmt()->op_info();
+    if (info->Type() != op_type) continue;
+    if (!info->HasInput(param)) continue;
+    for (const auto& name : info->Input(param)) {
+      if (name == input_name) return true;
+    }
+  }
+  return false;
+}
+
 // conv2d(+bias) → act must fold into a single conv with the activation
 // attributes attached (act_type / with_act + per-act attrs).
 std::vector<TestOpDesc> MakeConvAct(const std::string& act_type,
@@ -126,11 +145,18 @@ TEST(ConvActivationFuser, fuse_prelu_with_alpha) {
   // The conv already carries Prelu_alpha (as the fused form requires), and
   // the prelu op reuses the same Alpha var.
   auto graph =
-      BuildGraph(MakeConvAct("prelu", true, true, true), {}, scope.get());
+      BuildGraph(MakeConvAct("prelu", true, true, false), {}, scope.get());
   fusion::ConvActivationFuser fuser("conv2d", "prelu", true, true);
   ASSERT_EQ(fuser(graph.get()), 1u);
   ASSERT_EQ(CountOp(*graph, "conv2d"), 1);
   ASSERT_EQ(CountOp(*graph, "prelu"), 0);
+  // The fused conv's OpDesc must bind the alpha tensor as its Prelu_alpha
+  // input — the fused kernel resolves its per-channel alpha from that input.
+  // Regression: the ApplyActivationAttributes refactor dropped this binding,
+  // leaving the fused op referencing no alpha tensor (empty/uninitialized
+  // alpha at runtime).
+  ASSERT_TRUE(OpHasInput(*graph, "conv2d", "Prelu_alpha", "alpha"))
+      << "fused conv must carry Prelu_alpha input bound to the alpha var";
 }
 
 TEST(ConvActivationFuser, fuse_sigmoid) {
