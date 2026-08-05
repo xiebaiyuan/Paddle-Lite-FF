@@ -87,6 +87,15 @@ cpp::OpDesc ConvActivationFuser::GenOpDesc(const key2nodes_t& matched) {
   cpp::OpDesc act_op_desc = *matched.at("act")->stmt()->op_info();
 
   ApplyActivationAttributes(&op_desc, act_type_, &act_op_desc);
+  // prelu has a special additional input link (not covered by the generic
+  // activation-attribute helper): the fused conv kernel resolves its alpha
+  // from the Prelu_alpha input, so it must be bound here like conv_scale_fuser
+  // does. InsertNewNode links the alpha node into the graph; without this
+  // SetInput the fused op's OpDesc references no alpha tensor and prelu
+  // fusion produces an empty/uninitialized alpha at runtime.
+  if (act_type_ == "prelu") {
+    op_desc.SetInput("Prelu_alpha", {matched.at("alpha")->arg()->name});
+  }
   return op_desc;
 }
 

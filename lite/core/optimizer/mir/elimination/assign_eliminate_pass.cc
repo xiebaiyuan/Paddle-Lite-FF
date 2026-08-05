@@ -61,7 +61,6 @@ void AssignEliminatePass::Apply(const std::unique_ptr<SSAGraph>& graph) {
     }
 
     std::set<const Node*> to_remove;
-    bool modified = false;
 
     for (auto* assign_node : assign_nodes) {
       auto* op_info = assign_node->stmt()->op_info();
@@ -133,7 +132,6 @@ void AssignEliminatePass::Apply(const std::unique_ptr<SSAGraph>& graph) {
       // assign was its only producer and all consumers were redirected).
       to_remove.insert(assign_node);
       to_remove.insert(out_arg);
-      modified = true;
       VLOG(3) << "assign_eliminate: " << out_name << " <- " << in_name
               << " (" << consumers.size() << " consumers redirected)";
     }
@@ -143,6 +141,8 @@ void AssignEliminatePass::Apply(const std::unique_ptr<SSAGraph>& graph) {
     }
     GraphSafeRemoveNodes(graph.get(), to_remove);
     // Loop again to collapse chains; assign_nodes was a snapshot.
+    // (The loop is bounded at 16 iterations by the for header; a model
+    // with deeper chains simply ends after the cap with a WARNING.)
   }
   LOG(WARNING) << "assign_eliminate_pass: iteration bound reached";
 }
