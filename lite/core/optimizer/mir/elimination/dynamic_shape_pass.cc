@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "lite/core/optimizer/mir/elimination/dynamic_shape_pass.h"
+#include <algorithm>
 #include <memory>
 #include <string>
 #include <vector>
@@ -73,13 +74,18 @@ bool CanMakeDynamic(const std::vector<int>& shape,
 }  // namespace
 
 void DynamicShapePass::Apply(const std::unique_ptr<SSAGraph>& graph) {
-  // Pass 1: make feed input dims dynamic.
-  // The feed op's output var carries the model's declared input shape (e.g.
-  // [1,3,48,320]). Replace fixed dims with -1 so any width/batch is accepted.
-  // The output var's dims live on the scope tensor; the saved ProgramDesc
-  // copies them back (UpdateVarDescFromTensorInfo) unless the name is exactly
-  // "feed"/"fetch" — feed's *output* var (x2paddle_x) is NOT "feed", so the
-  // resize here propagates to the saved model.
+  // Pass 1: make feed input dims dynamic — but ONLY the dims that models
+  // conventionally leave flexible: batch (dim 0) and the last dim (width /
+  // sequence length). The intermediate dims (channel, height) are structural
+  // constants that the downstream conv/downsample chain depends on; flipping
+  // them to -1 (as the first revision did) produced all-(-1) inputs like
+  // [-1,-1,-1,-1] and silently dropped the height=48 / channel=3 contract.
+  //
+  // Rule: for a fully-static input [1,3,48,320] we flip dims 0 and last →
+  // [-1,3,48,-1]. For an input that already carries -1 in the flexible slots
+  // (det: [-1,3,-1,-1], rec: [-1,3,48,-1]) we leave it untouched — the model
+  // already declares which dims are dynamic. A partially-annotated input
+  // ([1,3,-1,320]) gets the fixed batch/width slots flipped to match.
   for (auto* node : graph->StmtTopologicalOrder()) {
     if (!node->IsStmt() || node->stmt()->op_type() != "feed") continue;
     auto* op_info = node->stmt()->op_info();
@@ -100,17 +106,25 @@ void DynamicShapePass::Apply(const std::unique_ptr<SSAGraph>& graph) {
       // fix, and the input dims stay as declared in the ProgramDesc.
       continue;
     }
+    // Only the flexible slots: dim 0 (batch) and the last dim (width).
+    std::vector<int> flexible;
+    flexible.push_back(0);
+    if (dims.size() > 1) flexible.push_back(static_cast<int>(dims.size()) - 1);
     bool modified = false;
     std::vector<int64_t> new_dims;
     new_dims.reserve(dims.size());
     for (int i = 0; i < dims.size(); ++i) {
       const int64_t d = dims[i];
-      new_dims.push_back(d > 0 ? -1 : d);
-      if (d > 0) modified = true;
+      const bool is_flexible =
+          std::find(flexible.begin(), flexible.end(), i) != flexible.end();
+      new_dims.push_back((is_flexible && d > 0) ? -1 : d);
+      if (is_flexible && d > 0) modified = true;
     }
     if (modified) {
       tensor->Resize(new_dims);
-      VLOG(3) << "dynamic_shape_pass: feed " << out_name << " dims -> -1";
+      VLOG(3) << "dynamic_shape_pass: feed " << out_name << " dims "
+              << dims << " -> [" << new_dims[0] << ",...,"
+              << new_dims.back() << "]";
     }
   }
 
