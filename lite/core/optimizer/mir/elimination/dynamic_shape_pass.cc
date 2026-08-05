@@ -73,6 +73,18 @@ bool CanMakeDynamic(const std::vector<int>& shape,
 
 }  // namespace
 
+std::vector<int64_t> DynamicShapePass::MakeFeedDimsDynamic(const DDim& dims) {
+  std::vector<int64_t> out;
+  out.reserve(dims.size());
+  const size_t last = dims.size() > 1 ? dims.size() - 1 : 0;
+  for (size_t i = 0; i < dims.size(); ++i) {
+    const int64_t d = dims[i];
+    const bool flex = (i == 0 || i == last);
+    out.push_back((flex && d > 0) ? -1 : d);
+  }
+  return out;
+}
+
 void DynamicShapePass::Apply(const std::unique_ptr<SSAGraph>& graph) {
   // Pass 1: make feed input dims dynamic — but ONLY the dims that models
   // conventionally leave flexible: batch (dim 0) and the last dim (width /
@@ -107,18 +119,15 @@ void DynamicShapePass::Apply(const std::unique_ptr<SSAGraph>& graph) {
       continue;
     }
     // Only the flexible slots: dim 0 (batch) and the last dim (width).
-    std::vector<int> flexible;
-    flexible.push_back(0);
-    if (dims.size() > 1) flexible.push_back(static_cast<int>(dims.size()) - 1);
+    // Delegate to the pure helper so the rule is unit-testable without a
+    // full feed op / scope fixture.
+    const auto new_dims = MakeFeedDimsDynamic(dims);
     bool modified = false;
-    std::vector<int64_t> new_dims;
-    new_dims.reserve(dims.size());
-    for (int i = 0; i < dims.size(); ++i) {
-      const int64_t d = dims[i];
-      const bool is_flexible =
-          std::find(flexible.begin(), flexible.end(), i) != flexible.end();
-      new_dims.push_back((is_flexible && d > 0) ? -1 : d);
-      if (is_flexible && d > 0) modified = true;
+    for (size_t i = 0; i < dims.size(); ++i) {
+      if (new_dims[i] != dims[i]) {
+        modified = true;
+        break;
+      }
     }
     if (modified) {
       tensor->Resize(new_dims);

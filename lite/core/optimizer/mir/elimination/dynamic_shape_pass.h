@@ -54,6 +54,13 @@ class DynamicShapePass : public PassV2 {
   void Apply(const std::unique_ptr<SSAGraph>& graph) override;
   bool ShouldOnlyApplyOnce() const override { return true; }
   int OptimizationLevel() const override { return PassV2::kLevelBasic; }
+
+  // Return `dims` with only the flexible slots dynamized: dim 0 (batch) and
+  // the last dim (width / sequence length) become -1; intermediate dims
+  // (channel, height) keep their declared values. Exposed for unit tests —
+  // this is the rule that keeps [-1,3,48,-1] from degenerating into
+  // [-1,-1,-1,-1] (3b3c5fc).
+  static std::vector<int64_t> MakeFeedDimsDynamic(const DDim& dims);
 };
 
 }  // namespace mir

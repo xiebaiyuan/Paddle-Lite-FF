@@ -215,6 +215,51 @@ TEST(DynamicShapePass, keep_non_multiple_of_8) {
   EXPECT_EQ(shape[2], 7) << "7 not a multiple of 8; preserved";
 }
 
+// Feed input dims rule: a fully-static input [1,3,48,320] must become
+// [-1,3,48,-1] — batch and width flex, channel and height stay fixed.
+// Regression (3b3c5fc): the first revision flipped every positive dim,
+// producing [-1,-1,-1,-1] and silently dropping the height=48 / channel=3
+// contract that the downstream conv/downsample chain depends on.
+TEST(DynamicShapePass, feed_only_batch_and_width_become_dynamic) {
+  const auto dims = DynamicShapePass::MakeFeedDimsDynamic(DDim({1, 3, 48, 320}));
+  ASSERT_EQ(dims.size(), 4u);
+  EXPECT_EQ(dims[0], -1) << "batch is flexible";
+  EXPECT_EQ(dims[1], 3) << "channel stays fixed";
+  EXPECT_EQ(dims[2], 48) << "height stays fixed";
+  EXPECT_EQ(dims[3], -1) << "width is flexible";
+}
+
+// Feed input dims: a source that already declares dynamic dims (rec:
+// [-1,3,48,-1]) must be left untouched — the model already expresses which
+// dims are flexible, and the pass must not broaden them.
+TEST(DynamicShapePass, feed_already_dynamic_untouched) {
+  const auto dims = DynamicShapePass::MakeFeedDimsDynamic(DDim({-1, 3, 48, -1}));
+  ASSERT_EQ(dims.size(), 4u);
+  EXPECT_EQ(dims[0], -1);
+  EXPECT_EQ(dims[1], 3);
+  EXPECT_EQ(dims[2], 48);
+  EXPECT_EQ(dims[3], -1);
+}
+
+// Feed input dims: det-style input [-1,3,-1,-1] (batch/h/w flex, channel
+// fixed) is likewise untouched.
+TEST(DynamicShapePass, feed_det_style_untouched) {
+  const auto dims = DynamicShapePass::MakeFeedDimsDynamic(DDim({-1, 3, -1, -1}));
+  ASSERT_EQ(dims.size(), 4u);
+  EXPECT_EQ(dims[0], -1);
+  EXPECT_EQ(dims[1], 3);
+  EXPECT_EQ(dims[2], -1);
+  EXPECT_EQ(dims[3], -1);
+}
+
+// Feed input dims: a 2-D input [1, 320] (batch, seq-len) becomes [-1, -1].
+TEST(DynamicShapePass, feed_2d_both_flexible) {
+  const auto dims = DynamicShapePass::MakeFeedDimsDynamic(DDim({1, 320}));
+  ASSERT_EQ(dims.size(), 2u);
+  EXPECT_EQ(dims[0], -1);
+  EXPECT_EQ(dims[1], -1);
+}
+
 }  // namespace mir
 }  // namespace lite
 }  // namespace paddle
