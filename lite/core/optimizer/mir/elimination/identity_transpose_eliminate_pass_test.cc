@@ -101,6 +101,32 @@ TEST(IdentityTransposeEliminatePass, keep_single_transpose) {
   ASSERT_EQ(CountOp(*graph, "transpose2"), 1);
 }
 
+// Regression: the mid var of an identity transpose pair is shared — another
+// op also writes it (an x2paddle register-pool var). The pass must NOT
+// eliminate the pair even though the axis permutations compose to identity,
+// because rewiring t0's output would change what the other consumers observe.
+// This is exactly the tiny_rec failure mode that keeps the pass out of the
+// default opt chain.
+TEST(IdentityTransposeEliminatePass, keep_pair_with_shared_mid) {
+  auto scope = std::make_shared<Scope>();
+  std::vector<TestOpDesc> ops = MakeTransposeChain({0, 2, 1}, {0, 2, 1});
+  // A second writer of `mid` (register-pool aliasing): an assign that also
+  // outputs `mid` alongside the transpose0 chain.
+  TestOpDesc other_writer;
+  other_writer.type = "assign";
+  other_writer.inputs = {{"X", {"relu_out"}}};
+  other_writer.outputs = {{"Out", {"mid"}}};
+  ops.push_back(other_writer);
+
+  auto graph = BuildGraph(ops, {}, scope.get());
+  auto* pass =
+      PassManager::Global().LookUp("identity_transpose_eliminate_pass");
+  ASSERT_NE(pass, nullptr);
+  pass->Apply(graph);
+
+  ASSERT_EQ(CountOp(*graph, "transpose2"), 2);
+}
+
 }  // namespace mir
 }  // namespace lite
 }  // namespace paddle
