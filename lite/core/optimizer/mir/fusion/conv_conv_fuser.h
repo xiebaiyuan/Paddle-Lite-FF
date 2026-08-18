@@ -43,6 +43,38 @@ class ConvConvFuser : public FuseBase {
   inline void createPattern();
 
  private:
+  // Locate the "Filter" inlink of a conv statement by its argname. The
+  // inlinks are ordered by OpDesc::input_names(), so a conv with a Bias input
+  // may list Bias before Filter; locating by argname is the only stable way.
+  static mir::Node* FindFilterInlink(mir::Node* op_node) {
+    if (op_node == nullptr || !op_node->IsStmt()) return nullptr;
+    auto* op_info = op_node->stmt()->mutable_op_info();
+    for (auto* in : op_node->inlinks) {
+      if (in == nullptr || !in->IsArg()) continue;
+      std::string argname;
+      if (op_info->GetInputArgname(in->AsArg().name, &argname) &&
+          argname == "Filter") {
+        return in;
+      }
+    }
+    return nullptr;
+  }
+
+  // A conv that carries a fused activation (with_act=true) must not
+  // participate in conv+conv fusion: recomputing the weights would silently
+  // swallow that activation.
+  static bool ConvHasFusedActivation(cpp::OpDesc* op_desc) {
+    return op_desc->HasAttr("with_act") &&
+           op_desc->GetAttr<bool>("with_act");
+  }
+
+  // A conv with a ResidualData input feeds its residual path into the fused
+  // output; folding it into the next conv would break the residual semantics.
+  static bool ConvHasResidualData(cpp::OpDesc* op_desc) {
+    return op_desc->HasInput("ResidualData") &&
+           op_desc->Input("ResidualData").size() > 0;
+  }
+
   void ComputeNewWeight(float* dout,
                         const float* din,
                         const float* weights,

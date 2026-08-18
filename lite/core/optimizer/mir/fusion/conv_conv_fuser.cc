@@ -93,20 +93,40 @@ void ConvConvFuser::BuildPattern() {
         auto next_node_tmp = conv2d_outlinks.front();
         if (next_node_tmp->IsArg() && next_node_tmp->outlinks.size() == 1) {
           auto next_node = next_node_tmp->outlinks.front();
-          auto conv0_in = node->inlinks;
-          auto conv0_wei_name = conv0_in.front();
           VLOG(5) << "next_node->IsStmt(): " << next_node->IsStmt();
           VLOG(5) << ", next op_type:" << next_node->AsStmt().op_type();
           if (next_node->IsStmt() &&
               next_node->AsStmt().op_type() == conv_type1_) {
-            // find conv->conv pattern
-            auto conv1_in = next_node->inlinks;
-            auto conv1_wei_name = conv1_in.front();
+            // find conv->conv pattern. The weight (Filter) must be located by
+            // argname, not by inlinks order: a conv with a Bias input may list
+            // Bias before Filter, so inlinks.front() can read the bias tensor.
+            auto conv0_wei_name = FindFilterInlink(node);
+            auto conv1_wei_name = FindFilterInlink(next_node);
+            if (conv0_wei_name == nullptr || conv1_wei_name == nullptr) {
+              VLOG(5) << "failed to locate the Filter inlink";
+              continue;
+            }
             auto a = conv0_wei_name->AsArg().name;
             auto b = conv1_wei_name->AsArg().name;
             VLOG(5) << "conv0_wei_name: " << a;
             VLOG(5) << "conv1_wei_name: " << b;
             auto conv_op_desc1 = next_node->stmt()->mutable_op_info();
+            // Fusing a conv that already carries a fused activation would
+            // silently swallow that activation when the weights are recomputed,
+            // so the pair must be rejected here.
+            if (ConvHasFusedActivation(conv_op_desc0) ||
+                ConvHasFusedActivation(conv_op_desc1)) {
+              VLOG(5) << "conv has a fused activation, skip";
+              continue;
+            }
+            // A conv with a ResidualData input feeds its residual path into
+            // the fused output; folding it into the next conv would break the
+            // residual semantics.
+            if (ConvHasResidualData(conv_op_desc0) ||
+                ConvHasResidualData(conv_op_desc1)) {
+              VLOG(5) << "conv has a residual input, skip";
+              continue;
+            }
             auto weight0_dims = scope->FindVar(a)->Get<lite::Tensor>().dims();
             auto weight1_dims = scope->FindVar(b)->Get<lite::Tensor>().dims();
             auto groups0 = conv_op_desc0->GetAttr<int>("groups");

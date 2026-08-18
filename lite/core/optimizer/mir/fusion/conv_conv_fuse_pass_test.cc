@@ -73,11 +73,11 @@ TEST(ConvConvFuser, fuse_conv_conv) {
 }
 
 TEST(ConvConvFuser, fuse_conv_conv_with_bias) {
-  // ConvConvFuser::BuildPattern reads conv0's *first* inlink as the weight
-  // (conv0_in.front()). When the conv has a Bias input, the inlink order is
-  // not guaranteed to put Filter first, so the weight-dims probe may read a
-  // bias tensor and abort the fusion. This test documents that actual
-  // behavior: the pass must not crash, and the graph topology must survive.
+  // ConvConvFuser::BuildPattern previously read conv0's *first* inlink as the
+  // weight (conv0_in.front()). When the conv has a Bias input, the inlink
+  // order is not guaranteed to put Filter first, so the weight-dims probe
+  // could read a bias tensor and abort the fusion. This test locks the fixed
+  // behavior: the pass must find the Filter by argname and fuse the pair.
   auto scope = std::make_shared<Scope>();
   auto* w0 = scope->Var("w0")->GetMutable<lite::Tensor>();
   w0->Resize(DDim({2, 1, 1, 1}));
@@ -95,11 +95,57 @@ TEST(ConvConvFuser, fuse_conv_conv_with_bias) {
 
   auto graph = BuildGraph(MakeConvConv(true, true), {"w0", "w1", "b0", "b1"},
                           scope.get());
+  ASSERT_EQ(CountOp(*graph, "conv2d"), 2);
+
   fusion::ConvConvFuser fuser("conv2d", "conv2d", true, true, graph);
-  // Fusion may be skipped (see comment above); the graph must stay intact.
-  auto n_conv_before = CountOp(*graph, "conv2d");
-  fuser(graph.get());
-  ASSERT_GE(CountOp(*graph, "conv2d"), n_conv_before);
+  ASSERT_EQ(fuser(graph.get()), 1u);
+  ASSERT_EQ(CountOp(*graph, "conv2d"), 1);
+}
+
+TEST(ConvConvFuser, skip_conv_with_activation) {
+  // A fused conv0 that already carries an activation (with_act=true, e.g.
+  // relu) must not participate in conv+conv fusion: recomputing the weights
+  // would silently swallow conv0's activation. The pass must skip the pair.
+  auto scope = std::make_shared<Scope>();
+  auto* w0 = scope->Var("w0")->GetMutable<lite::Tensor>();
+  w0->Resize(DDim({2, 1, 1, 1}));
+  w0->mutable_data<float>()[0] = 1.0f;
+  w0->mutable_data<float>()[1] = 1.0f;
+  auto* w1 = scope->Var("w1")->GetMutable<lite::Tensor>();
+  w1->Resize(DDim({4, 2, 1, 1}));
+  for (int i = 0; i < 8; ++i) w1->mutable_data<float>()[i] = 1.0f;
+
+  std::vector<TestOpDesc> ops = MakeConvConv(false, false);
+  ops[0].bool_attrs = {{"with_act", true}};
+  ops[0].str_attrs = {{"act_type", "relu"}};
+  auto graph = BuildGraph(ops, {"w0", "w1"}, scope.get());
+  fusion::ConvConvFuser fuser("conv2d", "conv2d", false, false, graph);
+  ASSERT_EQ(fuser(graph.get()), 0u);
+  ASSERT_EQ(CountOp(*graph, "conv2d"), 2);
+}
+
+TEST(ConvConvFuser, skip_conv_with_residual) {
+  // A conv0 with a ResidualData input feeds its own residual path into the
+  // fused output; folding conv0 into conv1 would break the residual semantics.
+  auto scope = std::make_shared<Scope>();
+  auto* w0 = scope->Var("w0")->GetMutable<lite::Tensor>();
+  w0->Resize(DDim({2, 1, 1, 1}));
+  w0->mutable_data<float>()[0] = 1.0f;
+  w0->mutable_data<float>()[1] = 1.0f;
+  auto* w1 = scope->Var("w1")->GetMutable<lite::Tensor>();
+  w1->Resize(DDim({4, 2, 1, 1}));
+  for (int i = 0; i < 8; ++i) w1->mutable_data<float>()[i] = 1.0f;
+  auto* res = scope->Var("res")->GetMutable<lite::Tensor>();
+  res->Resize(DDim({1, 2, 1, 1}));
+  res->mutable_data<float>()[0] = 0.25f;
+  res->mutable_data<float>()[1] = 0.25f;
+
+  std::vector<TestOpDesc> ops = MakeConvConv(false, false);
+  ops[0].inputs["ResidualData"] = {"res"};
+  auto graph = BuildGraph(ops, {"w0", "w1", "res"}, scope.get());
+  fusion::ConvConvFuser fuser("conv2d", "conv2d", false, false, graph);
+  ASSERT_EQ(fuser(graph.get()), 0u);
+  ASSERT_EQ(CountOp(*graph, "conv2d"), 2);
 }
 
 TEST(ConvConvFuser, skip_non_1x1_second_conv) {
