@@ -23,6 +23,10 @@ lite_cc_test(test_identity_dropout_eliminate_pass
              SRCS identity_dropout_eliminate_pass_test.cc
              ${CMAKE_CURRENT_SOURCE_DIR}/../fusion/fusion_pass_test_util.cc
              DEPS core)
+lite_cc_test(test_identity_transpose_eliminate_pass
+             SRCS identity_transpose_eliminate_pass_test.cc
+             ${CMAKE_CURRENT_SOURCE_DIR}/../fusion/fusion_pass_test_util.cc
+             DEPS core)
 lite_cc_test(test_elementwise_mul_constant_eliminate_pass
              SRCS elementwise_mul_constant_eliminate_pass_test.cc
              ${CMAKE_CURRENT_SOURCE_DIR}/../fusion/fusion_pass_test_util.cc
