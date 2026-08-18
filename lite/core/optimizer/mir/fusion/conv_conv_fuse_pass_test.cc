@@ -52,15 +52,22 @@ std::vector<TestOpDesc> MakeConvConv(bool bias0, bool bias1) {
   return ops;
 }
 
-TEST(ConvConvFuser, fuse_conv_conv) {
-  auto scope = std::make_shared<Scope>();
-  // w0 [2,1,1,1], w1 [4,2,1,1]
-  auto* w0 = scope->Var("w0")->GetMutable<lite::Tensor>();
+// Shared 1x1 conv0+conv1 weights: w0 [2,1,1,1], w1 [4,2,1,1] — the same
+// shapes used by the fusion and skip cases below.
+void MakeConvConvScope(std::shared_ptr<Scope>* scope) {
+  *scope = std::make_shared<Scope>();
+  auto* w0 = (*scope)->Var("w0")->GetMutable<lite::Tensor>();
   w0->Resize(DDim({2, 1, 1, 1}));
   for (int i = 0; i < 2; ++i) w0->mutable_data<float>()[i] = 1.0f;
-  auto* w1 = scope->Var("w1")->GetMutable<lite::Tensor>();
+  auto* w1 = (*scope)->Var("w1")->GetMutable<lite::Tensor>();
   w1->Resize(DDim({4, 2, 1, 1}));
   for (int i = 0; i < 8; ++i) w1->mutable_data<float>()[i] = 1.0f;
+}
+
+TEST(ConvConvFuser, fuse_conv_conv) {
+  // w0 [2,1,1,1], w1 [4,2,1,1]
+  auto scope = std::make_shared<Scope>();
+  MakeConvConvScope(&scope);
 
   auto graph = BuildGraph(MakeConvConv(false, false), {"w0", "w1"},
                           scope.get());
@@ -107,13 +114,7 @@ TEST(ConvConvFuser, skip_conv_with_activation) {
   // relu) must not participate in conv+conv fusion: recomputing the weights
   // would silently swallow conv0's activation. The pass must skip the pair.
   auto scope = std::make_shared<Scope>();
-  auto* w0 = scope->Var("w0")->GetMutable<lite::Tensor>();
-  w0->Resize(DDim({2, 1, 1, 1}));
-  w0->mutable_data<float>()[0] = 1.0f;
-  w0->mutable_data<float>()[1] = 1.0f;
-  auto* w1 = scope->Var("w1")->GetMutable<lite::Tensor>();
-  w1->Resize(DDim({4, 2, 1, 1}));
-  for (int i = 0; i < 8; ++i) w1->mutable_data<float>()[i] = 1.0f;
+  MakeConvConvScope(&scope);
 
   std::vector<TestOpDesc> ops = MakeConvConv(false, false);
   ops[0].bool_attrs = {{"with_act", true}};
@@ -124,17 +125,27 @@ TEST(ConvConvFuser, skip_conv_with_activation) {
   ASSERT_EQ(CountOp(*graph, "conv2d"), 2);
 }
 
+TEST(ConvConvFuser, skip_conv1_with_activation) {
+  // Same guard on the conv1 side: conv1 is an AsIntermediate node in the
+  // pattern, but it may itself carry a fused activation, and folding it into
+  // conv0 would silently swallow it.
+  auto scope = std::make_shared<Scope>();
+  MakeConvConvScope(&scope);
+
+  std::vector<TestOpDesc> ops = MakeConvConv(false, false);
+  ops[1].bool_attrs = {{"with_act", true}};
+  ops[1].str_attrs = {{"act_type", "relu"}};
+  auto graph = BuildGraph(ops, {"w0", "w1"}, scope.get());
+  fusion::ConvConvFuser fuser("conv2d", "conv2d", false, false, graph);
+  ASSERT_EQ(fuser(graph.get()), 0u);
+  ASSERT_EQ(CountOp(*graph, "conv2d"), 2);
+}
+
 TEST(ConvConvFuser, skip_conv_with_residual) {
   // A conv0 with a ResidualData input feeds its own residual path into the
   // fused output; folding conv0 into conv1 would break the residual semantics.
   auto scope = std::make_shared<Scope>();
-  auto* w0 = scope->Var("w0")->GetMutable<lite::Tensor>();
-  w0->Resize(DDim({2, 1, 1, 1}));
-  w0->mutable_data<float>()[0] = 1.0f;
-  w0->mutable_data<float>()[1] = 1.0f;
-  auto* w1 = scope->Var("w1")->GetMutable<lite::Tensor>();
-  w1->Resize(DDim({4, 2, 1, 1}));
-  for (int i = 0; i < 8; ++i) w1->mutable_data<float>()[i] = 1.0f;
+  MakeConvConvScope(&scope);
   auto* res = scope->Var("res")->GetMutable<lite::Tensor>();
   res->Resize(DDim({1, 2, 1, 1}));
   res->mutable_data<float>()[0] = 0.25f;
